@@ -1,4 +1,5 @@
-class SessionsController < ApplicationController
+module Commissioner
+  class SessionsController < ApplicationController
 
     def new
     end
@@ -20,3 +21,4 @@ class SessionsController < ApplicationController
     end
   
   end
+end

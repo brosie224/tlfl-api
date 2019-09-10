@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
-  root '/'
+  root 'sessions#new' # change to page with all commish options
 
-  get '/commissioner/login' => 'sessions#new'
-  post '/commissioner/login' => 'sessions#create'
-  get '/commissioner/logout' => 'sessions#destroy'
-  
+  namespace 'commissioner' do
+    get '/login' => 'sessions#new'
+    post '/login' => 'sessions#create'
+    get '/logout' => 'sessions#destroy'
+  end
+
   # namespace 'commissioner' do
   #   transactions: new, create, edit, update, destroy (index for all to see)
   #   newsletter
@@ -12,6 +14,7 @@ Rails.application.routes.draw do
 
   # namespace 'admin' do
   #   resources :players, only: [:new, :edit] # admin only in controller
+  #   assigning players to teams (commish access?)
   #   whatever else
   # end
 
