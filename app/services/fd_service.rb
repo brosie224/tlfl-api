@@ -14,9 +14,6 @@ class FdService
                 new_team.conference = team["Conference"]
                 new_team.division = team["Division"]
                 new_team.bye_week = team["ByeWeek"]
-                new_team.nfl_team = team[""]
-
-                new_team.nfl_id = team[""]
                 new_team.logo = team["WikipediaLogoUrl"]
                 new_team.word_mark = team["WikipediaWordMarkUrl"]
                 new_team.primary_color = team["PrimaryColor"]
