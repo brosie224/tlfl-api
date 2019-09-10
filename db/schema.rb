@@ -10,10 +10,39 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_10_055823) do
+ActiveRecord::Schema.define(version: 2019_09_10_205536) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "owners", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "phone"
+    t.integer "tlfl_team_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "tlfl_teams", force: :cascade do |t|
+    t.string "city"
+    t.string "nickname"
+    t.string "conference"
+    t.string "division"
+    t.integer "bye_week"
+    t.string "nfl_team"
+    t.integer "fd_id"
+    t.integer "nfl_id"
+    t.string "logo"
+    t.string "word_mark"
+    t.string "primary_color"
+    t.string "secondary_color"
+    t.string "tertiary_color"
+    t.string "quaternary_color"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email"
