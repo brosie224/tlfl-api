@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_11_034852) do
+ActiveRecord::Schema.define(version: 2019_09_11_045011) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 2019_09_11_034852) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "position"
-    t.string "nfl_team"
+    t.string "nfl_abbrev"
     t.boolean "on_ir", default: false
     t.integer "ir_fd_id"
     t.integer "tlfl_seniority", default: 1
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 2019_09_11_034852) do
     t.integer "cbs_id"
     t.integer "nfl_id"
     t.integer "esb_id"
+    t.string "cbs_photo"
   end
 
   create_table "team_dsts", force: :cascade do |t|
@@ -73,7 +74,7 @@ ActiveRecord::Schema.define(version: 2019_09_11_034852) do
     t.string "conference"
     t.string "division"
     t.integer "bye_week"
-    t.string "nfl_team"
+    t.string "abbreviation"
     t.integer "fd_id"
     t.integer "nfl_id"
     t.string "logo"

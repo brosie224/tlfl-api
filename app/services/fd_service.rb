@@ -11,6 +11,7 @@ class FdService
             TlflTeam.find_or_create_by(fd_id: team["TeamID"]) do |new_team|
                 new_team.city = team["City"]
                 new_team.nickname = team["Name"]
+                new_team.abbreviation = team["Key"]
                 new_team.conference = team["Conference"]
                 new_team.division = team["Division"]
                 new_team.bye_week = team["ByeWeek"]
