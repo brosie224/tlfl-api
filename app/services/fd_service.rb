@@ -1,4 +1,4 @@
-require 'open-uri'
+# require 'open-uri'
 
 class FdService
 
@@ -24,7 +24,7 @@ class FdService
         end
     end
 
-    def create team_dst
+    def create_team_dsts
         teams_resp = Faraday.get 'https://api.fantasydata.net/api/nfl/fantasy/json/Teams' do |req|
             req.params['key'] = ENV['FANTASY_DATA_KEY']
         end
@@ -36,7 +36,7 @@ class FdService
                 new_team.bye_week = team["ByeWeek"]
                 new_team.logo = team["WikipediaLogoUrl"]
                 new_team.word_mark = team["WikipediaWordMarkUrl"]
-
+                new_team.fd_player_id = team["PlayerID"]
             end
         end
     end
