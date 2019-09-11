@@ -7,7 +7,7 @@ class FdService
             req.params['key'] = ENV['FANTASY_DATA_KEY']
         end
         teams_json = JSON.parse(teams_resp.body)
-        team_json.each do |team|
+        teams_json.each do |team|
             TlflTeam.find_or_create_by(fd_id: team["TeamID"]) do |new_team|
                 new_team.city = team["City"]
                 new_team.nickname = team["Name"]
@@ -24,5 +24,21 @@ class FdService
         end
     end
 
+    def create team_dst
+        teams_resp = Faraday.get 'https://api.fantasydata.net/api/nfl/fantasy/json/Teams' do |req|
+            req.params['key'] = ENV['FANTASY_DATA_KEY']
+        end
+        teams_json = JSON.parse(teams_resp.body)
+        teams_json.each do |team|
+            TeamDst.find_or_create_by(fd_id: team["TeamID"]) do |new_team|
+                new_team.city = team["City"]
+                new_team.nickname = team["Name"]
+                new_team.bye_week = team["ByeWeek"]
+                new_team.logo = team["WikipediaLogoUrl"]
+                new_team.word_mark = team["WikipediaWordMarkUrl"]
+
+            end
+        end
+    end
 
 end

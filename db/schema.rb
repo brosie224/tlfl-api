@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_10_205536) do
+ActiveRecord::Schema.define(version: 2019_09_11_030513) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,39 @@ ActiveRecord::Schema.define(version: 2019_09_10_205536) do
     t.string "email"
     t.string "phone"
     t.integer "tlfl_team_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "position"
+    t.string "nfl_team"
+    t.boolean "on_ir", default: false
+    t.integer "ir_fd_id"
+    t.integer "tlfl_seniority", default: 1
+    t.integer "bye_week"
+    t.integer "tlfl_team_id"
+    t.integer "fd_id"
+    t.integer "fd_nfl_id"
+    t.integer "cbs_id"
+    t.integer "nfl_id"
+    t.integer "esb_id"
+  end
+
+  create_table "team_dsts", force: :cascade do |t|
+    t.string "city"
+    t.string "nickname"
+    t.integer "bye_week"
+    t.string "logo"
+    t.string "word_mark"
+    t.integer "tlfl_team_id"
+    t.integer "fd_id"
+    t.integer "fd_player_id"
+    t.integer "nfl_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
