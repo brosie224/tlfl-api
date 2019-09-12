@@ -10,4 +10,12 @@ class NewSeason
         end
     end
 
+    def set_keepers # put in players controller?
+    end
+
+# FdService methods to run:
+    # create_new_players (to add new players)
+    # update_player_data
+    # update_tlfl_team_bye
+
 end
