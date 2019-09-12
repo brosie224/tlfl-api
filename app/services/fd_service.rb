@@ -52,41 +52,61 @@ class FdService
         @active_players = actives.select { |player| %w(QB RB FB WR TE K).include? player["Position"] }
     end
 
+
+    # -- NEW SEASON UPDATES --
+
     def create_new_players
         get_player_data
         @active_players = @active_players.sort_by { |player| player["LastName"] }
         @active_players.each do |fd_player|
-            Players.find_or_create_by(fd_id: fd_player["PlayerID"]) do |new_player|
+            Player.find_or_create_by(fd_id: fd_player["PlayerID"]) do |new_player|
                 new_player.first_name = fd_player["FirstName"]
                 new_player.last_name = fd_player["LastName"]
                 new_player.position = fd_player["Position"]
                 new_player.position = "RB" if new_player.position == "FB"
                 new_player.nfl_abbrev = fd_player["Team"]
-                new_player.bye_week = fd_player["ByeWeek"]   
+                new_player.bye_week = fd_player["ByeWeek"]
+                new_player.jersey = fd_player["Number"]
             end
         end
     end
-
-
-
-
-    # -- NEW SEASON UPDATES --
-
-    def update_player_data
-        # Update Bye Week
-        # Update NFL Team
-    end
-
+    
     def update_tlfl_team_data
-        # Update Bye Week
-        # Update logo, word mark, team colors
+        # Update bye_week
+        # Update logo, word_mark, team colors
         # Manually change any city/nickname/abbreviation change or changed division
     end
 
+    def update_player_data
+        # Update bye_week
+        # Update nfl_abbrev
+        # Update jersey
+    end
+
     def update_teams_dst_data
-        # Update Bye Week
-        # Update logo and word mark
+        # Update bye_week
+        # Update logo and word_mark
         # Manually change any city/nickname/abbreviation change
+    end
+
+    def add_cbs_to_new_players
+        # fd JAX, cbs JAC
+        # if cbs_id is blank => match team and jersey
+        # Add cbs_id, esb_id, cbs_photo
+
+        # Double check link works
+        cbs_resp = Faraday.get "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json"
+        cbs_json = JSON.parse(cbs_resp.body)
+        players = Player.all
+        cbs_json.each do |cbs_player|
+            players.each do |player|
+                if player.cbs_id == nil && player.nfl_abbrev == "JAX" && cbs_player["pro_team"] == "JAC" && player.jersey == cbs_player["jersey"]
+                    player.cbs_id = cbs_player["id"]
+                    player.esb_id = cbs_player["elias_id"]
+                    player.cbs_photo = cbs_player["photo"]
+                end
+            end
+        end
     end
 
 end

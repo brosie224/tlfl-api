@@ -15,6 +15,9 @@ Rails.application.routes.draw do
     namespace 'v1' do
       resources :tlfl_teams, only: [:index, :show]
       resources :owners, only: [:index, :show]
+      get '/players/tlfl' => 'players#tlfl'
+      get '/players/available' => 'players#available'
+      resources :players, only: [:index, :show]
       # resources :players, only: [:index, :show, :create?, :update?, :delete]
     end
   end

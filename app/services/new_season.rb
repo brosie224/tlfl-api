@@ -14,8 +14,9 @@ class NewSeason
     end
 
 # FdService methods to run:
-    # create_new_players (to add new players)
+    # create_new_players (to add rookies/new players)
+    # update_tlfl_team_data
     # update_player_data
-    # update_tlfl_team_bye
+    # update_teams_dst_data
 
 end
