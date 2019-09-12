@@ -1,5 +1,5 @@
 class Owner < ApplicationRecord
-    belongs_to :tlfl_team
+    belongs_to :tlfl_team, optional: true
 
     def full_name
         self.first_name + " " + self.last_name

@@ -1,0 +1,16 @@
+
+<%= form_tag("/commissioner/add", method: "post") do %>
+    <ul class="no-bullet">
+        <% @owners.each do |owner| %>
+            <li>
+                <%= check_box_tag "assign[]", owner.id %>
+                <%= "#{owner.last_name}, #{owner.first_name}" %>
+                <%= "- #{owner.email}" if owner.email %>
+                <%= "- #{owner.phone}" if owner.phone %>
+            </li>
+        <% end %> 
+    </ul>
+    <%= collection_select :tlfl_team, :id, TlflTeam.order(:city), :id, :full_name %>
+    <br><br>
+    <%= submit_tag "Assign Owner(s) to Team" %>
+<% end %>

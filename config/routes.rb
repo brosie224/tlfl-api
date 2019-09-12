@@ -5,6 +5,8 @@ Rails.application.routes.draw do
     get '/login' => 'sessions#new'
     post '/login' => 'sessions#create'
     get '/logout' => 'sessions#destroy'
+    get '/assign' => 'owners#assign'
+    post '/add' => 'owners#add'
     #   transactions: new, create, edit, update, destroy (index for all to see)
     #   newsletter
   end
@@ -12,12 +14,13 @@ Rails.application.routes.draw do
   namespace 'api' do
     namespace 'v1' do
       resources :tlfl_teams, only: [:index, :show]
-      # resources :players, only: [:index, :show, :create, :update, :delete]
+      resources :owners, only: [:index, :show]
+      # resources :players, only: [:index, :show, :create?, :update?, :delete]
     end
   end
 
   # namespace 'admin' do
-  #   resources :players, only: [:new, :edit] # admin only in controller
+  #   resources :players, only: [:new?, :edit?] # admin only in controller
   #   assigning players to teams (commish access?)
   #   whatever else
   # end
