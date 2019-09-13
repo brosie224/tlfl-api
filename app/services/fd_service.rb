@@ -89,21 +89,18 @@ class FdService
         # Manually change any city/nickname/abbreviation change
     end
 
-    def add_cbs_to_new_players
-        # fd JAX, cbs JAC
-        # if cbs_id is blank => match team and jersey
-        # Add cbs_id, esb_id, cbs_photo
-
+    def add_cbs_data_to_players
         # Double check link works
         cbs_resp = Faraday.get "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json"
         cbs_json = JSON.parse(cbs_resp.body)
         players = Player.all
-        cbs_json.each do |cbs_player|
+        cbs_json["body"]["players"].each do |cbs_player|
             players.each do |player|
-                if player.cbs_id == nil && player.nfl_abbrev == "JAX" && cbs_player["pro_team"] == "JAC" && player.jersey == cbs_player["jersey"]
-                    player.cbs_id = cbs_player["id"]
-                    player.esb_id = cbs_player["elias_id"]
-                    player.cbs_photo = cbs_player["photo"]
+                if player.cbs_id == nil && player.nfl_abbrev == "JAX" && cbs_player["pro_team"] == "JAC" && player.jersey == cbs_player["jersey"].to_i
+                    player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"], cbs_photo: cbs_player["photo"])
+                end
+                if player.cbs_id == nil && player.nfl_abbrev == cbs_player["pro_team"] && player.jersey == cbs_player["jersey"].to_i
+                    player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"], cbs_photo: cbs_player["photo"])
                 end
             end
         end

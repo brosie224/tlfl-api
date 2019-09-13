@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_12_175923) do
+ActiveRecord::Schema.define(version: 2019_09_13_030459) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 2019_09_12_175923) do
     t.integer "fd_nfl_id"
     t.integer "cbs_id"
     t.integer "nfl_id"
-    t.integer "esb_id"
+    t.string "esb_id"
     t.string "cbs_photo"
     t.integer "jersey"
   end
