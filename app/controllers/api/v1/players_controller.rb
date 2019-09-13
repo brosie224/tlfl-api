@@ -3,7 +3,7 @@ module Api
       class PlayersController < ApplicationController
 
         def index
-          render json: Player.order(:nfl_abbrev, :jersey)
+          render json: Player.order(:last_name, :first_name)
         end
 
         def show
@@ -13,6 +13,7 @@ module Api
         end
 
         def available
+          render json: Player.order(:last_name, :first_name).where(tlfl_team: nil)
         end
 
       end
