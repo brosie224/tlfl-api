@@ -1,8 +1,4 @@
 <h1>Commissioner Access</h1>
-
-<% if current_user %>
-   <h3><%= "You are currently logged in with commissioner access" %></h3>
-<% else %>
 <h3>Log In</h3>
   <%= form_tag("/commissioner/login", method: "post") do %>
     <%= email_field_tag :email, nil, placeholder: "Email" %>
@@ -11,4 +7,3 @@
     <br><br>
     <%= submit_tag "Log In" %><br><br>
   <% end %>
-<% end %>

@@ -10,6 +10,7 @@ module Api
         end
 
         def tlfl
+          render json: Player.order(:last_name, :first_name).where.not(tlfl_team: nil)
         end
 
         def available

@@ -1,24 +1,18 @@
 module Commissioner
     class PlayersController < ApplicationController
-  
-        # def assign
-        #     @owners = Owner.order(:last_name, :first_name).where(tlfl_team: nil)
-        # end
-
-        # def add
-        #     params[:assign].each do |owner_id|
-        #         owner = Owner.find(owner_id)
-        #         owner.tlfl_team_id = params[:tlfl_team][:id]
-        #         owner.save
-        #     end
-        #     redirect_to commissioner_assign_path
-        # end
+        before_action :commissioner_required
 
         def available
-            
+            @players = Player.order(:last_name, :first_name).where(tlfl_team: nil)
         end
 
         def add_to_team
+            params[:players].each do |player_id|
+                player = Player.find(player_id)
+                player.tlfl_team_id = params[:tlfl_team][:id]
+                player.save
+            end
+            redirect_to commissioner_players_available_path
         end
     
     end

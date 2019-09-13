@@ -5,8 +5,11 @@ Rails.application.routes.draw do
     get '/login' => 'sessions#new'
     post '/login' => 'sessions#create'
     get '/logout' => 'sessions#destroy'
-    get '/assign' => 'owners#assign'
-    post '/add' => 'owners#add'
+    get '/tools' => 'tools#index'
+    get '/players/available' => 'players#available'
+    post '/player/add-to-team' => 'players#add_to_team'
+    # get '/assign' => 'owners#assign'
+    # post '/add' => 'owners#add'
     #   transactions: new, create, edit, update, destroy (index for all to see)
     #   newsletter
   end
