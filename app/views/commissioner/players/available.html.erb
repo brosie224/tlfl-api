@@ -1,15 +1,18 @@
 <%= form_tag("/commissioner/players/add-to-team", method: "post") do %>
+    <div class="freeze-top">
+        <%= collection_select :tlfl_team, :id, TlflTeam.order(:city), :id, :full_name %>
+        <br><br>
+        <%= submit_tag "Add Player(s) to Team" %>
+    </div>
     <ul class="no-bullet">
         <% @players.each do |player| %>
             <li>
                 <%= check_box_tag "players[]", player.id %>
+                <%= player.position %>
                 <%= "#{player.last_name}, #{player.first_name}" %>
-                <%= "- #{player.position}" %>
                 <%= "- #{player.nfl_abbrev}" if player.nfl_abbrev %>
             </li>
         <% end %> 
     </ul>
-    <%= collection_select :tlfl_team, :id, TlflTeam.order(:city), :id, :full_name %>
-    <br><br>
-    <%= submit_tag "Add Player(s) to Team" %>
+
 <% end %>

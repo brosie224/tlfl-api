@@ -17,3 +17,8 @@
 .no-bullet {
   list-style: none;
 }
+
+.freeze-top {
+  position: fixed;
+  left: 350px;
+}

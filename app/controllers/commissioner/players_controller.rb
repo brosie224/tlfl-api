@@ -3,7 +3,8 @@ module Commissioner
         before_action :commissioner_required
 
         def available
-            @players = Player.order(:last_name, :first_name).where(tlfl_team: nil)
+            @players = Player.order(:last_name, :first_name).where(tlfl_team: nil).sort_position
+            @dst = TeamDst.order(:full_name)
         end
 
         def add_to_team
