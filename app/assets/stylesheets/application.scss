@@ -10,15 +10,40 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
- *= require_tree .
- *= require_self
  */
+
+// Custom bootstrap variables must be set or imported *before* bootstrap.
+@import "bootstrap";
+
+body {
+  margin-top: 12px;
+  color: rgb(0, 0, 66);
+}
 
 .no-bullet {
   list-style: none;
 }
 
-.freeze-top {
+.freeze-dropdown {
   position: fixed;
   left: 350px;
+  top: 50px;
+}
+
+.freeze-header {
+  position: fixed;
+  left: 40px;
+}
+
+.line-height {
+  line-height: 0.8;
+}
+
+.player-scroll {
+  position: absolute;
+  top: 75px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  overflow-y: scroll;
 }

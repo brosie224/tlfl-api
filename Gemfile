@@ -33,6 +33,8 @@ gem 'faraday'
 gem 'activerecord-reset-pk-sequence'
 gem 'active_model_serializers'
 gem 'rack-cors'
+gem 'bootstrap', '~> 4.3.1'
+gem 'jquery-rails'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
