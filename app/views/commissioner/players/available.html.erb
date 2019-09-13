@@ -12,6 +12,14 @@
                 <%= "#{player.last_name}, #{player.first_name}" %>
                 <%= "- #{player.nfl_abbrev}" if player.nfl_abbrev %>
             </li>
+        <% end %>
+
+        <% @dsts.each do |dst| %>
+            <li>
+                <%= check_box_tag "dst", dst.id %>
+                <%= "DT #{dst.full_name}" %>
+                <%= "- #{dst.nfl_abbrev}"%>
+            </li>
         <% end %> 
     </ul>
 

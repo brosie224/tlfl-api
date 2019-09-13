@@ -4,7 +4,7 @@ module Commissioner
 
         def available
             @players = Player.order(:last_name, :first_name).where(tlfl_team: nil).sort_position
-            @dst = TeamDst.order(:full_name)
+            @dsts = TeamDst.order(:city, :nickname).where(tlfl_team: nil)
         end
 
         def add_to_team
@@ -13,6 +13,9 @@ module Commissioner
                 player.tlfl_team_id = params[:tlfl_team][:id]
                 player.save
             end
+                dst = TeamDst.find(params[:dst])
+                dst.tlfl_team_id = params[:tlfl_team][:id]
+                dst.save
             redirect_to commissioner_players_available_path
         end
     
