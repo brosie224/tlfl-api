@@ -17,6 +17,8 @@ module Api
           render json: Player.order(:last_name, :first_name).where(tlfl_team: nil)
         end
 
+        # Need to render TeamDst
+
       end
     end
 end
