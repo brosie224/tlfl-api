@@ -3,7 +3,7 @@ module Api
       class TlflTeamsController < ApplicationController
 
         def index
-            render json: TlflTeam.all
+            render json: TlflTeam.order(:id)
         end
 
         def show

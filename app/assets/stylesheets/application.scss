@@ -26,13 +26,13 @@ body {
 
 .freeze-dropdown {
   position: fixed;
-  left: 350px;
-  top: 50px;
+  left: 400px;
+  top: 30px;
 }
 
 .freeze-header {
   position: fixed;
-  left: 40px;
+  left: 45px;
 }
 
 .line-height {
@@ -41,9 +41,9 @@ body {
 
 .player-scroll {
   position: absolute;
-  top: 75px;
+  top: 55px;
   left: 0px;
-  right: 0px;
+  right: 1200px;
   bottom: 0px;
   overflow-y: scroll;
 }
