@@ -1,6 +1,8 @@
 module Commissioner
     class OwnersController < ApplicationController
   
+        # Add a create and edit for Scott/Seth
+
         def assign
             @owners = Owner.order(:last_name, :first_name).where(tlfl_team: nil)
         end

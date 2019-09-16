@@ -1,18 +1,16 @@
 $(() => {
-  viewTeam();
+  getTlflTeam();
 });
 
-const viewTeam = () => {
+const getTlflTeam = () => {
   $("#tlfl_team_id").on("change", e => {
     e.preventDefault();
     let teamId = e.target.value;
     $.get(`/api/v1/tlfl_teams/${teamId}`, teamData => {
       let tlflTeam = new Team(teamData);
       let displayTeam = tlflTeam.displayTeam();
-      $(".tlfl-team").html(displayTeam);
+      $(".tlfl-team-available").html(displayTeam);
     });
-    console.log("Complete");
-    console.log(e.target.value);
   });
 };
 

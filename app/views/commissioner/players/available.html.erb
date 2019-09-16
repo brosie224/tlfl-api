@@ -9,14 +9,15 @@
         </div>
         <%= submit_tag "Add Player(s) to Team" %>
         <br><br>
-        <div class="tlfl-team"></div>
+        <div class="tlfl-team-available"></div>
+        <div class='selected-available'>Adding Players:<br></div>
     </div>
     <div class="player-scroll">
         <ul class="no-bullet">
             <% @players.each do |player| %>
                 <li>
                     <label class="line-height">
-                        <%= check_box_tag "players[]", player.id %>
+                        <%= check_box_tag "players[]", player.id, false, onclick: 'selectedPlayers(this)' %>
                         <%= "#{player.position} #{player.last_name}, #{player.first_name} - #{player.nfl_abbrev}" %>
                     </label>
                 </li>

@@ -7,6 +7,7 @@ module Api
         end
 
         def show
+          render json: Player.find_by(id: params[:id])
         end
 
         def tlfl
