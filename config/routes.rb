@@ -30,15 +30,11 @@ Rails.application.routes.draw do
       get '/players/tlfl' => 'players#tlfl'
       get '/players/available' => 'players#available'
       resources :players, only: [:index, :show]
-      # resources :players, only: [:index, :show, :create?, :update?, :delete]
+      # resources :players, only: [:new, :create, :edit, :update, :delete] - eventually admin_required
+    
+      # Team DST
+      resources :team_dsts, only: [:index, :show]
     end
   end
-
-# Need or just use admin_required before specific methods
-  # namespace 'admin' do
-  #   resources :players, only: [:new?, :edit?] # admin only in controller
-  #   assigning players to teams (commish access?)
-  #   whatever else
-  # end
 
 end

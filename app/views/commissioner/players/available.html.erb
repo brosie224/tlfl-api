@@ -1,5 +1,8 @@
 <div class="freeze-header">
     <h4>Available Players</h4>
+    <input type="text" id="avail-player-search" onkeyup="playerSearch()" placeholder="Search for player..">
+</div>
+
 </div>
 <%= form_tag("/commissioner/players/add-to-team", method: "post") do %>
     <div class="freeze-dropdown">
@@ -10,10 +13,11 @@
         <%= submit_tag "Add Player(s) to Team" %>
         <br><br>
         <div class="tlfl-team-available"></div>
-        <div class='selected-available'>Adding Players:<br></div>
+        <div class='selected-available'><strong>Adding Players:</strong><br></div>
     </div>
     <div class="player-scroll">
-        <ul class="no-bullet">
+        
+        <ul class="no-bullet" id="avail-player-list">
             <% @players.each do |player| %>
                 <li>
                     <label class="line-height">
@@ -25,7 +29,7 @@
             <% @dsts.each do |dst| %>
                 <li>
                     <label>
-                        <%= check_box_tag "dst", dst.id %>
+                        <%= check_box_tag "dst", dst.id, false, onclick: 'selectedDst(this)' %>
                         <%= "DT #{dst.full_name} - #{dst.nfl_abbrev}" %>
                     </label>
                 </li>

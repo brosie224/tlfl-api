@@ -1,5 +1,6 @@
 module Commissioner
     class OwnersController < ApplicationController
+        before_action :commissioner_required
   
         # Add a create and edit for Scott/Seth
 
