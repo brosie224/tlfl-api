@@ -9,10 +9,12 @@ module Commissioner
 
         def add_to_team
             # Adds each player
-            params[:players].each do |player_id|
-                player = Player.find(player_id)
-                player.tlfl_team_id = params[:tlfl_team][:id]
-                player.save
+            if params[:players]
+                params[:players].each do |player_id|
+                    player = Player.find(player_id)
+                    player.tlfl_team_id = params[:tlfl_team][:id]
+                    player.save
+                end
             end
             # Adds DST
             if params[:dst]

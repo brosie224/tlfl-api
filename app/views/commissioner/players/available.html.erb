@@ -1,11 +1,11 @@
-<div class="freeze-header">
+<div class="header-available">
     <h4>Available Players</h4>
     <input type="text" id="avail-player-search" onkeyup="playerSearch()" placeholder="Search for player..">
 </div>
 
 </div>
 <%= form_tag("/commissioner/players/add-to-team", method: "post") do %>
-    <div class="freeze-dropdown">
+    <div class="dropdown-teams-avail">
         <div class="line-height">
             <%= collection_select :tlfl_team, :id, TlflTeam.order(:city), :id, :full_name, include_blank: 'Select TLFL Team' %>
             <br><br>
@@ -14,9 +14,17 @@
         <br><br>
         <div class="tlfl-team-available"></div>
         <div class='selected-available'><strong>Adding Players:</strong><br></div>
+        <div>
+            <br><br>
+            <% TlflTeam.order(:city).each do |team| %>
+                <% if team.players.length < 8 || team.team_dst == nil %>
+                    <%= "#{team.full_name} only have #{team.players.length} players" %>
+                    <br>
+                <% end %>
+            <% end %>
+        </div>
     </div>
     <div class="player-scroll">
-        
         <ul class="no-bullet" id="avail-player-list">
             <% @players.each do |player| %>
                 <li>
@@ -28,7 +36,7 @@
             <% end %>
             <% @dsts.each do |dst| %>
                 <li>
-                    <label>
+                    <label class="line-height">
                         <%= check_box_tag "dst", dst.id, false, onclick: 'selectedDst(this)' %>
                         <%= "DT #{dst.full_name} - #{dst.nfl_abbrev}" %>
                     </label>
