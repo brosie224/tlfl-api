@@ -9,7 +9,7 @@ module Commissioner
         end
 
         def add
-            params[:assign].each do |owner_id|
+            params[:owner].each do |owner_id|
                 owner = Owner.find(owner_id)
                 owner.tlfl_team_id = params[:tlfl_team][:id]
                 owner.save

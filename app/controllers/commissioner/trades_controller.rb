@@ -1,13 +1,12 @@
 module Commissioner
-    class PlayersController < ApplicationController
+    class TradesController < ApplicationController
         before_action :commissioner_required
 
-        def available
-            @players = Player.order(:last_name, :first_name).where(tlfl_team: nil).sort_position
-            @dsts = TeamDst.order(:city, :nickname).where(tlfl_team: nil)
+        def new
+            @trade = Trade.new
         end
 
-        def add_to_team
+        def create
             # Adds each player
             if params[:players]
                 params[:players].each do |player_id|
@@ -25,12 +24,20 @@ module Commissioner
             redirect_to commissioner_players_available_path
         end
 
-        # Edit Seniority
-            # List out each TLFL RB/WR by nfl team, position, seniority
-            # Have dropdown for seniority
-    
-        # Place on IR
-            # when submit, if on_ir then post the transaction using fd_id and ir_fd_id
+        def edit
+        end
 
+        def update
+        end
+
+        def destroy
+        end
+
+        private
+
+        def set_trade
+            @trade = Trade.find_by(id: params[:id])
+        end
+            
     end
 end

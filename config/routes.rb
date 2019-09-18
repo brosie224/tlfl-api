@@ -9,12 +9,13 @@ Rails.application.routes.draw do
 
     # Tools
     get '/tools' => 'tools#index'
-    #   transactions: new, create, edit, update, destroy (index for all to see)
-    #   newsletter
+    resources :trades, except: [:index]
+    #   create newsletter
 
     # Players
     get '/players/available' => 'players#available'
     post '/players/add-to-team' => 'players#add_to_team'
+    # resources :players, only: [:new, :create, :edit, :update, :delete] - eventually admin_required
 
     # Owners
     get '/owners/assign' => 'owners#assign'
@@ -30,10 +31,12 @@ Rails.application.routes.draw do
       get '/players/tlfl' => 'players#tlfl'
       get '/players/available' => 'players#available'
       resources :players, only: [:index, :show]
-      # resources :players, only: [:new, :create, :edit, :update, :delete] - eventually admin_required
     
       # Team DST
       resources :team_dsts, only: [:index, :show]
+
+      # Trades
+      get '/trades' => 'trades#index'
     end
   end
 

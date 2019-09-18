@@ -9,5 +9,5 @@ class Player < ApplicationRecord
         preferred_order = ["QB", "RB", "WR", "TE", "K"]
         self.all.sort_by { |a| preferred_order.index(a[:position]) }
     end
-    
+
 end

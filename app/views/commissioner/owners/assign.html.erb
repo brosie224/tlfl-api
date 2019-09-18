@@ -2,7 +2,7 @@
     <ul class="no-bullet">
         <% @owners.each do |owner| %>
             <li>
-                <%= check_box_tag "assign[]", owner.id %>
+                <%= check_box_tag "owner[]", owner.id %>
                 <%= "#{owner.last_name}, #{owner.first_name}" %>
                 <%= "- #{owner.email}" if owner.email %>
                 <%= "- #{owner.phone}" if owner.phone %>

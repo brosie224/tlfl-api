@@ -6,6 +6,9 @@ class NewSeason
             # DraftPick.all.each do, new.each do00
                 # if pick.team == new.team && pick.round == new.round then pick.overall = new.overall
 
+        # Reset IR
+            # Change all player on_ir to false, ir_fd_id to nil
+
     def generate_draft_picks(year)
         DraftPick.destroy_all
         TlflTeam.all.each do |tm|

@@ -25,13 +25,13 @@ body {
 }
 
 .dropdown-teams-avail {
-  position: fixed;
-  left: 900px;
-  top: 40px;
+  position: absolute;
+  left: 35%;
+  top: 49px;
 }
 
 .header-available {
-  position: fixed;
+  position: absolute;
   left: 40px;
 }
 
@@ -43,8 +43,8 @@ body {
   position: absolute;
   top: 87px;
   left: 0px;
-  right: 1175px;
-  bottom: 0px;
+  right: 75%;
+  bottom: 0%;
   overflow-y: scroll;
 }
 
