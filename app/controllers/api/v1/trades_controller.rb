@@ -3,7 +3,11 @@ module Api
       class TradesController < ApplicationController
 
         def index
-            render json: Trade.where(season: 2019).order(:id)
+          render json: Trade.where(season: 2019).order(:id)
+        end
+
+        def show
+          render json: Trade.find_by(id: params[:id])
         end
 
       end

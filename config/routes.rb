@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
     # Tools
     get '/tools' => 'tools#index'
-    resources :trades, except: [:index]
+    resources :trades, except: [:show, :edit, :update]
     #   create newsletter
 
     # Players
@@ -36,7 +36,7 @@ Rails.application.routes.draw do
       resources :team_dsts, only: [:index, :show]
 
       # Trades
-      get '/trades' => 'trades#index'
+      resources :trades, only: [:index, :show]
     end
   end
 

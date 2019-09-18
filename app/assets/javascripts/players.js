@@ -17,8 +17,8 @@ const selectedPlayers = player => {
 
 Player.prototype.displayPlayer = function() {
   return `
-        <div id="selected-${this.id}" style="display:inline">${this.position} ${this.name}<br></div>
-    `;
+    <div id="selected-${this.id}" style="display:inline">${this.position} ${this.name}<br></div>
+  `;
 };
 
 const playerSearch = () => {
@@ -54,6 +54,6 @@ const selectedDst = dst => {
 
 Dst.prototype.displayDst = function() {
   return `
-            <div id="selected-${this.id}" style="display:inline">DT ${this.name}<br></div>
-        `;
+    <div id="selected-${this.id}" style="display:inline">DT ${this.name}<br></div>
+  `;
 };

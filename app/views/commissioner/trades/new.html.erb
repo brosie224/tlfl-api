@@ -1,0 +1,25 @@
+<div class="trade-main">
+    <%= form_tag("/commissioner/trades", method: "post") do %>
+        <div>
+            Season, Week, Offseason?
+        </div>
+        <br>
+        <div class="trade-team">
+            <%= collection_select :tlfl_team_one, :id, TlflTeam.order(:city), :id, :full_name, include_blank: 'Select TLFL Team' %>
+            <div id="team-one-assets"></div>
+        </div>
+
+        <div class="trade-team">
+            <%= collection_select :tlfl_team_two, :id, TlflTeam.order(:city), :id, :full_name, include_blank: 'Select TLFL Team' %>
+            <div id="team-two-assets"></div>
+        </div>
+
+        <div class="trade-team">
+            <div class="team-one-receives">Team 1 Receives:</div>
+            <br>
+            <div class="team-two-receives">Team 2 Receives:</div>
+            <br><br>
+            <%= submit_tag "Execute Trade" %>
+        </div>
+    <% end %>
+</div>
