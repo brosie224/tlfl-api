@@ -1,5 +1,5 @@
 $(() => {
-  getTlflTeamAvail(), getTlflTeamTrade();
+  getTlflTeamAvail();
 });
 
 class Team {
@@ -14,15 +14,17 @@ class Team {
 
 const sortOrder = ["QB", "RB", "WR", "TE", "K"];
 
-const getTlflTeamTrade = () => {
-  $("#tlfl_team_one_id").on("change", e => {
-    e.preventDefault();
-    let teamId = e.target.value;
-    $.get(`/api/v1/tlfl_teams/${teamId}`, teamData => {
-      let tlflTeam = new Team(teamData);
-      let displayAssets = tlflTeam.displayTeamAssets();
-      $("#team-one-assets").html(displayAssets);
-    });
+const getTlflTeamTrade = team => {
+  let tm_num = team.id.slice(10, 13);
+  let teamId = team.value;
+  $.get(`/api/v1/tlfl_teams/${teamId}`, teamData => {
+    let tlflTeam = new Team(teamData);
+    let displayAssets = tlflTeam.displayTeamAssets(tm_num);
+    $(`#team-${tm_num}-trades`).html("");
+    $(`#team-${tm_num}-assets`).html(displayAssets);
+    $(`#team-${tm_num}-trades-head`).html(
+      `<strong>${tlflTeam.name} Trade:</strong>`
+    );
   });
 };
 
@@ -39,9 +41,9 @@ const getTlflTeamAvail = () => {
 };
 
 Team.prototype.displayTeamAvail = function() {
-  let sortedPlayers = this.players.sort(function(a, b) {
-    return sortOrder.indexOf(a.position) - sortOrder.indexOf(b.position);
-  });
+  let sortedPlayers = this.players.sort(
+    (a, b) => sortOrder.indexOf(a.position) - sortOrder.indexOf(b.position)
+  );
   let players = sortedPlayers
     .map(player => {
       return `${player.position} ${player.full_name} <br>`;
@@ -59,15 +61,15 @@ Team.prototype.displayTeamAvail = function() {
   `;
 };
 
-Team.prototype.displayTeamAssets = function() {
-  let sortedPlayers = this.players.sort(function(a, b) {
-    return sortOrder.indexOf(a.position) - sortOrder.indexOf(b.position);
-  });
+Team.prototype.displayTeamAssets = function(tm_num) {
+  let sortedPlayers = this.players.sort(
+    (a, b) => sortOrder.indexOf(a.position) - sortOrder.indexOf(b.position)
+  );
   let players = sortedPlayers
     .map(player => {
       return `
         <label class="line-height">
-          <input type="checkbox" name="players_one[]" id="players_" value="${player.id}" onclick="selectedPlayersTrade(this)">
+          <input type="checkbox" name="players_${tm_num}[]" id="players_" value="${player.id}" onclick="selectedPlayersTrade(this)">
             ${player.position} ${player.full_name}
           </input>
         </label><br>
@@ -75,15 +77,40 @@ Team.prototype.displayTeamAssets = function() {
     })
     .join("");
 
+  let sortedPicks = this.picks.sort((a, b) =>
+    a.overall > b.overall
+      ? 1
+      : a.overall === b.overall
+      ? a.round > b.round
+        ? 1
+        : -1
+      : -1
+  );
+
+  let picks = sortedPicks
+    .map(pick => {
+      return `
+        <label class="line-height">
+          <input type="checkbox" name="picks_${tm_num}[]" id="picks_" value="${pick.id}" onclick="selectedPicksTrade(this)">
+            ${pick.full}
+          </input>
+        </label><br>
+      `;
+    })
+    .join("");
+
   return `
-  <br>
+    <br>
     <strong>ROSTER</strong><br>
     ${players}
     <label class="line-height">
-      <input type="checkbox" name="dst_one" id="players_" value="${this.dst.id}" onclick="selectedDstTrade(this)">
+      <input type="checkbox" name="dst_${tm_num}" id="players_" value="${this.dst.id}" onclick="selectedDstTrade(this)">
         DT ${this.dst.full_name}
       </input>
     </label>
+    <br><br>
+    <strong>DRAFT PICKS</strong><br>
+    ${picks}
     <br>
     Include Protection?
   `;

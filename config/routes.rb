@@ -8,9 +8,10 @@ Rails.application.routes.draw do
     get '/logout' => 'sessions#destroy'
 
     # Tools
-    get '/tools' => 'tools#index'
+    get '/tools' => 'tools#index' # link to all like CBS
     resources :trades, except: [:show, :edit, :update]
-    #   create newsletter
+    #  Create newsletter, Trades, IR, Set keepers, Add players to team, Edit player points.
+    #   Create/edit owners, 
 
     # Players
     get '/players/available' => 'players#available'
@@ -34,6 +35,9 @@ Rails.application.routes.draw do
     
       # Team DST
       resources :team_dsts, only: [:index, :show]
+
+      # Draft Picks
+      resources :draft_picks, only: [:index, :show]
 
       # Trades
       resources :trades, only: [:index, :show]

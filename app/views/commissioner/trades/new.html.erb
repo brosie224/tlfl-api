@@ -5,19 +5,21 @@
         </div>
         <br>
         <div class="trade-team">
-            <%= collection_select :tlfl_team_one, :id, TlflTeam.order(:city), :id, :full_name, include_blank: 'Select TLFL Team' %>
+            <%= collection_select :tlfl_team_one, :id, TlflTeam.order(:city), :id, :full_name, options = {include_blank: 'Select TLFL Team'}, html_options = {onchange: "getTlflTeamTrade(this)"} %>
             <div id="team-one-assets"></div>
         </div>
 
         <div class="trade-team">
-            <%= collection_select :tlfl_team_two, :id, TlflTeam.order(:city), :id, :full_name, include_blank: 'Select TLFL Team' %>
+            <%= collection_select :tlfl_team_two, :id, TlflTeam.order(:city), :id, :full_name, options = {include_blank: 'Select TLFL Team'}, html_options = {onchange: "getTlflTeamTrade(this)"} %>
             <div id="team-two-assets"></div>
         </div>
 
         <div class="trade-team">
-            <div class="team-one-receives">Team 1 Receives:</div>
+            <div id="team-one-trades-head"></div>
+                <div id="team-one-trades"></div>
             <br>
-            <div class="team-two-receives">Team 2 Receives:</div>
+            <div id="team-two-trades-head"></div>
+                <div id="team-two-trades"></div>
             <br><br>
             <%= submit_tag "Execute Trade" %>
         </div>
