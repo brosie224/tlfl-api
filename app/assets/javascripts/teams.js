@@ -112,6 +112,10 @@ Team.prototype.displayTeamAssets = function(tm_num) {
     <strong>DRAFT PICKS</strong><br>
     ${picks}
     <br>
-    Include Protection?
+    <label class="line-height">
+      <input type="checkbox" name="protection_${tm_num}" id="protection-${tm_num}" onclick="selectedProtectionTrade(this)">
+        Protection Spot
+      </input>
+    </label>
   `;
 };

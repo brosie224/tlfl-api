@@ -1,16 +1,23 @@
 <div class="trade-main">
     <%= form_tag("/commissioner/trades", method: "post") do %>
-        <div>
-            Season, Week, Offseason?
+        <div id="week-effective">
+            Week Effective: 
+            <select required name="weeks">
+                <option disabled selected>-- Select Week --</option>
+                <% @weeks.each do |week| %>
+                    <option value="<%=week%>">Week <%=week%></option>
+                <% end %>
+                    <option value="offseason">Offseason</option>
+            </select>
         </div>
         <br>
         <div class="trade-team">
-            <%= collection_select :tlfl_team_one, :id, TlflTeam.order(:city), :id, :full_name, options = {include_blank: 'Select TLFL Team'}, html_options = {onchange: "getTlflTeamTrade(this)"} %>
+            <%= collection_select :tlfl_team_one, :id, TlflTeam.order(:city), :id, :full_name, options = {include_blank: '-- Select TLFL Team --'}, html_options = {onchange: "getTlflTeamTrade(this)"} %>
             <div id="team-one-assets"></div>
         </div>
 
         <div class="trade-team">
-            <%= collection_select :tlfl_team_two, :id, TlflTeam.order(:city), :id, :full_name, options = {include_blank: 'Select TLFL Team'}, html_options = {onchange: "getTlflTeamTrade(this)"} %>
+            <%= collection_select :tlfl_team_two, :id, TlflTeam.order(:city), :id, :full_name, options = {include_blank: '-- Select TLFL Team --'}, html_options = {onchange: "getTlflTeamTrade(this)"} %>
             <div id="team-two-assets"></div>
         </div>
 

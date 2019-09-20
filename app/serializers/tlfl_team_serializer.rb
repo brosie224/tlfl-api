@@ -5,5 +5,5 @@ class TlflTeamSerializer < ActiveModel::Serializer
   has_many :draft_picks
 
   attributes :id, :full_name, :abbreviation, :conference, :division, :full_division, :logo,
-  :word_mark, :primary_color, :secondary_color, :tertiary_color, :quaternary_color
+  :word_mark, :primary_color, :secondary_color, :tertiary_color, :quaternary_color, :protections
 end

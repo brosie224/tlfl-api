@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_013301) do
+ActiveRecord::Schema.define(version: 2019_09_20_024510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,7 @@ ActiveRecord::Schema.define(version: 2019_09_18_013301) do
     t.string "quaternary_color"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "protections", default: 3
   end
 
   create_table "trades", force: :cascade do |t|

@@ -1,5 +1,7 @@
 class NewSeason
 
+    # Global search for last year (ie 2019) and change to current year
+
     # Offseason
         # Assign overall to each DraftPick
             # create new array of picks (eg [{team: Saints, round: 1, overall, 32}, {team: Saints, round: 2, overall, 64}] ) 
@@ -9,23 +11,27 @@ class NewSeason
         # Reset IR
             # Change all player on_ir to false, ir_fd_id to nil
 
-    def generate_draft_picks(year)
-        DraftPick.destroy_all
-        TlflTeam.all.each do |tm|
-            for rd in 1..6 do
-                tm.draft_picks.build(team: tm.full_name, year: year, round: rd)
-                tm.save
+        def set_keepers # put in players controller?
+        end
+
+        # FdService methods to run:
+            # create_new_players (to add rookies/new players)
+            # update_tlfl_team_data
+            # update_player_data
+            # update_teams_dst_data
+
+    # After Draft
+
+        def generate_draft_picks(year)
+            DraftPick.destroy_all
+            TlflTeam.all.each do |tm|
+                for rd in 1..6 do
+                    tm.draft_picks.build(team: tm.full_name, year: year, round: rd)
+                    tm.save
+                end
             end
         end
-    end
 
-    def set_keepers # put in players controller?
-    end
-
-    # FdService methods to run:
-        # create_new_players (to add rookies/new players)
-        # update_tlfl_team_data
-        # update_player_data
-        # update_teams_dst_data
-
+        # Reset all TLFL team protections back to 3
+        
 end
