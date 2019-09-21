@@ -21,13 +21,13 @@ class ApplicationController < ActionController::Base
   
     def commissioner_required
       if !current_user 
-        flash.now.alert = "You must be a commissioner to perform this action."
+        flash[:alert] = "You must be a commissioner to perform this action."
         redirect_to commissioner_login_path
         return
       end
       commissioners = ["barosengarten@gmail.com"]
       if !commissioners.include? current_user.email
-        flash.now.alert = "You must be a commissioner to perform this action."
+        flash[:alert] = "You must be a commissioner to perform this action."
         redirect_to commissioner_login_path
       end
     end

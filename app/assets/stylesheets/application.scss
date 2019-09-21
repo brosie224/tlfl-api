@@ -17,6 +17,7 @@
 
 body {
   margin-top: 12px;
+  margin-left: 15px;
   color: rgb(0, 0, 66);
 }
 
@@ -27,7 +28,7 @@ body {
 .dropdown-teams-avail {
   position: absolute;
   left: 35%;
-  top: 49px;
+  top: 80px;
 }
 
 .header-available {
@@ -41,7 +42,7 @@ body {
 
 .player-scroll {
   position: absolute;
-  top: 87px;
+  top: 136px;
   left: 0px;
   right: 75%;
   bottom: 0%;
@@ -57,15 +58,34 @@ body {
   padding-left: 30px;
 }
 
-.trade-team {
+.trade-team,
+.ir-team {
   float: left;
   width: 33.33%;
 }
 
-.tools-left {
-  margin-left: 15px;
-}
-
 .delete-font {
   font-size: 13.5px;
+}
+
+#week-effective {
+  display: inline-block;
+}
+
+.header-left {
+  margin-left: 30px;
+}
+
+input#email,
+input#password {
+  width: 300px;
+}
+
+nav a:link,
+nav a:visited,
+nav a:hover,
+nav a:active {
+  text-decoration: none;
+  color: green;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }

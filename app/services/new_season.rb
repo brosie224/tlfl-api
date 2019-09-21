@@ -9,7 +9,7 @@ class NewSeason
                 # if pick.team == new.team && pick.round == new.round then pick.overall = new.overall
 
         # Reset IR
-            # Change all player on_ir to false, ir_fd_id to nil
+            # Change all player ir_fd_id to nil
 
         def set_keepers # put in players controller?
         end

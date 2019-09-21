@@ -8,19 +8,23 @@ Rails.application.routes.draw do
 
     # Tools
     get '/' => 'tools#index' # link to all like CBS - should be commish homepage
-    
-    resources :trades, except: [:show, :edit, :update]
-    #  Create newsletter, Trades, IR, Set keepers, Add players to team, Edit player points.
-    #   Create/edit owners, 
+    #  Create Newsletter
 
-    # Players
+    # Rosters
     get '/players/available' => 'players#available'
     post '/players/add-to-team' => 'players#add_to_team'
+    # Set Keepers
+    resources :trades, except: [:show, :edit, :update]
+
+    # Players
+    resources :injured_reserves, except: [:show, :destroy]
     # resources :players, only: [:new, :create, :edit, :update, :delete] - eventually admin_required
+    # Edit Player Points
 
     # Owners
     get '/owners/assign' => 'owners#assign'
     post '/owners/add' => 'owners#add'
+    # New/Create, Edit/Update Owners
   end
 
   namespace 'api' do

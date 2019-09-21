@@ -1,9 +1,8 @@
-<h1>Commissioner Access</h1>
-<h3>Log In</h3>
-  <%= form_tag("/commissioner/login", method: "post") do %>
-    <%= email_field_tag :email, nil, placeholder: "Email" %>
-    <br>
-    <%= password_field_tag :password, nil, placeholder: "Password" %>
-    <br><br>
-    <%= submit_tag "Log In" %><br><br>
-  <% end %>
+<h4>Commissioner Log In</h4>
+<br>
+<%= form_tag("/commissioner/login", method: "post") do %>
+  <p><%= email_field_tag :email, nil, placeholder: "Email" %></p>
+  <%= password_field_tag :password, nil, placeholder: "Password" %>
+  <br><br>
+  <%= submit_tag "Log In" %><br><br>
+<% end %>

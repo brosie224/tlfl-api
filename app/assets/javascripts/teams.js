@@ -1,7 +1,3 @@
-$(() => {
-  getTlflTeamAvail();
-});
-
 class Team {
   constructor(obj) {
     this.id = obj.id;
@@ -14,6 +10,20 @@ class Team {
 }
 
 const sortOrder = ["QB", "RB", "WR", "TE", "K"];
+
+const getTlflTeamIr = team => {
+  console.log(team.value);
+  let teamId = team.value;
+  $.get(`/api/v1/tlfl_teams/${teamId}`, teamData => {
+    let tlflTeam = new Team(teamData);
+    let displayAssets = tlflTeam.displayTeamAssets(tm_num);
+    $(`#team-${tm_num}-trades`).html("");
+    $(`#team-${tm_num}-assets`).html(displayAssets);
+    $(`#team-${tm_num}-trades-head`).html(
+      `<strong>${tlflTeam.name} Trade:</strong>`
+    );
+  });
+};
 
 const getTlflTeamTrade = team => {
   let tm_num = team.id.slice(10, 13);
@@ -29,15 +39,12 @@ const getTlflTeamTrade = team => {
   });
 };
 
-const getTlflTeamAvail = () => {
-  $("#tlfl_team_id").on("change", e => {
-    e.preventDefault();
-    let teamId = e.target.value;
-    $.get(`/api/v1/tlfl_teams/${teamId}`, teamData => {
-      let tlflTeam = new Team(teamData);
-      let displayTeam = tlflTeam.displayTeamAvail();
-      $(".tlfl-team-available").html(displayTeam);
-    });
+const getTlflTeamAvail = team => {
+  let teamId = team.value;
+  $.get(`/api/v1/tlfl_teams/${teamId}`, teamData => {
+    let tlflTeam = new Team(teamData);
+    let displayTeam = tlflTeam.displayTeamAvail();
+    $(".tlfl-team-available").html(displayTeam);
   });
 };
 
