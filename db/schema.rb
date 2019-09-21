@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_20_024510) do
+ActiveRecord::Schema.define(version: 2019_09_21_045608) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,13 +96,16 @@ ActiveRecord::Schema.define(version: 2019_09_20_024510) do
     t.integer "week"
     t.string "team_one"
     t.string "team_two"
-    t.text "assets_one", default: [], array: true
-    t.text "assets_two", default: [], array: true
-    t.boolean "offseason"
+    t.text "players_one", default: [], array: true
+    t.text "players_two", default: [], array: true
     t.boolean "includes_protection_one"
     t.boolean "includes_protection_two"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "dst_one"
+    t.string "dst_two"
+    t.text "picks_one", default: [], array: true
+    t.text "picks_two", default: [], array: true
   end
 
   create_table "users", force: :cascade do |t|
