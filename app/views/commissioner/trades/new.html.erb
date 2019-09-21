@@ -12,12 +12,12 @@
         </div>
         <br>
         <div class="trade-team">
-            <%= collection_select :tlfl_team_one, :id, TlflTeam.order(:city), :id, :full_name, options = {include_blank: '-- Select TLFL Team --'}, html_options = {onchange: "getTlflTeamTrade(this)"} %>
+            <%= collection_select :tlfl_team_one, :id, TlflTeam.order(:city), :id, :full_name, options = {include_blank: '-- Select TLFL Team --'}, html_options = {onchange: "getTlflTeamTrade(this)", required: true} %>
             <div id="team-one-assets"></div>
         </div>
 
         <div class="trade-team">
-            <%= collection_select :tlfl_team_two, :id, TlflTeam.order(:city), :id, :full_name, options = {include_blank: '-- Select TLFL Team --'}, html_options = {onchange: "getTlflTeamTrade(this)"} %>
+            <%= collection_select :tlfl_team_two, :id, TlflTeam.order(:city), :id, :full_name, options = {include_blank: '-- Select TLFL Team --'}, html_options = {onchange: "getTlflTeamTrade(this)", required: true} %>
             <div id="team-two-assets"></div>
         </div>
 

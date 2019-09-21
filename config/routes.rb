@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  root 'commissioner/sessions#new' # change to page with all commish options
 
   namespace 'commissioner' do
     # Session
@@ -8,7 +7,7 @@ Rails.application.routes.draw do
     get '/logout' => 'sessions#destroy'
 
     # Tools
-    get '/tools' => 'tools#index' # link to all like CBS
+    get '/' => 'tools#index' # link to all like CBS - should be commish homepage
     resources :trades, except: [:show, :edit, :update]
     #  Create newsletter, Trades, IR, Set keepers, Add players to team, Edit player points.
     #   Create/edit owners, 

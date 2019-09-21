@@ -9,6 +9,7 @@ class Team {
     this.players = obj.players;
     this.dst = obj.team_dst;
     this.picks = obj.draft_picks;
+    this.protections = obj.protections;
   }
 }
 
@@ -101,6 +102,8 @@ Team.prototype.displayTeamAssets = function(tm_num) {
 
   return `
     <br>
+    Protection Spots: ${this.protections}
+    <br><br>
     <strong>ROSTER</strong><br>
     ${players}
     <label class="line-height">

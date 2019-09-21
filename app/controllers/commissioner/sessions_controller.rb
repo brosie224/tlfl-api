@@ -8,7 +8,7 @@ module Commissioner
         @user = User.find_by(email: params[:email])
         if @user && @user.authenticate(params[:password])
           session[:user_id] = @user.id
-          redirect_to commissioner_tools_path
+          redirect_to commissioner_path
         else
           flash.now.alert = "Incorrect email or password."
           render :new
