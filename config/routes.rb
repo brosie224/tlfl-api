@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
     # Tools
     get '/' => 'tools#index' # link to all like CBS - should be commish homepage
+    
     resources :trades, except: [:show, :edit, :update]
     #  Create newsletter, Trades, IR, Set keepers, Add players to team, Edit player points.
     #   Create/edit owners, 

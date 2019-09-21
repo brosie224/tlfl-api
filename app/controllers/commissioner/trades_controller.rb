@@ -3,7 +3,8 @@ module Commissioner
         before_action :commissioner_required
 
         def index
-            # render all with link to delete
+            Date.today.month < 7 ? @year = Date.today.year - 1 : @year = Date.today.year
+            @trades = Trade.where(season: @year).order(week: :desc)
         end
 
         def new
@@ -14,7 +15,6 @@ module Commissioner
         end
 
         def create
-        # raise params.inspect
             tm_one_name = TlflTeam.find(params[:tlfl_team_one][:id]).full_name
             tm_two_name = TlflTeam.find(params[:tlfl_team_two][:id]).full_name
             new_trade = Trade.create(season: Date.today.year, week: params[:weeks], team_one: tm_one_name, team_two: tm_two_name)
@@ -95,10 +95,9 @@ module Commissioner
         end
 
         def destroy
-            # Will delete the posting of the move, but the execution will remain?
-            @trade = Trade.find_by(id: params[:id])
-            @trade.destroy
-            redirect_to new_commissioner_trade_path
+            trade = Trade.find_by(id: params[:id])
+            trade.destroy
+            redirect_to commissioner_trades_path
         end
 
     end

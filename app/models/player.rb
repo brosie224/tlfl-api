@@ -10,4 +10,8 @@ class Player < ApplicationRecord
         self.all.sort_by { |a| preferred_order.index(a[:position]) }
     end
 
+    def nfl_photo
+        "http://static.nfl.com/static/content/public/static/img/fantasy/transparent/200x200/#{self.esb_id}.png"
+    end
+
 end
