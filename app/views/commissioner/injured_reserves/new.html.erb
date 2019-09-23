@@ -11,16 +11,22 @@
         </div>
         <span class="header-left"><%= link_to "View Injured Reserves", commissioner_injured_reserves_path %></span>
         <br><br>
+        
         <div class="ir-team">
             <%= collection_select :tlfl_team_ir, :id, TlflTeam.order(:city), :id, :full_name, options = { include_blank: '-- Select TLFL Team --' }, html_options = { onchange: "getTlflTeamIr(this)" } %>
             <div id="ir-roster"></div>
         </div>
 
         <div class="ir-team">
-            <div id="ir-reserving-head"></div>
+            Available Players:
+            <div id="ir-replacement-options"></div>
+        </div>
+
+        <div class="ir-team">
+            <strong>Placing on IR:</strong>
                 <div id="ir-reserving-player"></div>
             <br>
-            <div id="ir-replacement-head"></div>
+            <strong>Replacement Player:</strong>
                 <div id="ir-replacement-player"></div>
             <br><br>
             <%= submit_tag "Place on IR" %>

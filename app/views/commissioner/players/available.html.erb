@@ -6,7 +6,7 @@
 <div class="dropdown-teams-avail">
     <%= form_tag("/commissioner/players/add-to-team", method: "post") do %>
         <div class="line-height">
-            <%= collection_select :tlfl_team_avail, :id, TlflTeam.order(:city), :id, :full_name, options = { include_blank: '-- Select TLFL Team --' }, html_options = { onchange: "getTlflTeamAvail(this)" } %>
+            <%= collection_select :tlfl_team_avail, :id, TlflTeam.order(:city), :id, :full_name, options = { include_blank: '-- Select TLFL Team --' }, html_options = { onchange: "getTlflTeamAvail(this)", required: true } %>
             <br><br>
         </div>
         <%= submit_tag "Add Player(s) to Team" %>

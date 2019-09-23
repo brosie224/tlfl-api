@@ -12,26 +12,23 @@ class Team {
 const sortOrder = ["QB", "RB", "WR", "TE", "K"];
 
 const getTlflTeamIr = team => {
-  console.log(team.value);
+  $(`#ir-reserving-player`).html("");
+  $(`#ir-replacement-options`).html("");
   let teamId = team.value;
   $.get(`/api/v1/tlfl_teams/${teamId}`, teamData => {
     let tlflTeam = new Team(teamData);
-    let displayAssets = tlflTeam.displayTeamAssets(tm_num);
-    $(`#team-${tm_num}-trades`).html("");
-    $(`#team-${tm_num}-assets`).html(displayAssets);
-    $(`#team-${tm_num}-trades-head`).html(
-      `<strong>${tlflTeam.name} Trade:</strong>`
-    );
+    let displayPlayers = tlflTeam.displayTeamPlayersIr();
+    $(`#ir-roster`).html(displayPlayers);
   });
 };
 
 const getTlflTeamTrade = team => {
   let tm_num = team.id.slice(10, 13);
   let teamId = team.value;
+  $(`#team-${tm_num}-trades`).html("");
   $.get(`/api/v1/tlfl_teams/${teamId}`, teamData => {
     let tlflTeam = new Team(teamData);
     let displayAssets = tlflTeam.displayTeamAssets(tm_num);
-    $(`#team-${tm_num}-trades`).html("");
     $(`#team-${tm_num}-assets`).html(displayAssets);
     $(`#team-${tm_num}-trades-head`).html(
       `<strong>${tlflTeam.name} Trade:</strong>`
@@ -52,6 +49,7 @@ Team.prototype.displayTeamAvail = function() {
   let sortedPlayers = this.players.sort(
     (a, b) => sortOrder.indexOf(a.position) - sortOrder.indexOf(b.position)
   );
+
   let players = sortedPlayers
     .map(player => {
       return `${player.position} ${player.full_name} <br>`;
@@ -127,5 +125,27 @@ Team.prototype.displayTeamAssets = function(tm_num) {
         Protection Spot
       </input>
     </label>
+  `;
+};
+
+Team.prototype.displayTeamPlayersIr = function() {
+  let sortedPlayers = this.players.sort(
+    (a, b) => sortOrder.indexOf(a.position) - sortOrder.indexOf(b.position)
+  );
+  let players = sortedPlayers
+    .map(player => {
+      return `
+        <label class="line-height">
+          <input type="radio" name="ir-player" value="${player.id}" onclick="selectedPlayersIr(this)">
+            ${player.position} ${player.full_name}
+          </input>
+        </label><br>
+      `;
+    })
+    .join("");
+
+  return `
+    <br>
+    <p style="display:inline">${players}</p>
   `;
 };

@@ -1,8 +1,15 @@
+$(() => {
+  getAllPlayers();
+});
+
 class Player {
   constructor(obj) {
     this.id = obj.id;
     this.name = obj.full_name;
     this.position = obj.position;
+    this.nfl = obj.nfl_abbrev;
+    this.tlflTeam = obj.tlfl_team;
+    this.ir_match = 0;
   }
 }
 
@@ -23,6 +30,49 @@ const selectedPlayersTrade = player => {
       $(`#team-${tm_num}-trades`).append(tlflPlayer.displayPlayer());
     if (player.checked === false) $(`#selected-${player.value}`).remove();
   });
+};
+
+const selectedPlayersIr = player => {
+  $.get(`/api/v1/players/${player.value}`, playerData => {
+    let tlflPlayer = new Player(playerData);
+    $(`#ir-reserving-player`).html(tlflPlayer.displayPlayer());
+    $(`#ir-replacement-options`).html(tlflPlayer.displayPlayerIrOptions());
+  });
+};
+
+let allAvailable = [];
+
+function getAllPlayers() {
+  $("#tlfl_team_ir_id").on("change", e => {
+    e.preventDefault();
+    allAvailable.length = 0;
+    $.get(`/api/v1/players/`, players => {
+      players.map(player => {
+        allAvailable.push(player);
+      });
+    });
+  });
+}
+
+Player.prototype.displayPlayerIrOptions = function() {
+  let irOptions = allAvailable
+    .map(player => {
+      if (
+        player.nfl_abbrev === this.nfl &&
+        player.position === this.position &&
+        player.tlfl_team === null
+      )
+        return `
+        <label class="line-height">
+          <input type="radio" name="ir-replacements" value="${player.id}" onclick="##">
+            ${player.position} ${player.full_name}
+          </input>
+        </label><br>
+      `;
+    })
+    .join("");
+
+  return irOptions;
 };
 
 Player.prototype.displayPlayer = function() {

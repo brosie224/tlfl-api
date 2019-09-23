@@ -1,5 +1,6 @@
 class Player < ApplicationRecord
     belongs_to :tlfl_team, optional: true
+    validates_uniqueness_of :fd_id
 
     def full_name
         self.first_name + " " + self.last_name
