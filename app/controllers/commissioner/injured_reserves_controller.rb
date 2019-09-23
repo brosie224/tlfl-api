@@ -3,6 +3,7 @@ module Commissioner
       before_action :commissioner_required
   
       def index
+        # display all players on ir with link to edit
       end
 
       def new
@@ -17,6 +18,7 @@ module Commissioner
       end
 
       def edit
+        # option to activate or change the replacement player
       end
 
       def update

@@ -13,6 +13,7 @@ class Player {
   }
 }
 
+// Displays players selected to be added to team
 const selectedPlayers = player => {
   $.get(`/api/v1/players/${player.value}`, playerData => {
     let tlflPlayer = new Player(playerData);
@@ -22,6 +23,7 @@ const selectedPlayers = player => {
   });
 };
 
+// Displays players selected to trade from each team
 const selectedPlayersTrade = player => {
   let tm_num = player.name.slice(8, 11);
   $.get(`/api/v1/players/${player.value}`, playerData => {
@@ -32,20 +34,26 @@ const selectedPlayersTrade = player => {
   });
 };
 
+// Displays player selected to be put on IR and the replacement options
 const selectedPlayersIr = player => {
   $.get(`/api/v1/players/${player.value}`, playerData => {
     let tlflPlayer = new Player(playerData);
     $(`#ir-reserving-player`).html(tlflPlayer.displayPlayer());
     $(`#ir-replacement-options`).html(tlflPlayer.displayPlayerIrOptions());
+    $(`#avail-team-pos`).html(
+      `<strong>Available ${tlflPlayer.nfl} ${tlflPlayer.position}</strong>`
+    );
   });
 };
 
+// Fetches all players
 let allAvailable = [];
 
 function getAllPlayers() {
   $("#tlfl_team_ir_id").on("change", e => {
     e.preventDefault();
     allAvailable.length = 0;
+    $(`#avail-team-pos`).html("");
     $.get(`/api/v1/players/`, players => {
       players.map(player => {
         allAvailable.push(player);
@@ -53,6 +61,22 @@ function getAllPlayers() {
     });
   });
 }
+
+const playerSearch = () => {
+  let input, filter, ul, li, txt, i;
+  input = document.getElementById("avail-player-search");
+  filter = input.value.toUpperCase();
+  ul = document.getElementById("avail-player-list");
+  li = ul.getElementsByTagName("li");
+  for (i = 0; i < li.length; i++) {
+    txt = li[i].innerText;
+    if (txt.toUpperCase().indexOf(filter) > -1) {
+      li[i].style.display = "";
+    } else {
+      li[i].style.display = "none";
+    }
+  }
+};
 
 Player.prototype.displayPlayerIrOptions = function() {
   let irOptions = allAvailable
@@ -79,22 +103,6 @@ Player.prototype.displayPlayer = function() {
   return `
     <div id="selected-${this.id}" style="display:inline">${this.position} ${this.name}<br></div>
   `;
-};
-
-const playerSearch = () => {
-  let input, filter, ul, li, txt, i;
-  input = document.getElementById("avail-player-search");
-  filter = input.value.toUpperCase();
-  ul = document.getElementById("avail-player-list");
-  li = ul.getElementsByTagName("li");
-  for (i = 0; i < li.length; i++) {
-    txt = li[i].innerText;
-    if (txt.toUpperCase().indexOf(filter) > -1) {
-      li[i].style.display = "";
-    } else {
-      li[i].style.display = "none";
-    }
-  }
 };
 
 class Dst {

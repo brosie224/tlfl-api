@@ -11,9 +11,10 @@
 
   <body>
     <nav>
-        <%= link_to "Perform Trade", new_commissioner_trade_path %> |
+        <%= link_to "Commissioner Tools", commissioner_path %> |
         <%= link_to "Log Out", commissioner_logout_path %>
     </nav>
+    <main>
     <% if flash[:alert] %>
       <br>
       <div style="color:red"><em><%= flash[:alert] %></em></div>
@@ -24,5 +25,6 @@
     <% end %>
     <br>
     <%= yield %>
+    </main>
   </body>
 </html>
