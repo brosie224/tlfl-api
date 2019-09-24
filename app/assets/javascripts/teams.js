@@ -14,6 +14,7 @@ const sortOrder = ["QB", "RB", "WR", "TE", "K"];
 const getTlflTeamIr = team => {
   $(`#ir-reserving-player`).html("");
   $(`#ir-replacement-options`).html("");
+  $(`#ir-replacement-player`).html("");
   let teamId = team.value;
   $.get(`/api/v1/tlfl_teams/${teamId}`, teamData => {
     let tlflTeam = new Team(teamData);

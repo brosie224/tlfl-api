@@ -1,16 +1,24 @@
-$(() => {
-  getAllPlayers();
-});
-
 class Player {
   constructor(obj) {
     this.id = obj.id;
     this.name = obj.full_name;
     this.position = obj.position;
     this.nfl = obj.nfl_abbrev;
-    this.tlflTeam = obj.tlfl_team;
-    this.available = obj.available;
+    // this.tlflTeam = obj.tlfl_team;
+    // this.available = obj.available;
   }
+}
+
+// Fetches all players
+const allPlayers = [];
+
+function getAllPlayers() {
+  allPlayers.length = 0;
+  $.get(`/api/v1/players/`, players => {
+    players.map(player => {
+      allPlayers.push(player);
+    });
+  });
 }
 
 // Displays players selected to be added to team
@@ -54,22 +62,6 @@ const selectedPlayerReplacement = player => {
   });
 };
 
-// Fetches all players
-let allAvailable = [];
-
-function getAllPlayers() {
-  $("#tlfl_team_ir_id").on("change", e => {
-    e.preventDefault();
-    allAvailable.length = 0;
-    $(`#avail-team-pos`).html("");
-    $.get(`/api/v1/players/`, players => {
-      players.map(player => {
-        allAvailable.push(player);
-      });
-    });
-  });
-}
-
 const playerSearch = () => {
   let input, filter, ul, li, txt, i;
   input = document.getElementById("avail-player-search");
@@ -86,8 +78,63 @@ const playerSearch = () => {
   }
 };
 
+const filterPositionAvail = pos => {
+  let sortedPlayers = allPlayers.sort(
+    (a, b) => sortOrder.indexOf(a.position) - sortOrder.indexOf(b.position)
+  );
+  let posAvail;
+  if (pos.innerText === "All") {
+    posAvail = sortedPlayers
+      .map(player => {
+        if (player.available === true)
+          return `
+            <li>
+              <label class="line-height">
+                <input type="checkbox" name="players[]" id="players_" value="${player.id}" onclick="selectedPlayers(this)">
+                  ${player.position} ${player.last_name}, ${player.first_name} - ${player.nfl_abbrev}
+                </input>
+              </label>
+            </li>
+          `;
+      })
+      .join("");
+    $(`.player-scroll-list`).html(posAvail);
+    let availDsts = allDsts
+      .map(dst => {
+        if (dst.tlfl_team_id === null)
+          return `
+            <li>
+              <label class="line-height">
+                <input type="checkbox" name="dst" id="dst" value="${dst.id}" onclick="selectedDst(this)">
+                  DT ${dst.full_name} - ${dst.nfl_abbrev}
+                </input>
+              </label>
+            </li>
+          `;
+      })
+      .join("");
+    $(`.player-scroll-list`).append(availDsts);
+  } else {
+    posAvail = allPlayers
+      .map(player => {
+        if (player.available === true && player.position === pos.innerText)
+          return `
+            <li>
+              <label class="line-height">
+                <input type="checkbox" name="players[]" id="players_" value="${player.id}" onclick="selectedPlayers(this)">
+                  ${player.position} ${player.last_name}, ${player.first_name} - ${player.nfl_abbrev}
+                </input>
+              </label>
+            </li>
+          `;
+      })
+      .join("");
+    $(`.player-scroll-list`).html(posAvail);
+  }
+};
+
 Player.prototype.displayPlayerIrOptions = function() {
-  let irOptions = allAvailable
+  let irOptions = allPlayers
     .map(player => {
       if (
         player.nfl_abbrev === this.nfl &&
@@ -95,12 +142,12 @@ Player.prototype.displayPlayerIrOptions = function() {
         player.available === true
       )
         return `
-        <label class="line-height">
-          <input type="radio" name="ir_replacement" value="${player.id}" onclick="selectedPlayerReplacement(this)" required>
-            ${player.position} ${player.full_name}
-          </input>
-        </label><br>
-      `;
+          <label class="line-height">
+            <input type="radio" name="ir_replacement" value="${player.id}" onclick="selectedPlayerReplacement(this)" required>
+              ${player.position} ${player.full_name}
+            </input>
+          </label><br>
+        `;
     })
     .join("");
 
@@ -110,35 +157,5 @@ Player.prototype.displayPlayerIrOptions = function() {
 Player.prototype.displayPlayer = function() {
   return `
     <div id="selected-${this.id}" style="display:inline">${this.position} ${this.name}<br></div>
-  `;
-};
-
-class Dst {
-  constructor(obj) {
-    this.id = obj.id;
-    this.name = obj.full_name;
-  }
-}
-
-const selectedDst = dst => {
-  $.get(`/api/v1/team_dsts/${dst.value}`, dstData => {
-    let tlflDst = new Dst(dstData);
-    if (dst.checked) $(".selected-available").append(tlflDst.displayDst());
-    if (dst.checked === false) $(`#selected-${dst.value}`).remove();
-  });
-};
-
-const selectedDstTrade = dst => {
-  let tm_num = dst.name.slice(4, 7);
-  $.get(`/api/v1/team_dsts/${dst.value}`, dstData => {
-    let tlflDst = new Dst(dstData);
-    if (dst.checked) $(`#team-${tm_num}-trades`).append(tlflDst.displayDst());
-    if (dst.checked === false) $(`#selected-${dst.value}`).remove();
-  });
-};
-
-Dst.prototype.displayDst = function() {
-  return `
-    <div id="selected-${this.id}" style="display:inline">DT ${this.name}<br></div>
   `;
 };

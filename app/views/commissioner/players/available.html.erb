@@ -1,47 +1,62 @@
-<div class="header-available">
-    <h4>Available Players</h4>
-    <input type="text" id="avail-player-search" onkeyup="playerSearch()" placeholder="Search for player..">
-</div>
-
-<div class="dropdown-teams-avail">
-    <%= form_tag("/commissioner/players/add-to-team", method: "post") do %>
-        <div class="line-height">
-            <%= collection_select :tlfl_team_avail, :id, TlflTeam.order(:city), :id, :full_name, options = { include_blank: '-- Select TLFL Team --' }, html_options = { onchange: "getTlflTeamAvail(this)", required: true } %>
-            <br><br>
+<div id="available-add-players-main">
+    <script>window.onload = getAllPlayers()</script>
+    <script>window.onload = getAllDsts()</script>
+    <div class="header-available">
+        <h4>Available Players</h4>
+        <input type="text" id="avail-player-search" onkeyup="playerSearch()" placeholder="Search for player..">
+        <div id="avail-position-filter">
+            <span class="position-avail" onclick="filterPositionAvail(this)">All</span> |
+            <span class="position-avail" onclick="filterPositionAvail(this)">QB</span> |
+            <span class="position-avail" onclick="filterPositionAvail(this)">RB</span> |
+            <span class="position-avail" onclick="filterPositionAvail(this)">WR</span> |
+            <span class="position-avail" onclick="filterPositionAvail(this)">TE</span> |
+            <span class="position-avail" onclick="filterPositionAvail(this)">K</span> |
+            <span class="position-avail" onclick="filterDstAvail()">DT</span>
         </div>
-        <%= submit_tag "Add Player(s) to Team" %>
-        <br><br>
-        <div class="tlfl-team-available"></div>
-        <div class='selected-available'><strong>Adding Players:</strong><br></div>
-        <div>
+    </div>
+
+    <div class="dropdown-teams-avail">
+        <%= form_tag("/commissioner/players/add-to-team", method: "post") do %>
+            <div class="line-height">
+                <%= collection_select :tlfl_team_avail, :id, TlflTeam.order(:city), :id, :full_name, options = { include_blank: '-- Select TLFL Team --' }, html_options = { onchange: "getTlflTeamAvail(this)", required: true } %>
+                <br><br>
+            </div>
+            <%= submit_tag "Add Player(s) to Team" %>
             <br><br>
-            <% TlflTeam.order(:city).each do |team| %>
-                <% if team.players.length < 8 || team.team_dst == nil %>
-                    <%= "- #{team.full_name} don't have enough players" %>
-                    <br>
+            <div class="tlfl-team-available"></div>
+            <div class='selected-available'><strong>Adding Players:</strong><br></div>
+            <div>
+                <br><br>
+                <% TlflTeam.order(:city).each do |team| %>
+                    <% if team.players.length < 8 || team.team_dst == nil %>
+                        <%= "- #{team.full_name} don't have enough players" %>
+                        <br>
+                    <% end %>
                 <% end %>
-            <% end %>
-        </div>
-</div>
+            </div>
+    </div>
 
-<div class="player-scroll">
-        <ul class="no-bullet" id="avail-player-list">
-            <% @players.each do |player| %>
-                <li>
-                    <label class="line-height">
-                        <%= check_box_tag "players[]", player.id, false, onclick: 'selectedPlayers(this)' %>
-                        <%= "#{player.position} #{player.last_name}, #{player.first_name} - #{player.nfl_abbrev}" %>
-                    </label>
-                </li>
-            <% end %>
-            <% @dsts.each do |dst| %>
-                <li>
-                    <label class="line-height">
-                        <%= check_box_tag "dst", dst.id, false, onclick: 'selectedDst(this)' %>
-                        <%= "DT #{dst.full_name} - #{dst.nfl_abbrev}" %>
-                    </label>
-                </li>
-            <% end %> 
-        </ul>
-    <% end %>
-</div>
+    <div class="player-scroll">
+            <ul class="no-bullet" id="avail-player-list">
+                <div class="player-scroll-list">
+                    <% @players.each do |player| %>
+                        <li>
+                            <label class="line-height">
+                                <%= check_box_tag "players[]", player.id, false, onclick: 'selectedPlayers(this)' %>
+                                <%= "#{player.position} #{player.last_name}, #{player.first_name} - #{player.nfl_abbrev}" %>
+                            </label>
+                        </li>
+                    <% end %>
+                    <% @dsts.each do |dst| %>
+                        <li>
+                            <label class="line-height">
+                                <%= check_box_tag "dst", dst.id, false, onclick: 'selectedDst(this)' %>
+                                <%= "DT #{dst.full_name} - #{dst.nfl_abbrev}" %>
+                            </label>
+                        </li>
+                    <% end %>
+                </div>
+            </ul>
+        <% end %>
+    </div>
+<div>
