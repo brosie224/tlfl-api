@@ -21,6 +21,7 @@ body {
 
 main {
   margin-left: 15px;
+  margin-top: 30px;
 }
 
 .no-bullet {
@@ -83,6 +84,10 @@ input#password {
   width: 300px;
 }
 
+input[type="submit"] {
+  width: 175px;
+}
+
 nav a:link,
 nav a:visited,
 nav a:hover,
@@ -97,4 +102,30 @@ nav {
   background-color: rgb(0, 0, 66);
   color: white;
   padding: 6px 6px 6px 6px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+button {
+  width: 225px;
+}
+
+div.commish-tools div {
+  float: left;
+  width: 23%;
+}
+
+div.commish-tools-lists ul {
+  list-style-type: none;
+  padding-left: 10px;
+}
+
+div.commish-tools li {
+  line-height: 1.7;
+}
+
+.header-note {
+  color: red;
+  font-style: italic;
 }

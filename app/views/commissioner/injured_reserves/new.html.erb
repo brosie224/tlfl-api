@@ -1,4 +1,8 @@
 <div>
+    <h3 style="display: inline-block">Place Player on IR/Reserves</h3>
+    <span class="header-left"><%= link_to "View Injured Reserves", commissioner_injured_reserves_path %></span>
+    <p class="header-note">Note: Players who were already picked up will still appear as available.</p>
+    <br>
     <%= form_tag("/commissioner/injured_reserves", method: "post") do %>
         <div id="week-effective">
             Week Effective: 
@@ -9,9 +13,7 @@
                 <% end %>
             </select>
         </div>
-        <span class="header-left"><%= link_to "View Injured Reserves", commissioner_injured_reserves_path %></span>
         <br><br>
-        
         <div class="ir-team">
             <%= collection_select :tlfl_team_ir, :id, TlflTeam.order(:city), :id, :full_name, options = { include_blank: '-- Select TLFL Team --' }, html_options = { onchange: "getTlflTeamIr(this)" } %>
             <div id="ir-roster"></div>
@@ -24,7 +26,7 @@
         </div>
 
         <div class="ir-team">
-            <strong>Placing on IR:</strong>
+            <strong>Placing on IR/Reserves:</strong>
                 <div id="ir-reserving-player"></div>
             <br>
             <strong>Replacement Player:</strong>

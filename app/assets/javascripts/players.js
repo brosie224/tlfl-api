@@ -35,7 +35,7 @@ const selectedPlayersTrade = player => {
 };
 
 // Displays player selected to be put on IR and the replacement options
-const selectedPlayersIr = player => {
+const selectedPlayerIr = player => {
   $.get(`/api/v1/players/${player.value}`, playerData => {
     let tlflPlayer = new Player(playerData);
     $(`#ir-reserving-player`).html(tlflPlayer.displayPlayer());
@@ -43,6 +43,14 @@ const selectedPlayersIr = player => {
     $(`#avail-team-pos`).html(
       `<strong>Available ${tlflPlayer.nfl} ${tlflPlayer.position}</strong>`
     );
+  });
+};
+
+// Displays player selected to be put on IR replacement
+const selectedPlayerReplacement = player => {
+  $.get(`/api/v1/players/${player.value}`, playerData => {
+    let tlflPlayer = new Player(playerData);
+    $(`#ir-replacement-player`).html(tlflPlayer.displayPlayer());
   });
 };
 
@@ -88,7 +96,7 @@ Player.prototype.displayPlayerIrOptions = function() {
       )
         return `
         <label class="line-height">
-          <input type="radio" name="ir-replacements" value="${player.id}" onclick="##">
+          <input type="radio" name="ir_replacement" value="${player.id}" onclick="selectedPlayerReplacement(this)" required>
             ${player.position} ${player.full_name}
           </input>
         </label><br>

@@ -125,6 +125,7 @@ Team.prototype.displayTeamAssets = function(tm_num) {
         Protection Spot
       </input>
     </label>
+    <br><br><br>
   `;
 };
 
@@ -134,13 +135,14 @@ Team.prototype.displayTeamPlayersIr = function() {
   );
   let players = sortedPlayers
     .map(player => {
-      return `
-        <label class="line-height">
-          <input type="radio" name="ir-player" value="${player.id}" onclick="selectedPlayersIr(this)">
-            ${player.position} ${player.full_name}
-          </input>
-        </label><br>
-      `;
+      if (player.ir_fd_id === null)
+        return `
+          <label class="line-height">
+            <input type="radio" name="ir_player" value="${player.id}" onclick="selectedPlayerIr(this)" required>
+              ${player.position} ${player.full_name}
+            </input>
+          </label><br>
+        `;
     })
     .join("");
 

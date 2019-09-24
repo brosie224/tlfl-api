@@ -11,14 +11,14 @@ module Commissioner
             # Adds each player
             if params[:players]
                 params[:players].each do |player_id|
-                    player = Player.find(player_id)
+                    player = Player.find_by(id: player_id)
                     player.tlfl_team_id = params[:tlfl_team][:id]
                     player.save
                 end
             end
             # Adds DST
             if params[:dst]
-                dst = TeamDst.find(params[:dst])
+                dst = TeamDst.find_by(id: params[:dst])
                 dst.tlfl_team_id = params[:tlfl_team][:id]
                 dst.save
             end

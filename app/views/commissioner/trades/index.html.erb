@@ -1,6 +1,6 @@
 <div>
     <h3 style="display: inline-block"><%= "#{@year} Trades" %></h3><span class="header-left"><%= link_to "New Trade", new_commissioner_trade_path %></span>
-    <p style="color:red"><em>Note: Deleting trades will remove it from being displayed, but not reverse the transaction.</em></p>
+    <p class="header-note">Note: Deleting trades will remove it from being displayed, but not reverse the transaction.</p>
     <br>
     <% @trades.each do |trade| %>
         <% if trade.week == 0 %>

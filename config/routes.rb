@@ -7,7 +7,9 @@ Rails.application.routes.draw do
     get '/logout' => 'sessions#destroy'
 
     # Tools
-    get '/' => 'tools#index' # link to all like CBS - should be commish homepage
+    get '/' => 'tools#index'
+    get '/create-new-players' => 'tools#create_new_players'
+    
     #  Create Newsletter
 
     # Players

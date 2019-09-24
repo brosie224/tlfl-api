@@ -3,7 +3,7 @@ module Commissioner
       before_action :commissioner_required
   
       def index
-        # display all players on ir with link to edit
+        @players = Player.where.not(fd_ir: nil).order(:last_name, :first_name)
       end
 
       def new
@@ -14,11 +14,18 @@ module Commissioner
       end
 
       def create
-        raise params.inspect
+        # raise params.inspect
+        ir_player = Player.find_by(id: params[:ir_player])
+        replacement_player = Player.find_by(id: params[:ir_replacement])
+        ir_player.ir_fd_id = replacement_player.fd_id
+        ir_player.ir_week = params[:weeks]
+        ir_player.save
+        redirect_to new_commissioner_injured_reserf_path
       end
 
       def edit
         # option to activate or change the replacement player
+        # when activate, make ir_fd_id and ir_week nil
       end
 
       def update
