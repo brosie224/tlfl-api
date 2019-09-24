@@ -9,7 +9,7 @@ class Player {
     this.position = obj.position;
     this.nfl = obj.nfl_abbrev;
     this.tlflTeam = obj.tlfl_team;
-    this.ir_match = 0;
+    this.available = obj.available;
   }
 }
 
@@ -92,7 +92,7 @@ Player.prototype.displayPlayerIrOptions = function() {
       if (
         player.nfl_abbrev === this.nfl &&
         player.position === this.position &&
-        player.tlfl_team === null
+        player.available === true
       )
         return `
         <label class="line-height">

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_21_235252) do
+ActiveRecord::Schema.define(version: 2019_09_24_041539) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 2019_09_21_235252) do
     t.string "cbs_photo"
     t.integer "jersey"
     t.integer "ir_week"
+    t.boolean "available", default: true
   end
 
   create_table "team_dsts", force: :cascade do |t|

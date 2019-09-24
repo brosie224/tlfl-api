@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
     # Tools
     get '/' => 'tools#index'
-    get '/create-new-players' => 'tools#create_new_players'
+    get '/update-available-players' => 'tools#update_available_players'
     
     #  Create Newsletter
 

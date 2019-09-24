@@ -5,17 +5,18 @@ module Commissioner
     def index
     end
 
-    def create_new_players # link to button on tools page
+    def update_available_players # link to button on tools page
       task = FdService.new
-      task.create_new_players
+      task.update_available_players
       task.add_cbs_data_to_players
+      flash[:notice] = "Available Players Updated."
       redirect_to commissioner_path
     end
 
-    def update_nfl_player_data # link to button on tools page
-      task = FdService.new
-      task.update_player_data
-      redirect_to commissioner_path
+    def update_player_nfl_data # link to button on tools page
+      # task = FdService.new
+      # task.update_player_nfl_data
+      # redirect_to commissioner_path
     end
   
   end

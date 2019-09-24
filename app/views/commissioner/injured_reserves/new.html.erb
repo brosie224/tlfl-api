@@ -1,8 +1,7 @@
 <div>
     <h3 style="display: inline-block">Place Player on IR/Reserves</h3>
     <span class="header-left"><%= link_to "View Injured Reserves", commissioner_injured_reserves_path %></span>
-    <p class="header-note">Note: Players who were already picked up will still appear as available.</p>
-    <br>
+    <br><br>
     <%= form_tag("/commissioner/injured_reserves", method: "post") do %>
         <div id="week-effective">
             Week Effective: 
@@ -32,7 +31,7 @@
             <strong>Replacement Player:</strong>
                 <div id="ir-replacement-player"></div>
             <br><br>
-            <%= submit_tag "Place on IR" %>
+            <%= submit_tag "Reserve Player" %>
         </div>
     <% end %>
 </div>

@@ -17,6 +17,8 @@ module Commissioner
         # raise params.inspect
         ir_player = Player.find_by(id: params[:ir_player])
         replacement_player = Player.find_by(id: params[:ir_replacement])
+        replacement_player.available = false
+        replacement_player.save
         ir_player.ir_fd_id = replacement_player.fd_id
         ir_player.ir_week = params[:weeks]
         ir_player.save
@@ -25,7 +27,7 @@ module Commissioner
 
       def edit
         # option to activate or change the replacement player
-        # when activate, make ir_fd_id and ir_week nil
+        # when activate, make ir_fd_id and ir_week nil, change replacement player.available to true
       end
 
       def update

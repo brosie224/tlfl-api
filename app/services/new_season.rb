@@ -33,5 +33,19 @@ class NewSeason
         end
 
         # Reset all TLFL team protections back to 3
+
+    # After Rosters are entered 
+
+        def reset_player_available
+            Player.all.each do |player|
+                if player.tlfl_team_id == nil
+                    player.available = true
+                    player.save
+                else
+                    player.available = false
+                    player.save
+                end
+            end
+        end
         
 end

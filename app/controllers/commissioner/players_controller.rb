@@ -3,7 +3,7 @@ module Commissioner
         before_action :commissioner_required
 
         def available
-            @players = Player.order(:last_name, :first_name).where(tlfl_team: nil).sort_position
+            @players = Player.order(:last_name, :first_name).where(available: true).sort_position
             @dsts = TeamDst.order(:city, :nickname).where(tlfl_team: nil)
         end
 

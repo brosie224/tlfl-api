@@ -6,6 +6,7 @@
         <ul>
             <li>Set Keepers</li>
             <li>Add Players to Teams</li>
+            <p><button>Update Team Bye Weeks</button></p>
         </ul>
 
         <h6>Weekly</h6>
@@ -16,10 +17,10 @@
 
         <h6>Transactions</h6>
         <ul>
-            <li>New Trade</li>
-            <li>View/Delete Trades</li>
-            <li>Place Player on IR</li>
-            <li>View/Edit Injured Reserves</li>
+            <li><%= link_to 'Perform Trade', new_commissioner_trade_path %></li>
+            <li><%= link_to 'View Trades', commissioner_trades_path %></li>
+            <li><%= link_to 'Reserve Player', new_commissioner_injured_reserf_path %></li>
+            <li><%= link_to 'View Reserves', commissioner_injured_reserves_path %></li>
         </ul>
 
         <h6>Owners</h6>
@@ -31,7 +32,8 @@
 
     <div class="commish-tools-buttons">
         <h6 style="padding-bottom: 7px">Player Maintenance</h6>
-        <p><%= button_to 'Add New Players to Available', commissioner_create_new_players_path %></p>
-        <p><button>Update Players NFL Data</button></p>
+        <%= button_to 'Update Available Players', commissioner_update_available_players_path, method: :get %>
+        <p class="header-note">Note: Takes 30-60 seconds to run</p>
+        <p><button>Update Players' NFL Data</button></p>
     </div>
 </div>

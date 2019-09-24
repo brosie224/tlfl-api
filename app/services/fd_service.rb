@@ -47,8 +47,8 @@ class FdService
         players_resp = Faraday.get 'https://api.fantasydata.net/api/nfl/fantasy/json/Players' do |req|
             req.params['key'] = ENV['FANTASY_DATA_KEY']
         end
-        players_json = JSON.parse(players_resp.body)
-        actives = players_json.select { |player| player["Team"] }
+        @players_json = JSON.parse(players_resp.body)
+        actives = @players_json.select { |player| player["Status"] == "Active" }
         @active_players = actives.select { |player| %w(QB RB FB WR TE K).include? player["Position"] }
     end
 
@@ -70,17 +70,51 @@ class FdService
             end
         end
     end
-    
-    def update_tlfl_team_data
-        # Update bye_week
-        # Update logo, word_mark, team colors
-        # Manually change any city/nickname/abbreviation change or changed division
+
+    # Updates NFL FAs (Creates and Deletes to show correct available players)
+    def update_available_players
+        create_new_players
+        all_fd_ids = []
+        # Deletes players who aren't listed as "active" in database and aren't on TLFL team
+        @players_json.each do |fd_player|
+            all_fd_ids << fd_player["PlayerID"]      
+            Player.all.each do |player|
+                if player.fd_id == fd_player["PlayerID"] && player.available == true && fd_player["Status"] != "Active"
+                    player.destroy
+                end
+            end
+        end
+        # Deletes players who don't appear in the database and aren't on TLFL team
+        Player.all.each do |player|
+            if player.available == true && all_fd_ids.exclude?(player.fd_id)
+                player.destroy
+            end
+        end
     end
 
-    def update_player_data
-        # Update bye_week
-        # Update nfl_abbrev
-        # Update jersey
+    def add_cbs_data_to_players
+        # Double check link works
+          cbs_resp = Faraday.get "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json"
+          cbs_json = JSON.parse(cbs_resp.body)
+          players = Player.all
+          cbs_json["body"]["players"].each do |cbs_player|
+              players.each do |player|
+                  if player.cbs_id == nil && player.nfl_abbrev == "JAX" && cbs_player["pro_team"] == "JAC" && player.jersey == cbs_player["jersey"].to_i
+                      player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"], cbs_photo: cbs_player["photo"])
+                  end
+                  if player.cbs_id == nil && player.nfl_abbrev == cbs_player["pro_team"] && player.jersey == cbs_player["jersey"].to_i
+                      player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"], cbs_photo: cbs_player["photo"])
+                  end
+              end
+          end
+      end
+    
+    def update_player_nfl_data
+        # If ids match and teams are diff
+            # Update bye_week
+            # Update nfl_abbrev
+            # Update jersey
+            # Handle seniority?
     end
 
     def update_teams_dst_data
@@ -89,21 +123,10 @@ class FdService
         # Manually change any city/nickname/abbreviation change
     end
 
-    def add_cbs_data_to_players
-        # Double check link works
-        cbs_resp = Faraday.get "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json"
-        cbs_json = JSON.parse(cbs_resp.body)
-        players = Player.all
-        cbs_json["body"]["players"].each do |cbs_player|
-            players.each do |player|
-                if player.cbs_id == nil && player.nfl_abbrev == "JAX" && cbs_player["pro_team"] == "JAC" && player.jersey == cbs_player["jersey"].to_i
-                    player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"], cbs_photo: cbs_player["photo"])
-                end
-                if player.cbs_id == nil && player.nfl_abbrev == cbs_player["pro_team"] && player.jersey == cbs_player["jersey"].to_i
-                    player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"], cbs_photo: cbs_player["photo"])
-                end
-            end
-        end
+    def update_tlfl_team_data
+        # Update bye_week
+        # Update logo, word_mark, team colors
+        # Manually change any city/nickname/abbreviation change or changed division
     end
 
 end

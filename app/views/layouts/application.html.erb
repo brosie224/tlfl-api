@@ -21,7 +21,8 @@
     <% end %>
     <% if flash[:notice] %>
       <br>
-      <div style="color:green"><%= flash[:notice] %></div>
+      <%# <script>alert(flash[:notice])</script> %>
+      <div style="color:green"><em><%= flash[:notice] %></em></div>
     <% end %>
     <br>
     <%= yield %>
