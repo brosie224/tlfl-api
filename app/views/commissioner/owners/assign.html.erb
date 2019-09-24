@@ -9,7 +9,7 @@
             </li>
         <% end %> 
     </ul>
-    <%= collection_select :tlfl_team, :id, TlflTeam.order(:city), :id, :full_name %>
+    <%= collection_select :tlfl_team_owners, :id, TlflTeam.order(:city), :id, :full_name %>
     <br><br>
     <%= submit_tag "Assign Owner(s) to Team" %>
 <% end %>

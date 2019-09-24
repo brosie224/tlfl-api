@@ -9,15 +9,14 @@ Rails.application.routes.draw do
     # Tools
     get '/' => 'tools#index'
     get '/update-available-players' => 'tools#update_available_players'
-    
     #  Create Newsletter
 
     # Players
-    get '/players/available' => 'players#available'
+    get '/players/assign' => 'players#assign'
     post '/players/add-to-team' => 'players#add_to_team'
     # Set Keepers
     resources :trades, except: [:show, :edit, :update]
-    resources :injured_reserves, except: [:show, :destroy]
+    resources :injured_reserves, except: [:show, :destroy], path: 'injured-reserves'
     # resources :players, only: [:new, :create, :edit, :update, :delete] - eventually admin_required
     # Edit Player Points
 

@@ -11,7 +11,7 @@ module Commissioner
         def add
             params[:owner].each do |owner_id|
                 owner = Owner.find_by(id: owner_id)
-                owner.tlfl_team_id = params[:tlfl_team][:id]
+                owner.tlfl_team_id = params[:tlfl_team_owners][:id]
                 owner.save
             end
             redirect_to commissioner_assign_path

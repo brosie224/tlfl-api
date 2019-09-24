@@ -2,7 +2,7 @@ module Commissioner
     class PlayersController < ApplicationController
         before_action :commissioner_required
 
-        def available
+        def assign
             @players = Player.order(:last_name, :first_name).where(available: true).sort_position
             @dsts = TeamDst.order(:city, :nickname).where(tlfl_team: nil)
         end
@@ -12,17 +12,17 @@ module Commissioner
             if params[:players]
                 params[:players].each do |player_id|
                     player = Player.find_by(id: player_id)
-                    player.tlfl_team_id = params[:tlfl_team][:id]
+                    player.tlfl_team_id = params[:tlfl_team_assign][:id]
                     player.save
                 end
             end
             # Adds DST
             if params[:dst]
                 dst = TeamDst.find_by(id: params[:dst])
-                dst.tlfl_team_id = params[:tlfl_team][:id]
+                dst.tlfl_team_id = params[:tlfl_team_assign][:id]
                 dst.save
             end
-            redirect_to commissioner_players_available_path
+            redirect_to commissioner_players_assign_path
         end
 
         # Edit Seniority

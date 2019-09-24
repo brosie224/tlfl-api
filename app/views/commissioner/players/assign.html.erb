@@ -15,10 +15,11 @@
         </div>
     </div>
 
-    <div class="dropdown-teams-avail">
-        <%= form_tag("/commissioner/players/add-to-team", method: "post") do %>
+    
+    <%= form_tag("/commissioner/players/add-to-team", method: "post") do %>
+        <div class="dropdown-teams-avail">
             <div class="line-height">
-                <%= collection_select :tlfl_team_avail, :id, TlflTeam.order(:city), :id, :full_name, options = { include_blank: '-- Select TLFL Team --' }, html_options = { onchange: "getTlflTeamAvail(this)", required: true } %>
+                <%= collection_select :tlfl_team_assign, :id, TlflTeam.order(:city), :id, :full_name, options = { include_blank: '-- Select TLFL Team --' }, html_options = { onchange: "getTlflTeamAvail(this)", required: true } %>
                 <br><br>
             </div>
             <%= submit_tag "Add Player(s) to Team" %>
@@ -34,9 +35,9 @@
                     <% end %>
                 <% end %>
             </div>
-    </div>
+        </div>
 
-    <div class="player-scroll">
+        <div class="player-scroll">
             <ul class="no-bullet" id="avail-player-list">
                 <div class="player-scroll-list">
                     <% @players.each do |player| %>
@@ -57,6 +58,6 @@
                     <% end %>
                 </div>
             </ul>
-        <% end %>
-    </div>
+        </div>
+    <% end %>
 <div>
