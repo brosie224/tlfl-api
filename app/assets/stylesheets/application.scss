@@ -79,13 +79,15 @@ main {
   margin-left: 30px;
 }
 
+// Buttons
 input#email,
 input#password {
   width: 300px;
 }
 
+button,
 input[type="submit"] {
-  width: 175px;
+  width: 225px;
 }
 
 nav a:link,
@@ -105,10 +107,6 @@ nav {
   position: fixed;
   top: 0;
   width: 100%;
-}
-
-button {
-  width: 225px;
 }
 
 div.commish-tools div {
