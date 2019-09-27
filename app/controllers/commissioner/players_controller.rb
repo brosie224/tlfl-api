@@ -30,7 +30,7 @@ module Commissioner
             # Have dropdown for seniority
     
         # Place on IR
-            # when submit, if on_ir then post the transaction using fd_id and ir_fd_id
+            # when submit, if on_ir then post the transaction using fd_id and ir_id
 
     end
 end

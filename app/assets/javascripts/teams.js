@@ -136,7 +136,7 @@ Team.prototype.displayTeamPlayersIr = function() {
   );
   let players = sortedPlayers
     .map(player => {
-      if (player.ir_fd_id === null)
+      if (player.ir_id === null)
         return `
           <label class="line-height">
             <input type="radio" name="ir_player" value="${player.id}" onclick="selectedPlayerIr(this)" required>

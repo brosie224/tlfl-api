@@ -12,7 +12,7 @@
             <br>
             <div class="reserve-button" style="display: inline-block">
                 <%= button_to "Activate #{player.first_name[0]}. #{player.last_name}", commissioner_injured_reserves_activate_path, 
-                data: { confirm: "Activate #{player.full_name}?"}, params: { ir_player: player.id, replacement: player.ir_fd_id } %>
+                data: { confirm: "Activate #{player.full_name}?"}, params: { ir_player: player.id, replacement: player.ir_id } %>
             </div>
             <div class="reserve-button">&nbsp</div>
             <div class="reserve-button"><%= button_to 'Change Replacement' %></div>
