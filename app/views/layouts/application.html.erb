@@ -17,12 +17,12 @@
     <main>
     <% if flash[:alert] %>
       <br>
-      <div style="color:red"><em><%= flash[:alert] %></em></div>
+      <div class="flash-alert"><%= flash[:alert] %></div>
     <% end %>
     <% if flash[:notice] %>
       <br>
       <%# <script>alert(flash[:notice])</script> %>
-      <div style="color:green"><em><%= flash[:notice] %></em></div>
+      <div class="flash-notice"><%= flash[:notice] %></div>
     <% end %>
     <br>
     <%= yield %>

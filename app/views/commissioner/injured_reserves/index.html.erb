@@ -2,4 +2,22 @@
     <h3 style="display: inline-block">Players on Reserves</h3>
     <span class="header-left"><%= link_to "Reserve Player", new_commissioner_injured_reserf_path %></span>
     <br><br>
+    <ul>
+        <% @players.each do |player| %>
+            <strong><%= "#{player.full_name}, #{player.position}, #{player.nfl_abbrev}" %></strong>
+            <br>
+            <%= "TLFL #{player.tlfl_team.nickname}" %>
+            <br>
+            <%= "Replacement: #{player.replacement_name}" %>
+            <br>
+            <div class="reserve-button" style="display: inline-block">
+                <%= button_to "Activate #{player.first_name[0]}. #{player.last_name}", commissioner_injured_reserves_activate_path, 
+                data: { confirm: "Activate #{player.full_name}?"}, params: { ir_player: player.id, replacement: player.ir_fd_id } %>
+            </div>
+            <div class="reserve-button">&nbsp</div>
+            <div class="reserve-button"><%= button_to 'Change Replacement' %></div>
+            <div id="new-ir-replacement"></div>
+            <br><br>
+        <% end %>
+    </ul>
 </div>

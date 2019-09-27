@@ -6,7 +6,7 @@
         <ul>
             <li>Set Keepers</li>
             <li><%= link_to 'Add Players to Teams', commissioner_players_assign_path %></li>
-            <p><button>Update Team Bye Weeks</button></p>
+            <li><button>Update Team Bye Weeks</button></li>
         </ul>
 
         <h6>Weekly</h6>
@@ -17,10 +17,10 @@
 
         <h6>Transactions</h6>
         <ul>
-            <li><%= link_to 'Perform Trade', new_commissioner_trade_path %></li>
             <li><%= link_to 'View Trades', commissioner_trades_path %></li>
-            <li><%= link_to 'Reserve Player', new_commissioner_injured_reserf_path %></li>
+            <li><%= link_to 'Perform Trade', new_commissioner_trade_path %></li>
             <li><%= link_to 'View Reserves', commissioner_injured_reserves_path %></li>
+            <li><%= link_to 'Reserve Player', new_commissioner_injured_reserf_path %></li>
         </ul>
 
         <h6>Owners</h6>

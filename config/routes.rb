@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     # Set Keepers
     resources :trades, except: [:show, :edit, :update]
     resources :injured_reserves, except: [:show, :destroy], path: 'injured-reserves'
+    post '/injured-reserves/activate' => 'injured_reserves#activate'
+    
     # resources :players, only: [:new, :create, :edit, :update, :delete] - eventually admin_required
     # Edit Player Points
 

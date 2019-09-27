@@ -23,7 +23,9 @@ class NewSeason
     # After Draft
 
         def generate_draft_picks()
-            DraftPick.destroy_all
+            DraftPick.all.each do |pick|
+                pick.tlfl_team_id = nil
+            end
             TlflTeam.all.each do |tm|
                 for rd in 1..6 do
                     tm.draft_picks.build(team: tm.full_name, year: Date.today.year + 1, round: rd)

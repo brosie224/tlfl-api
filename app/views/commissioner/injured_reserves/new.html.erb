@@ -3,7 +3,7 @@
     <h3 style="display: inline-block">Place Player on IR/Reserves</h3>
     <span class="header-left"><%= link_to "View Injured Reserves", commissioner_injured_reserves_path %></span>
     <br><br>
-    <%= form_tag("/commissioner/injured_reserves", method: "post") do %>
+    <%= form_tag("/commissioner/injured-reserves", method: "post") do %>
         <div id="week-effective">
             Week Effective: 
             <select required name="weeks">

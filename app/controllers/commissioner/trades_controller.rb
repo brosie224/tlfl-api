@@ -91,12 +91,14 @@ module Commissioner
                 new_trade.includes_protection_two = true
                 new_trade.save
             end
+            flash[:notice] = "Trade completed."
             redirect_to new_commissioner_trade_path
         end
 
         def destroy
             trade = Trade.find_by(id: params[:id])
             trade.destroy
+            flash[:notice] = "Trade deleted."
             redirect_to commissioner_trades_path
         end
 
