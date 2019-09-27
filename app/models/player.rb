@@ -15,6 +15,10 @@ class Player < ApplicationRecord
         "http://static.nfl.com/static/content/public/static/img/fantasy/transparent/200x200/#{self.esb_id}.png"
     end
 
+    def cbs_photo
+        "http://sports.cbsimg.net/images/football/nfl/players/170x170/#{self.cbs_id}.png"
+    end
+
     def replacement_name
         if self.ir_id
             player = Player.find_by(id: self.ir_id)

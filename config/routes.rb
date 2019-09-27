@@ -1,28 +1,35 @@
 Rails.application.routes.draw do
 
   namespace 'commissioner' do
-    # Session
+    # SESSION
     get '/login' => 'sessions#new'
     post '/login' => 'sessions#create'
     get '/logout' => 'sessions#destroy'
 
-    # Tools
+    # TOOLS
     get '/' => 'tools#index'
     get '/update-available-players' => 'tools#update_available_players'
     #  Create Newsletter
 
-    # Players
+    # PLAYERS
+    # Assign/Keepers
     get '/players/assign' => 'players#assign'
     post '/players/add-to-team' => 'players#add_to_team'
     # Set Keepers
+
+    # Trades
     resources :trades, except: [:show, :edit, :update]
-    resources :injured_reserves, except: [:show, :destroy], path: 'injured-reserves'
-    post '/injured-reserves/activate' => 'injured_reserves#activate'
-    
+
+    # Reserves
+    resources :reserves, except: [:show, :destroy]
+    post '/reserves/activate' => 'reserves#activate'
+    get '/reserves/change-replacement' => 'reserves#replacement_options'
+    post '/reserves/change-replacement' => 'reserves#change_replacement'
+
     # resources :players, only: [:new, :create, :edit, :update, :delete] - eventually admin_required
     # Edit Player Points
 
-    # Owners
+    # OWNERS
     get '/owners/assign' => 'owners#assign'
     post '/owners/add' => 'owners#add'
     # Index, New/Create, Edit/Update, Delete Owners
@@ -30,22 +37,25 @@ Rails.application.routes.draw do
 
   namespace 'api' do
     namespace 'v1' do
-      # TLFL Teams
+      # TLFL TEAMS
       resources :tlfl_teams, only: [:index, :show]
 
-      # Players
+      # PLAYERS
       get '/players/tlfl' => 'players#tlfl'
       get '/players/available' => 'players#available'
       resources :players, only: [:index, :show]
     
-      # Team DST
+      # TEAM DST
       resources :team_dsts, only: [:index, :show]
 
-      # Draft Picks
+      # DRAFT PICKS
       resources :draft_picks, only: [:index, :show]
 
-      # Trades
+      # TRADES
       resources :trades, only: [:index, :show]
+
+      # RESERVES
+      get '/reserves' => 'reserves#index'
     end
   end
 

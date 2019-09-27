@@ -17,7 +17,7 @@ module Commissioner
         def create
             tm_one_name = TlflTeam.find_by(id: params[:tlfl_team_one][:id]).full_name
             tm_two_name = TlflTeam.find_by(id: params[:tlfl_team_two][:id]).full_name
-            new_trade = Trade.create(season: Date.today.year, week: params[:weeks], team_one: tm_one_name, team_two: tm_two_name)
+            new_trade = Trade.create(season: Date.today.year, week: params[:week], team_one: tm_one_name, team_two: tm_two_name)
             # Trades each player
             if params[:players_one]
                 params[:players_one].each do |player_id|

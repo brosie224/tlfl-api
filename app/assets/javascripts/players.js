@@ -145,7 +145,6 @@ Player.prototype.displayPlayerIrOptions = function() {
           <label class="line-height">
             <input type="radio" name="ir_replacement" value="${player.id}" onclick="selectedPlayerReplacement(this)" required>
               ${player.position} ${player.full_name}
-            </input>
           </label><br>
         `;
     })

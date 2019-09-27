@@ -5,7 +5,7 @@
     <%= form_tag("/commissioner/trades", method: "post") do %>
         <div id="week-effective">
             Week Effective: 
-            <select required name="weeks">
+            <select required name="week">
                 <option disabled selected value="">-- Select Week --</option>
                 <% @weeks.each do |week| %>
                     <option value="<%=week%>">Week <%=week%></option>

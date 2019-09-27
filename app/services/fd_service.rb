@@ -100,10 +100,10 @@ class FdService
           cbs_json["body"]["players"].each do |cbs_player|
               players.each do |player|
                   if player.cbs_id == nil && player.nfl_abbrev == "JAX" && cbs_player["pro_team"] == "JAC" && player.jersey == cbs_player["jersey"].to_i
-                      player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"], cbs_photo: cbs_player["photo"])
+                      player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"])
                   end
                   if player.cbs_id == nil && player.nfl_abbrev == cbs_player["pro_team"] && player.jersey == cbs_player["jersey"].to_i
-                      player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"], cbs_photo: cbs_player["photo"])
+                      player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"])
                   end
               end
           end
