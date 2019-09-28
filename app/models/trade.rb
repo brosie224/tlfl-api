@@ -42,13 +42,17 @@ class Trade < ApplicationRecord
     end
 
     def dst_one_name
-        dst = TeamDst.find_by(id: self.dst_one)
-        dst.full_name
+        if dst_one
+            dst = TeamDst.find_by(id: self.dst_one)
+            dst.full_name
+        end
     end
 
     def dst_two_name
-        dst = TeamDst.find_by(id: self.dst_two)
-        dst.full_name
+        if dst_two
+            dst = TeamDst.find_by(id: self.dst_two)
+            dst.full_name
+        end
     end
 
     def picks_one_names

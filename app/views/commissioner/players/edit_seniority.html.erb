@@ -1,0 +1,43 @@
+<div id="edit-seniority">
+    <h3>Edit Seniority</h3>
+    <br>
+    <%= form_for PLAYER, url: commissioner_players_update_seniority_path do |f| %>
+        <% @teams.each do |team| %>
+            <strong><%= team.full_name %></strong>
+            <br>
+            <% @players.each do |player| %>
+                <% if player.nfl_abbrev == team.abbreviation %>
+                    <%= player.position %>
+                    <%= select(player.id, "seniority", {"1": "1", "2": "2"}) %>
+                    <%= player.full_name %>
+                    <br>
+                <% end %>
+            <% end %>
+            <%= submit_tag "Save changes for #{team.nickname}" %>
+            <br><br>
+        <% end %>
+    <% end %>
+
+
+
+
+
+
+
+    <%= form_tag("/commissioner/players/update-seniority", method: "post") do %>
+        <% @teams.each do |team| %>
+            <strong><%= team.full_name %></strong>
+            <br>
+            <% @players.each do |player| %>
+                <% if player.nfl_abbrev == team.abbreviation %>
+                    <%= player.position %>
+                    <%= select(player.id, "seniority", {"1": "1", "2": "2"}) %>
+                    <%= player.full_name %>
+                    <br>
+                <% end %>
+            <% end %>
+            <%= submit_tag "Save changes for #{team.nickname}" %>
+            <br><br>
+        <% end %>
+    <% end %>
+</div>

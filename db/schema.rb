@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_28_023145) do
+ActiveRecord::Schema.define(version: 2019_09_28_055714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 2019_09_28_023145) do
     t.string "position"
     t.string "nfl_abbrev"
     t.integer "ir_id"
-    t.integer "tlfl_seniority", default: 1
+    t.integer "seniority", default: 1
     t.integer "bye_week"
     t.integer "tlfl_team_id"
     t.integer "fd_id"

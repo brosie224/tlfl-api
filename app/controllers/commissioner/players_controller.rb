@@ -27,12 +27,18 @@ module Commissioner
             redirect_to commissioner_players_assign_path
         end
 
-        # Edit Seniority
-            # List out each TLFL RB/WR by nfl team, position, seniority
+        def edit_seniority
+            @seniority_options = [1..5]
+            @teams = TlflTeam.order(:city, :nickname)
+            @players = Player.order(:nfl_abbrev, :position, :seniority).select do |player|
+                player.tlfl_team_id != nil && (player.position == "RB" || player.position == "WR")
+            end
             # Have dropdown for seniority
-    
-        # Place on IR
-            # when submit, if on_ir then post the transaction using fd_id and ir_id
+        end
 
+        def update_seniority
+            raise params.inspect
+        end
+    
     end
 end

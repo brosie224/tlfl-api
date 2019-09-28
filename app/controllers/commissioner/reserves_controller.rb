@@ -11,7 +11,7 @@ module Commissioner
       end
 
       def create
-        Reserve.create(category: "new", season: Date.today.year, week: params[:week], named_player: params[:rs_player], replacement_player: params[:replacement] )
+        Reserve.create(category: "new", season: Date.today.year, week: params[:week], named_player: params[:rs_player], replacement_player: params[:replacement])
         rs_player = Player.find_by(id: params[:rs_player])
         rs_player.ir_id = params[:replacement]
         rs_player.ir_week = params[:week]
@@ -30,7 +30,7 @@ module Commissioner
       end
 
       def activate
-        Reserve.create(category: "activate", season: Date.today.year, week: params[:week], named_player: params[:rs_player], replacement_player: params[:replacement] )
+        Reserve.create(category: "activate", season: Date.today.year, week: params[:week], named_player: params[:rs_player], replacement_player: params[:replacement])
         rs_player = Player.find_by(id: params[:rs_player])
         rs_player.ir_id = nil
         rs_player.ir_week = nil
@@ -43,11 +43,17 @@ module Commissioner
       end
 
       def change_replacement
-    raise params.inspect
-        # rs_player =
-        # old_replacement =
-        # new_replacement =
-        # flash
+        Reserve.create(category: "change", season: Date.today.year, week: params[:week], named_player: params[:rs_player], replacement_player: params[:new_replacement])
+        rs_player = Player.find_by(id: params[:rs_player])
+        rs_player.ir_id = params[:new_replacement]
+        rs_player.save
+        old_replacement = Player.find_by(id: params[:old_replacement])
+        old_replacement.available = true
+        old_replacement.save
+        new_replacement = Player.find_by(id: params[:new_replacement])
+        new_replacement.available = false
+        new_replacement.save
+        flash[:notice] = "Replacement changed to #{new_replacement.full_name}"
         redirect_to commissioner_reserves_path
       end
 

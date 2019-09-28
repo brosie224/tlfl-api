@@ -15,6 +15,8 @@ Rails.application.routes.draw do
     # Assign/Keepers
     get '/players/assign' => 'players#assign'
     post '/players/add-to-team' => 'players#add_to_team'
+    get '/players/edit-seniority' => 'players#edit_seniority'
+    post '/players/update-seniority' => 'players#update_seniority'
     # Set Keepers
 
     # Trades

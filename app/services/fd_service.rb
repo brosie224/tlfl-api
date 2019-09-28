@@ -78,16 +78,32 @@ class FdService
         # Deletes players who aren't listed as "active" in database and aren't on TLFL team
         @players_json.each do |fd_player|
             all_fd_ids << fd_player["PlayerID"]      
-            Player.all.each do |player|
-                if player.fd_id == fd_player["PlayerID"] && player.available == true && fd_player["Status"] != "Active"
-                    player.destroy
+            Player.all.each do |tlfl_player|
+                if tlfl_player.fd_id == fd_player["PlayerID"] && tlfl_player.available == true && fd_player["Status"] != "Active"
+                    tlfl_player.destroy
                 end
             end
         end
         # Deletes players who don't appear in the database and aren't on TLFL team
-        Player.all.each do |player|
-            if player.available == true && all_fd_ids.exclude?(player.fd_id)
-                player.destroy
+        Player.all.each do |tlfl_player|
+            if tlfl_player.available == true && all_fd_ids.exclude?(tlfl_player.fd_id)
+                tlfl_player.destroy
+            end
+        end
+    end
+
+    # Updates TLFL player if on new team
+    def update_player_nfl_data
+        get_player_data
+        @players = Player.all
+        @players_json.each do |fd_player| 
+            @players.each do |tlfl_player|
+                # Doesn't change TLFL player's team if he isn't on an NFL team anymore
+                if (tlfl_player.available == false && fd_player["Team"]) || tlfl_player.available == true
+                    if tlfl_player.fd_id == fd_player["PlayerID"] && tlfl_player.nfl_abbrev != fd_player["Team"]
+                        tlfl_player.update(nfl_abbrev: fd_player["Team"], bye_week: fd_player["ByeWeek"], jersey: fd_player["Number"])
+                    end
+                end
             end
         end
     end
@@ -109,14 +125,6 @@ class FdService
           end
       end
     
-    def update_player_nfl_data
-        # If ids match and teams are diff
-            # Update bye_week
-            # Update nfl_abbrev
-            # Update jersey
-            # Handle seniority?
-    end
-
     def update_teams_dst_data
         # Update bye_week
         # Update logo and word_mark
