@@ -3,7 +3,8 @@ module Api
       class ReservesController < ApplicationController
 
         def index
-          render json: Player.where.not(ir_id: nil).order(:last_name, :first_name)
+          Date.today.month < 7 ? @season = Date.today.year - 1 : @season = Date.today.year
+          render json: Reserve.where(season: @season).order(week: :desc)
         end
 
       end

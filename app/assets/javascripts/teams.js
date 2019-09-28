@@ -139,7 +139,7 @@ Team.prototype.displayTeamPlayersIr = function() {
       if (player.ir_id === null)
         return `
           <label class="line-height">
-            <input type="radio" name="ir_player" value="${player.id}" onclick="selectedPlayerIr(this)" required>
+            <input type="radio" name="rs_player" value="${player.id}" onclick="selectedPlayerIr(this)" required>
               ${player.position} ${player.full_name}
             </input>
           </label><br>

@@ -13,7 +13,7 @@
             <%= team %>
             <br>
         <% end %>
-        <div class="delete-font">
+        <div class="edit-font">
             <%= link_to "Delete Trade", commissioner_trade_path(trade), method: "delete", 
             data: { confirm: "Delete trade between #{trade.team_one} and #{trade.team_two}?" } %>
         </div>

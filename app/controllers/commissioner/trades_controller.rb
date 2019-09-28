@@ -3,8 +3,8 @@ module Commissioner
         before_action :commissioner_required
 
         def index
-            Date.today.month < 7 ? @year = Date.today.year - 1 : @year = Date.today.year
-            @trades = Trade.where(season: @year).order(week: :desc)
+            Date.today.month < 7 ? @season = Date.today.year - 1 : @season = Date.today.year
+            @trades = Trade.where(season: @season).order(week: :desc)
         end
 
         def new
@@ -15,16 +15,15 @@ module Commissioner
         end
 
         def create
-            tm_one_name = TlflTeam.find_by(id: params[:tlfl_team_one][:id]).full_name
-            tm_two_name = TlflTeam.find_by(id: params[:tlfl_team_two][:id]).full_name
-            new_trade = Trade.create(season: Date.today.year, week: params[:week], team_one: tm_one_name, team_two: tm_two_name)
+            new_trade = Trade.create(season: Date.today.year, week: params[:week], 
+                team_one: params[:tlfl_team_one][:id], team_two: params[:tlfl_team_two][:id])
             # Trades each player
             if params[:players_one]
                 params[:players_one].each do |player_id|
                     player = Player.find_by(id: player_id)
                     player.tlfl_team_id = params[:tlfl_team_two][:id]
                     player.save
-                    new_trade.players_one << player.full_name
+                    new_trade.players_one << player.id
                     new_trade.save
                 end
             end
@@ -33,7 +32,7 @@ module Commissioner
                     player = Player.find_by(id: player_id)
                     player.tlfl_team_id = params[:tlfl_team_one][:id]
                     player.save
-                    new_trade.players_two << player.full_name
+                    new_trade.players_two << player.id
                     new_trade.save
                 end
             end
@@ -42,14 +41,14 @@ module Commissioner
                 dst = TeamDst.find_by(id: params[:dst_one])
                 dst.tlfl_team_id = params[:tlfl_team_two][:id]
                 dst.save
-                new_trade.dst_one = dst.full_name
+                new_trade.dst_one = dst.id
                 new_trade.save
             end
             if params[:dst_two]
                 dst = TeamDst.find_by(id: params[:dst_two])
                 dst.tlfl_team_id = params[:tlfl_team_one][:id]
                 dst.save
-                new_trade.dst_two = dst.full_name
+                new_trade.dst_two = dst.id
                 new_trade.save
             end
             # Trade each draft pick
@@ -58,7 +57,7 @@ module Commissioner
                     pick = DraftPick.find_by(id: pick_id)
                     pick.tlfl_team_id = params[:tlfl_team_two][:id]
                     pick.save
-                    new_trade.picks_one << pick.full
+                    new_trade.picks_one << pick.id
                     new_trade.save
                 end
             end
@@ -67,7 +66,7 @@ module Commissioner
                     pick = DraftPick.find_by(id: pick_id)
                     pick.tlfl_team_id = params[:tlfl_team_one][:id]
                     pick.save
-                    new_trade.picks_two << pick.full
+                    new_trade.picks_two << pick.id
                     new_trade.save
                 end
             end

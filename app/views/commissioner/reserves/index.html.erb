@@ -10,17 +10,10 @@
             <br>
             <%= "Replacement: #{player.replacement_name}" %>
             <br>
-            <div class="reserve-button" style="display: inline-block">
-                <%= button_to "Activate #{player.first_name[0]}. #{player.last_name}", commissioner_reserves_activate_path, 
-                data: { confirm: "Activate #{player.full_name}?"}, params: { ir_player: player.id, replacement: player.ir_id } %>
+            <div class="edit-font">
+                <%= link_to "Activate #{player.last_name}/Change Replacement", commissioner_reserves_activate_replace_path(rs_player: player.id, replacement: player.ir_id) %>
             </div>
-            <div class="reserve-button">&nbsp</div>
-            <div class="reserve-button">
-                <%= button_to 'Change Replacement', commissioner_reserves_change_replacement_path, method: :get,
-                params: { ir_player: player.id, replacement: player.ir_id } %>
-            </div>
-            <div id="new-ir-replacement"></div>
-            <br><br>
+            <br>
         <% end %>
     </ul>
 </div>

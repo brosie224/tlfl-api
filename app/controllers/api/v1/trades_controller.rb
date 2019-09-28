@@ -3,7 +3,8 @@ module Api
       class TradesController < ApplicationController
 
         def index
-          render json: Trade.where(season: 2019).order(:id)
+          Date.today.month < 7 ? @season = Date.today.year - 1 : @season = Date.today.year
+          render json: Trade.where(season: @season).order(week: :desc)
         end
 
         def show

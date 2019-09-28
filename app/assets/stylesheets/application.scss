@@ -90,10 +90,10 @@ main {
   width: 33.33%;
 }
 
-.delete-font a:link,
-.delete-font a:visited,
-.delete-font a:hover,
-.delete-font a:active {
+.edit-font a:link,
+.edit-font a:visited,
+.edit-font a:hover,
+.edit-font a:active {
   font-size: 13.5px;
   color: blue;
 }
@@ -103,7 +103,7 @@ main {
 }
 
 .header-left {
-  margin-left: 30px;
+  margin-left: 25px;
 }
 
 // Buttons
@@ -172,8 +172,4 @@ div.commish-tools li {
 #reserves-index input[type="submit"] {
   width: 140px;
   font-size: 12px;
-}
-
-.reserve-button {
-  float: left;
 }

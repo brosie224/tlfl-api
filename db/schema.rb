@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_27_203439) do
+ActiveRecord::Schema.define(version: 2019_09_28_023145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,9 +60,10 @@ ActiveRecord::Schema.define(version: 2019_09_27_203439) do
     t.integer "week"
     t.string "named_player"
     t.string "replacement_player"
-    t.string "type"
+    t.string "category"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "season"
   end
 
   create_table "team_dsts", force: :cascade do |t|
@@ -103,16 +104,16 @@ ActiveRecord::Schema.define(version: 2019_09_27_203439) do
   create_table "trades", force: :cascade do |t|
     t.integer "season"
     t.integer "week"
-    t.string "team_one"
-    t.string "team_two"
+    t.integer "team_one"
+    t.integer "team_two"
     t.text "players_one", default: [], array: true
     t.text "players_two", default: [], array: true
     t.boolean "includes_protection_one"
     t.boolean "includes_protection_two"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "dst_one"
-    t.string "dst_two"
+    t.integer "dst_one"
+    t.integer "dst_two"
     t.text "picks_one", default: [], array: true
     t.text "picks_two", default: [], array: true
   end

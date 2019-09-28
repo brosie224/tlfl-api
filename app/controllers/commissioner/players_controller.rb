@@ -22,6 +22,8 @@ module Commissioner
                 dst.tlfl_team_id = params[:tlfl_team_assign][:id]
                 dst.save
             end
+            @tlfl_team = TlflTeam.find_by(id: params[:tlfl_team_assign][:id]) 
+            flash[:notice] = "Players added to #{@tlfl_team.nickname}"
             redirect_to commissioner_players_assign_path
         end
 

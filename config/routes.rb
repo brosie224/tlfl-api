@@ -21,9 +21,9 @@ Rails.application.routes.draw do
     resources :trades, except: [:show, :edit, :update]
 
     # Reserves
-    resources :reserves, except: [:show, :destroy]
+    resources :reserves, except: [:show, :destroy, :update, :edit]
+    get '/reserves/activate-replace' => 'reserves#activate_or_replace'
     post '/reserves/activate' => 'reserves#activate'
-    get '/reserves/change-replacement' => 'reserves#replacement_options'
     post '/reserves/change-replacement' => 'reserves#change_replacement'
 
     # resources :players, only: [:new, :create, :edit, :update, :delete] - eventually admin_required
