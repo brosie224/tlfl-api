@@ -28,16 +28,26 @@ module Commissioner
         end
 
         def edit_seniority
-            @seniority_options = [1..5]
             @teams = TlflTeam.order(:city, :nickname)
             @players = Player.order(:nfl_abbrev, :position, :seniority).select do |player|
                 player.tlfl_team_id != nil && (player.position == "RB" || player.position == "WR")
             end
-            # Have dropdown for seniority
         end
 
         def update_seniority
-            raise params.inspect
+            params[:players].keys.each do |id|
+                player = Player.find_by(id: id)
+                player.seniority = params[:players][id][:seniority]
+                player.save
+            end
+            flash[:notice] = "Changes saved."
+            redirect_to commissioner_players_edit_seniority_path
+        end
+
+        private
+
+        def player_params
+            params.require(:player).permit(:seniority)
         end
     
     end
