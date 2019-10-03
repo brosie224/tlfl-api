@@ -2,11 +2,11 @@ class Reserve < ApplicationRecord
 
     def display
         if self.category == "new"
-            "#{self.tlfl_team.upcase} reserve #{self.named_player_name}, name #{self.replacement_player_name}"
+            "#{self.tlfl_team.upcase} reserve #{self.named_player_name}, name #{self.replacement_player_name}."
         elsif self.category == "activate"
-            "#{self.tlfl_team.upcase} activate #{self.named_player_name}"
+            "#{self.tlfl_team.upcase} activate #{self.named_player_name}."
         elsif self.category == "change"
-            "#{self.tlfl_team.upcase} change #{self.named_player_name} replacement to #{self.replacement_player_name}"
+            "#{self.tlfl_team.upcase} change #{self.named_player_name} replacement to #{self.replacement_player_name}."
         end
     end
 

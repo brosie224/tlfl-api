@@ -2,6 +2,32 @@
 
 class FdService
 
+    def current_timeframe
+        # {
+        #     SeasonType: 1,
+        #     Season: 2018,
+        #     Week: 1,
+        #     Name: "Week 1",
+        #     ShortName: "Week 1",
+        #     StartDate: "2018-09-01T00:00:00",
+        #     EndDate: "2018-09-11T23:59:59",
+        #     ApiSeason: "2018REG",
+        #     ApiWeek: "1"
+        # },
+
+        # (1=Regular Season, 2=Preseason, 3=Postseason, 4=Offseason)
+
+        time_resp = Faraday.get 'https://api.fantasydata.net/api/nfl/fantasy/json/Timeframes/current' do |req|
+            req.params['key'] = ENV['FANTASY_DATA_KEY']
+        end
+        time_json = JSON.parse(time_resp.body)
+        @current_season = time_json["Season"]
+        @current_week = time_json["Week"]
+        @current_api_season = time_json["ApiSeason"]
+
+        # call current_timeframe in any method it's needed
+    end
+
     def create_tlfl_teams
         teams_resp = Faraday.get 'https://api.fantasydata.net/api/nfl/fantasy/json/Teams' do |req|
             req.params['key'] = ENV['FANTASY_DATA_KEY']
@@ -92,13 +118,13 @@ class FdService
         end
     end
 
-    # Updates TLFL player if on new team
+    # Updates TLFL player if on new NFL team (or if NFL team city/name changes)
     def update_player_nfl_data
         get_player_data
         @players = Player.all
         @players_json.each do |fd_player| 
             @players.each do |tlfl_player|
-                # Doesn't change TLFL player's team if he isn't on an NFL team anymore
+                # Doesn't change a current TLFL player's team if he isn't on an NFL team anymore
                 if (tlfl_player.available == false && fd_player["Team"]) || tlfl_player.available == true
                     if tlfl_player.fd_id == fd_player["PlayerID"] && tlfl_player.nfl_abbrev != fd_player["Team"]
                         tlfl_player.update(nfl_abbrev: fd_player["Team"], bye_week: fd_player["ByeWeek"], jersey: fd_player["Number"])
@@ -126,15 +152,15 @@ class FdService
       end
     
     def update_teams_dst_data
-        # Update bye_week
-        # Update logo and word_mark
-        # Manually change any city/nickname/abbreviation change
+        # no find_or_create, just matchup IDs and save the data
+        # copy the create method with if statement instead
+        # If new team, check abbreviation compared to what cbs and pfb uses
     end
 
     def update_tlfl_team_data
-        # Update bye_week
-        # Update logo, word_mark, team colors
-        # Manually change any city/nickname/abbreviation change or changed division
+        # no find_or_create, just matchup IDs and save the data
+        # copy the create method with if statement instead
+        # If new team, check abbreviation compared to what cbs and pfb uses
     end
 
 end

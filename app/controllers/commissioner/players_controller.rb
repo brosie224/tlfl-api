@@ -43,12 +43,6 @@ module Commissioner
             flash[:notice] = "Changes saved."
             redirect_to commissioner_players_edit_seniority_path
         end
-
-        private
-
-        def player_params
-            params.require(:player).permit(:seniority)
-        end
-    
+            
     end
 end
