@@ -1,6 +1,7 @@
 module Commissioner
     class PlayersController < ApplicationController
-        before_action :commissioner_required
+        before_action :commissioner_required, except: [:edit, :update]
+        before_action :admin_required, only: [:edit, :update]
 
         def assign
             @players = Player.order(:last_name, :first_name).where(available: true).sort_position
@@ -59,5 +60,17 @@ module Commissioner
             redirect_to commissioner_players_edit_seniority_path
         end
             
+        # ADMIN
+
+        def edit
+            @player = Player.find_by(id: params[:id]) # expand view
+        end
+
+        def update
+            @player = Player.find_by(id: params[:id])
+            @player.update(params.require(:player).permit(:cbs_id, :esb_id)) # expand params
+            redirect_to commissioner_check_cbs_path
+        end
+
     end
 end

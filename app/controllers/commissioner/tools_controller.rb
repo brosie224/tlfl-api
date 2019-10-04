@@ -23,6 +23,21 @@ module Commissioner
       flash[:notice] = "Team data updated."
       redirect_to commissioner_path
     end
+
+    # # Checks if database name matches same as cbs - if different player, manually change cbs and esb IDs
+    # def check_cbs_id
+    #   @hash = {}
+    #   cbs_resp = Faraday.get "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json"
+    #   cbs_json = JSON.parse(cbs_resp.body)
+    #   players = Player.all
+    #   cbs_json["body"]["players"].each do |cbs_player|
+    #     players.each do |player|
+    #       if player.cbs_id == cbs_player["id"].to_i && player.full_name != cbs_player["fullname"]
+    #         @hash[player.full_name] = cbs_player["fullname"]
+    #       end
+    #     end
+    #   end
+    # end
   
   end
 end

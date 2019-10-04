@@ -26,5 +26,8 @@ class Player < ApplicationRecord
         end
     end
 
+    def self.missing_esb_data
+        self.where(esb_id: nil).where.not(tlfl_team_id: nil)
+    end
 
 end

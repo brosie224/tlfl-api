@@ -7,17 +7,15 @@ class ApplicationController < ActionController::Base
     @current_user ||= User.find_by(id: session[:user_id])
   end
 
-  # def admin_required
-  #   if !current_user 
-  #     flash.now.alert = "You must be an admin to perform this action."
-  #     redirect_to commissioner_login_path
-  #     return
-  #   end
-  #   if current_user.email != "barosengarten@gmail.com"
-  #     flash.now.alert = "You must be an admin to perform this action."
-  #     redirect_to commissioner_login_path
-  #   end
-  # end
+  def admin_required
+    if !current_user 
+      flash[:alert] = "You must be an admin to perform this action."
+      redirect_to commissioner_login_path
+    elsif current_user.email != "barosengarten@gmail.com"
+      flash[:alert] = "You must be an admin to perform this action."
+      redirect_to commissioner_login_path
+    end
+  end
 
   def commissioner_required
     commissioners = ["barosengarten@gmail.com"]

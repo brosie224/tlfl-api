@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     get '/players/edit-seniority' => 'players#edit_seniority'
     patch '/players/update-seniority' => 'players#update_seniority'
     # Set Keepers
+    resources :players, only: [:edit, :update]
 
     # Trades
     resources :trades, except: [:show, :edit, :update]

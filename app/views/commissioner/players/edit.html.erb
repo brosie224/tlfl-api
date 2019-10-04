@@ -1,0 +1,6 @@
+<%= form_for @player, url: commissioner_player_path(@player), html: { method: :patch} do |f| %>
+  <%= @player.full_name %><br>
+  <%= f.number_field :cbs_id, placeholder: "CBS ID" %><br>
+  <%= f.text_field :esb_id, placeholder: "ESB ID" %><br>
+  <%= f.submit %>
+<% end %>
