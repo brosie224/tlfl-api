@@ -15,6 +15,8 @@ Rails.application.routes.draw do
     # Assign/Keepers
     get '/players/assign' => 'players#assign'
     post '/players/add-to-team' => 'players#add_to_team'
+    patch '/players/remove-from-team/:id' => 'players#remove_from_team'
+    patch '/players/remove-dst/:id' => 'players#remove_dst'
     get '/players/edit-seniority' => 'players#edit_seniority'
     patch '/players/update-seniority' => 'players#update_seniority'
     # Set Keepers
@@ -58,6 +60,10 @@ Rails.application.routes.draw do
 
       # RESERVES
       get '/reserves' => 'reserves#index'
+
+      # SCHEDULE
+      get '/schedule' => 'schedule_games#index'
+
     end
   end
 

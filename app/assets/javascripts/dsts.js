@@ -2,6 +2,7 @@ class Dst {
   constructor(obj) {
     this.id = obj.id;
     this.name = obj.full_name;
+    this.nfl = obj.nfl_abbrev;
   }
 }
 

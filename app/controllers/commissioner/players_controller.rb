@@ -13,6 +13,7 @@ module Commissioner
                 params[:players].each do |player_id|
                     player = Player.find_by(id: player_id)
                     player.tlfl_team_id = params[:tlfl_team_assign][:id]
+                    player.available = false
                     player.save
                 end
             end
@@ -22,8 +23,22 @@ module Commissioner
                 dst.tlfl_team_id = params[:tlfl_team_assign][:id]
                 dst.save
             end
-            @tlfl_team = TlflTeam.find_by(id: params[:tlfl_team_assign][:id]) 
-            flash[:notice] = "Players added to #{@tlfl_team.nickname}"
+            @tlfl_team = TlflTeam.find_by(id: params[:tlfl_team_assign][:id])
+            redirect_to commissioner_players_assign_path
+        end
+
+        def remove_from_team
+            player = Player.find_by(id: params[:id])
+            player.tlfl_team_id = nil
+            player.available = true
+            player.save
+            redirect_to commissioner_players_assign_path
+        end
+
+        def remove_dst
+            dst = TeamDst.find_by(id: params[:id])
+            dst.tlfl_team_id = nil
+            dst.save
             redirect_to commissioner_players_assign_path
         end
 

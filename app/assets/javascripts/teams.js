@@ -53,7 +53,7 @@ Team.prototype.displayTeamAvail = function() {
 
   let players = sortedPlayers
     .map(player => {
-      return `${player.position} ${player.full_name} <br>`;
+      return `${player.position} ${player.full_name}, ${player.nfl_abbrev} <a style="font-size:12px" data-confirm="Remove ${player.full_name}?" rel="nofollow" data-method="patch" href="/commissioner/players/remove-from-team/${player.id}">Remove</a><br>`;
     })
     .join("");
 
@@ -64,7 +64,11 @@ Team.prototype.displayTeamAvail = function() {
   return `
     <h4 style="display:inline">${this.name}: ${total}</h4><br>
     <p style="display:inline">${players}</p>
-    <p>${this.dst ? `DT ${this.dst.full_name}` : ""}</p>
+    <p>${
+      this.dst
+        ? `DT ${this.dst.full_name}, ${this.dst.nfl_abbrev} <a style="font-size:12px" data-confirm="Remove ${this.dst.full_name}?" rel="nofollow" data-method="patch" href="/commissioner/players/remove-dst/${this.dst.id}">Remove</a>`
+        : ""
+    }</p>
   `;
 };
 

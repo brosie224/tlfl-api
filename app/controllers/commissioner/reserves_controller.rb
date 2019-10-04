@@ -53,7 +53,7 @@ module Commissioner
         new_replacement = Player.find_by(id: params[:new_replacement])
         new_replacement.available = false
         new_replacement.save
-        flash[:notice] = "Replacement changed to #{new_replacement.full_name}"
+        flash[:notice] = "Replacement changed to #{new_replacement.full_name}."
         redirect_to commissioner_reserves_path
       end
 
