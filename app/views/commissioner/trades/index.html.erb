@@ -9,10 +9,9 @@
             <strong><%= "Week #{trade.week}" %></strong>
         <% end %>
         <br>
-        <% trade.display.each do |team| %>
-            <%= team %>
-            <br>
-        <% end %>
+        <%= trade.display[0] %>
+        <br>
+        <%= trade.display[1] %>
         <div class="edit-font">
             <%= link_to "Delete Trade", commissioner_trade_path(trade), method: "delete", 
             data: { confirm: "Delete trade between #{trade.team_one_name} and #{trade.team_two_name}?" } %>

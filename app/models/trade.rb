@@ -1,5 +1,14 @@
 class Trade < ApplicationRecord
 
+    def self.in_season_by_id(season = 2019, team_id)
+        self.where(season: season, team_one: team_id).length + self.where(season: season, team_two: team_id).length
+    end
+
+    def self.in_season_by_abbrev(season = 2019, team_abbrev)
+        team_id = TlflTeam.find_by(abbreviation: team_abbrev).id
+        self.where(season: season, team_one: team_id).length + self.where(season: season, team_two: team_id).length
+    end
+
     def display
         assets_one, assets_two = [], []
         
@@ -13,8 +22,8 @@ class Trade < ApplicationRecord
         assets_two << "Protection Spot" if self.includes_protection_two
 
 
-        ["#{self.team_one_name.upcase} receive: #{assets_two.join(", ")}",
-        "#{self.team_two_name.upcase} receive: #{assets_one.join(", ")}"]
+        ["#{self.team_one_name.upcase} #{"(#{self.team_one_total})" if self.week != 0} receive: #{assets_two.join(", ")}",
+        "#{self.team_two_name.upcase} #{"(#{self.team_two_total})" if self.week != 0} receive: #{assets_one.join(", ")}"]
     end
 
     def team_one_name

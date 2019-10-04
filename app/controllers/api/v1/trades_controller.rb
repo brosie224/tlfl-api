@@ -4,7 +4,7 @@ module Api
 
         def index
           Date.today.month < 7 ? @season = Date.today.year - 1 : @season = Date.today.year
-          render json: Trade.where(season: @season).order(week: :desc)
+          render json: Trade.where(season: @season).order(week: :desc, id: :desc)
         end
 
         def show

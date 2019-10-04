@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_03_230320) do
+ActiveRecord::Schema.define(version: 2019_10_04_203448) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -129,6 +129,8 @@ ActiveRecord::Schema.define(version: 2019_10_03_230320) do
     t.integer "dst_two"
     t.text "picks_one", default: [], array: true
     t.text "picks_two", default: [], array: true
+    t.integer "team_one_total"
+    t.integer "team_two_total"
   end
 
   create_table "users", force: :cascade do |t|

@@ -4,7 +4,7 @@ module Commissioner
 
         def index
             Date.today.month < 7 ? @season = Date.today.year - 1 : @season = Date.today.year
-            @trades = Trade.where(season: @season).order(week: :desc)
+            @trades = Trade.where(season: @season).order(week: :desc, id: :desc)
         end
 
         def new
@@ -17,6 +17,10 @@ module Commissioner
         def create
             new_trade = Trade.create(season: Date.today.year, week: params[:week], 
                 team_one: params[:tlfl_team_one][:id], team_two: params[:tlfl_team_two][:id])
+            if params[:week] != 0
+                new_trade.team_one_total = Trade.in_season_by_id(new_trade.team_one)
+                new_trade.team_two_total = Trade.in_season_by_id(new_trade.team_two)
+            end
             # Trades each player
             if params[:players_one]
                 params[:players_one].each do |player_id|

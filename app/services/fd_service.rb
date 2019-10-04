@@ -117,7 +117,7 @@ class FdService
         end
     end
 
-    # Updates TLFL player if on new NFL team (or if NFL team city/name changes)
+    # Updates players if on new NFL team (or if NFL team city/name changes)
     def update_player_nfl_data
         get_player_data
         @players = Player.all

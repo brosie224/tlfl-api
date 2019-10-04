@@ -8,7 +8,6 @@
             <li><%= link_to 'Add Players to Teams', commissioner_players_assign_path %></li>
             <li><%= link_to "Edit Players' Seniority", commissioner_players_edit_seniority_path %></li>
             Figure out everything needed and link the methods
-            <li><button>Update Team Bye Weeks</button></li>
         </ul>
 
         <h6>Weekly</h6>
@@ -34,8 +33,8 @@
 
     <div class="commish-tools-buttons">
         <h6 style="padding-bottom: 7px">Player Maintenance</h6>
-        <%= button_to 'Update Available Players', commissioner_update_available_players_path, method: :get %>
+        <%= button_to 'Update Players', commissioner_update_available_players_path, method: :get %>
         <p class="header-note">Note: Takes 30-60 seconds to run</p>
-        <p><button>Update Players' NFL Data</button></p>
+        <p><button>Update Team Data</button></p>
     </div>
 </div>
