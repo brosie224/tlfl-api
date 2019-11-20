@@ -96,26 +96,43 @@ class FdService
 
     # -- NEW SEASON UPDATES --
 
+    # # Updates NFL FAs (Creates and Deletes to show correct available players)
+    # def OLD_update_available_players
+    #     # create_new_players
+    #     get_player_data
+    #     all_fd_ids = []
+    #     # Deletes players who aren't listed as "active" in database and aren't on TLFL team
+    #     @players_json.each do |fd_player|
+    #         all_fd_ids << fd_player["PlayerID"]      
+    #         Player.all.each do |tlfl_player|
+    #             if tlfl_player.available == true && tlfl_player.fd_id == fd_player["PlayerID"] && fd_player["Status"] != "Active"
+    #                 tlfl_player.destroy
+    #             end
+    #         end
+    #     end
+    #     # Deletes players who don't appear in the database and aren't on TLFL team
+    #     Player.all.each do |tlfl_player|
+    #         if tlfl_player.available == true && all_fd_ids.exclude?(tlfl_player.fd_id)
+    #             tlfl_player.destroy
+    #         end
+    #     end
+    # end
+
     # Updates NFL FAs (Creates and Deletes to show correct available players)
     def update_available_players
         create_new_players
-        all_fd_ids = []
-        # Deletes players who aren't listed as "active" in database and aren't on TLFL team
+        fd_status_hash = {}
         @players_json.each do |fd_player|
-            all_fd_ids << fd_player["PlayerID"]      
-            Player.all.each do |tlfl_player|
-                if tlfl_player.fd_id == fd_player["PlayerID"] && tlfl_player.available == true && fd_player["Status"] != "Active"
-                    tlfl_player.destroy
-                end
-            end
+            fd_status_hash[fd_player["PlayerID"]] = fd_player["Status"]
         end
-        # Deletes players who don't appear in the database and aren't on TLFL team
+        # Deletes players who aren't listed as "active" in database and aren't on TLFL team
         Player.all.each do |tlfl_player|
-            if tlfl_player.available == true && all_fd_ids.exclude?(tlfl_player.fd_id)
+            if tlfl_player.available == true && fd_status_hash[tlfl_player.fd_id] != "Active"
                 tlfl_player.destroy
             end
         end
     end
+
 
     # Updates players if on new NFL team (or if NFL team city/name changes)
     def update_player_nfl_data

@@ -14,6 +14,8 @@ class NewSeason
         def set_keepers # put in players controller?
         end
 
+        # After keepers set, reset non-keeper's seniority (if no team, seniority = 1)
+
         # FdService methods to run:
             # create_new_players (to add rookies/new players)
             # update_tlfl_team_data
