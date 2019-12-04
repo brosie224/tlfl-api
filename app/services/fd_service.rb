@@ -137,9 +137,8 @@ class FdService
     # Updates players if on new NFL team (or if NFL team city/name changes)
     def update_player_nfl_data
         get_player_data
-        @players = Player.all
         @players_json.each do |fd_player| 
-            @players.each do |tlfl_player|
+            Player.all.each do |tlfl_player|
                 # Doesn't change a current TLFL player's team if he isn't on an NFL team anymore
                 if (tlfl_player.available == false && fd_player["Team"]) || tlfl_player.available == true
                     if tlfl_player.fd_id == fd_player["PlayerID"] && tlfl_player.nfl_abbrev != fd_player["Team"]
