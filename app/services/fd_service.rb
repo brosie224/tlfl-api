@@ -14,6 +14,14 @@ class FdService
         @current_week = time_json["Week"]
         @current_api_season = time_json["ApiSeason"] # eg 2019REG
         @current_season_type = time_json["SeasonType"] # (1=Regular Season, 2=Preseason, 3=Postseason, 4=Offseason)
+        # when running PlayerGame state, do only if @current_season_type == 1 so it doesn't run after Week 17
+        # figure out when current week flips and run PlayerGame and Projections accordingly
+    end
+
+    def create_player_games
+        # current_timeframe
+        Player.where(tlfl_team_id: 22).build
+
     end
 
     # Creates and Deletes players to show only active NFL players
