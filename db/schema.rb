@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_09_051459) do
+ActiveRecord::Schema.define(version: 2019_12_09_053316) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,7 +46,6 @@ ActiveRecord::Schema.define(version: 2019_12_09_051459) do
     t.string "injury_status"
     t.boolean "active"
     t.boolean "needs_replacement"
-    t.integer "tlfl_pts"
     t.integer "pass_comp"
     t.integer "pass_att"
     t.integer "pass_yards"
