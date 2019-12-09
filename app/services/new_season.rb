@@ -51,5 +51,7 @@ class NewSeason
                 end
             end
         end
+    
+    # Check all TLFL players have correct esb_id
         
 end

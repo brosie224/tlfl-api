@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_04_203448) do
+ActiveRecord::Schema.define(version: 2019_12_09_051459) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,41 @@ ActiveRecord::Schema.define(version: 2019_10_04_203448) do
     t.string "email"
     t.string "phone"
     t.integer "tlfl_team_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "player_games", force: :cascade do |t|
+    t.integer "season"
+    t.integer "season_type"
+    t.integer "week"
+    t.string "player_name"
+    t.string "nfl_team"
+    t.string "tlfl_team"
+    t.string "position"
+    t.string "injury_status"
+    t.boolean "active"
+    t.boolean "needs_replacement"
+    t.integer "tlfl_pts"
+    t.integer "pass_comp"
+    t.integer "pass_att"
+    t.integer "pass_yards"
+    t.integer "pass_td"
+    t.integer "pass_int"
+    t.integer "rushes"
+    t.integer "rush_yards"
+    t.integer "rush_td"
+    t.integer "receptions"
+    t.integer "rec_yards"
+    t.integer "rec_td"
+    t.integer "punt_ret_td"
+    t.integer "kick_ret_td"
+    t.integer "two_pt_pass"
+    t.integer "two_pt_rush"
+    t.integer "two_pt_rec"
+    t.integer "fgm"
+    t.integer "fga"
+    t.integer "pat"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
