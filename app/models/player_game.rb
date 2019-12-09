@@ -2,7 +2,7 @@ class PlayerGame < ApplicationRecord
     belongs_to :player
 
     def tlfl_pts
-        # add all methods together
+        pass_pts + rush_pts + rec_pts + return_pts + kick_pts
     end
 
     def pass_pts
