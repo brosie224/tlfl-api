@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_09_201355) do
+ActiveRecord::Schema.define(version: 2019_12_09_201844) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,8 +44,8 @@ ActiveRecord::Schema.define(version: 2019_12_09_201355) do
     t.string "tlfl_team"
     t.string "position"
     t.string "injury_status"
-    t.boolean "active"
-    t.boolean "needs_replacement"
+    t.boolean "active", default: true
+    t.boolean "needs_replacement", default: false
     t.integer "pass_comp"
     t.integer "pass_att"
     t.integer "pass_yards"
