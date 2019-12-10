@@ -20,8 +20,23 @@ class FdService
 
     def create_player_games
         # current_timeframe
-        Player.where(tlfl_team_id: 22).build
+        # if @current_season_type == 1
+            @current_api_season = "2018REG" # delete once timeframe running
+            @current_week = 3 # delete once timeframe running
+            stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/PlayerGameStatsByWeek/#{@current_api_season}/#{@current_week}" do |req|
+                req.params['key'] = ENV['FANTASY_DATA_KEY']
+            end
+            stats_json = JSON.parse(stats_resp.body)
+            offensive_players = stats_json.select { |player| %w(QB RB FB WR TE K).include? player["Position"] }
 
+            tlfl_players = Player.where(available: false)
+            tlfl_players.each do |tlfl_player|
+                offensive_players.select {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}
+                # Does this yield entire hash of player's game?
+                # Build player_games - tlfl_player.player_games.build(.....)
+            end
+
+        # end
     end
 
     # Creates and Deletes players to show only active NFL players
