@@ -24,6 +24,7 @@ class FdService
             @current_season = 2018 # delete once timeframe running
             @current_api_season = "2018REG" # delete once timeframe running
             @current_week = 3 # delete once timeframe running
+            @current_season_type = 1 # delete once timeframe running
 
             stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/PlayerGameStatsByWeek/#{@current_api_season}/#{@current_week}" do |req|
                 req.params['key'] = ENV['FANTASY_DATA_KEY']
@@ -31,66 +32,98 @@ class FdService
             stats_json = JSON.parse(stats_resp.body)
             # offensive_players = stats_json.select { |player| %w(QB RB FB WR TE K).include? player["Position"] }
 
-            tlfl_players = Player.where(available: false)
+            # tlfl_players = Player.where(available: false)
+            tlfl_players = Player.where(tlfl_team_id: 22)
             tlfl_players.each do |tlfl_player|
-                player_stats = stats_json.select {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}.first
-                if game = PlayerGame.where.(player_id: tlfl_player.id, season: @current_season, week: @current_week)
-                    game.update(
-                        season: player_stats["Season"],
-                        season_type: player_stats["SeasonType"],
-                        week: player_stats["Week"],
-                        nfl_team: player_stats["Team"],
-                        pass_comp: player_stats["PassingCompletions"],
-                        pass_att: player_stats["PassingAttempts"],
-                        pass_yards: player_stats["PassingYards"],
-                        pass_td: player_stats["PassingTouchdowns"],
-                        pass_int: player_stats["PassingInterceptions"],
-                        rushes: player_stats["RushingAttempts"],
-                        rush_yards: player_stats["RushingYards"],
-                        rush_td: player_stats["RushingTouchdowns"],
-                        receptions: player_stats["Receptions"],
-                        rec_yards: player_stats["ReceivingYards"],
-                        rec_td: player_stats["ReceivingTouchdowns"],
-                        punt_ret_td: player_stats["PuntReturnTouchdowns"],
-                        kick_ret_td: player_stats["KickReturnTouchdowns"],
-                        two_pt_pass: player_stats["TwoPointConversionPasses"],
-                        two_pt_rush: player_stats["TwoPointConversionRuns"],
-                        two_pt_rec: player_stats["TwoPointConversionReceptions"],
-                        fgm: player_stats["FieldGoalsMade"],
-                        fga: player_stats["FieldGoalsAttempted"],
-                        pat: player_stats["ExtraPointsMade"]
-                    )
+                if player_stats = stats_json.select {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}.first # try find_by
+                    if game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, week: @current_week)
+                        game.update(
+                            season: @current_season,
+                            season_type: @current_season_type,
+                            week: @current_week,
+                            nfl_team: player_stats["Team"],
+                            pass_comp: player_stats["PassingCompletions"],
+                            pass_att: player_stats["PassingAttempts"],
+                            pass_yards: player_stats["PassingYards"],
+                            pass_td: player_stats["PassingTouchdowns"],
+                            pass_int: player_stats["PassingInterceptions"],
+                            rushes: player_stats["RushingAttempts"],
+                            rush_yards: player_stats["RushingYards"],
+                            rush_td: player_stats["RushingTouchdowns"],
+                            receptions: player_stats["Receptions"],
+                            rec_yards: player_stats["ReceivingYards"],
+                            rec_td: player_stats["ReceivingTouchdowns"],
+                            punt_ret_td: player_stats["PuntReturnTouchdowns"],
+                            kick_ret_td: player_stats["KickReturnTouchdowns"],
+                            two_pt_pass: player_stats["TwoPointConversionPasses"],
+                            two_pt_rush: player_stats["TwoPointConversionRuns"],
+                            two_pt_rec: player_stats["TwoPointConversionReceptions"],
+                            fgm: player_stats["FieldGoalsMade"],
+                            fga: player_stats["FieldGoalsAttempted"],
+                            pat: player_stats["ExtraPointsMade"]
+                        )
+                    else
+                        PlayerGame.create(
+                            player_id: tlfl_player.id,
+                            player_name: tlfl_player.full_name,
+                            position: tlfl_player.position,
+                            tlfl_team: tlfl_player.tlfl_team_id,
+                            season: @current_season,
+                            season_type: @current_season_type,
+                            week: @current_week,
+                            nfl_team: player_stats["Team"],
+                            pass_comp: player_stats["PassingCompletions"],
+                            pass_att: player_stats["PassingAttempts"],
+                            pass_yards: player_stats["PassingYards"],
+                            pass_td: player_stats["PassingTouchdowns"],
+                            pass_int: player_stats["PassingInterceptions"],
+                            rushes: player_stats["RushingAttempts"],
+                            rush_yards: player_stats["RushingYards"],
+                            rush_td: player_stats["RushingTouchdowns"],
+                            receptions: player_stats["Receptions"],
+                            rec_yards: player_stats["ReceivingYards"],
+                            rec_td: player_stats["ReceivingTouchdowns"],
+                            punt_ret_td: player_stats["PuntReturnTouchdowns"],
+                            kick_ret_td: player_stats["KickReturnTouchdowns"],
+                            two_pt_pass: player_stats["TwoPointConversionPasses"],
+                            two_pt_rush: player_stats["TwoPointConversionRuns"],
+                            two_pt_rec: player_stats["TwoPointConversionReceptions"],
+                            fgm: player_stats["FieldGoalsMade"],
+                            fga: player_stats["FieldGoalsAttempted"],
+                            pat: player_stats["ExtraPointsMade"]
+                        )
+                    end
                 else
                     PlayerGame.create(
                         player_id: tlfl_player.id,
                         player_name: tlfl_player.full_name,
                         position: tlfl_player.position,
                         tlfl_team: tlfl_player.tlfl_team_id,
-                        season: player_stats["Season"],
-                        season_type: player_stats["SeasonType"],
-                        week: player_stats["Week"],
-                        nfl_team: player_stats["Team"],
-                        pass_comp: player_stats["PassingCompletions"],
-                        pass_att: player_stats["PassingAttempts"],
-                        pass_yards: player_stats["PassingYards"],
-                        pass_td: player_stats["PassingTouchdowns"],
-                        pass_int: player_stats["PassingInterceptions"],
-                        rushes: player_stats["RushingAttempts"],
-                        rush_yards: player_stats["RushingYards"],
-                        rush_td: player_stats["RushingTouchdowns"],
-                        receptions: player_stats["Receptions"],
-                        rec_yards: player_stats["ReceivingYards"],
-                        rec_td: player_stats["ReceivingTouchdowns"],
-                        punt_ret_td: player_stats["PuntReturnTouchdowns"],
-                        kick_ret_td: player_stats["KickReturnTouchdowns"],
-                        two_pt_pass: player_stats["TwoPointConversionPasses"],
-                        two_pt_rush: player_stats["TwoPointConversionRuns"],
-                        two_pt_rec: player_stats["TwoPointConversionReceptions"],
-                        fgm: player_stats["FieldGoalsMade"],
-                        fga: player_stats["FieldGoalsAttempted"],
-                        pat: player_stats["ExtraPointsMade"]
+                        season: @current_season,
+                        season_type: @current_season_type,
+                        week: @current_week,
+                        nfl_team: tlfl_player.nfl_abbrev,
+                        pass_comp: 0,
+                        pass_att: 0,
+                        pass_yards: 0,
+                        pass_td: 0,
+                        pass_int: 0,
+                        rushes: 0,
+                        rush_yards: 0,
+                        rush_td: 0,
+                        receptions: 0,
+                        rec_yards: 0,
+                        rec_td: 0,
+                        punt_ret_td: 0,
+                        kick_ret_td: 0,
+                        two_pt_pass: 0,
+                        two_pt_rush: 0,
+                        two_pt_rec: 0,
+                        fgm: 0,
+                        fga: 0,
+                        pat: 0
                     )
-                end  
+                end
             end
         # end
     end
