@@ -1,11 +1,10 @@
-# require 'open-uri'
+require 'open-uri'
 
-class FdService
+class FdPlayer
 
 # -- IN-SEASON METHODS -- 
 
     def current_timeframe
-        # call current_timeframe in any method it's needed
         time_resp = Faraday.get 'https://api.fantasydata.net/api/nfl/fantasy/json/Timeframes/current' do |req|
             req.params['key'] = ENV['FANTASY_DATA_KEY']
         end
@@ -14,8 +13,7 @@ class FdService
         @current_week = time_json["Week"]
         @current_api_season = time_json["ApiSeason"] # eg 2019REG
         @current_season_type = time_json["SeasonType"] # (1=Regular Season, 2=Preseason, 3=Postseason, 4=Offseason)
-        # when running PlayerGame state, do only if @current_season_type == 1 so it doesn't run after Week 17
-        # figure out when current week flips and run PlayerGame and Projections accordingly
+        # find out when current week flips and run PlayerGame and Projections accordingly
     end
 
     def create_player_games
@@ -33,6 +31,9 @@ class FdService
 
             tlfl_players = Player.where(available: false)
             # Run the injury and inactive hashes here
+            # If appears on both, create PlayerGame with ID, season, season type, week and flip needs_replacement
+            # Then an if needs_replacement == true...
+            # Can delete injury_status and active columns (use injury status for projections)
             tlfl_players.each do |tlfl_player|
 
                 if tlfl_player.ir_id != nil
@@ -40,7 +41,7 @@ class FdService
                 else
                     player_stats = stats_json.find {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}
                 end
-
+                
                 if player_stats
                     if game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
                         game.update(
@@ -216,80 +217,7 @@ class FdService
 
     # -- OFFSEASON METHODS --
     
-    def update_team_dst_data
-        # If there's a new/relocated team, check abbreviation compared to what cbs and pfb uses
-        teams_resp = Faraday.get 'https://api.fantasydata.net/api/nfl/fantasy/json/Teams' do |req|
-            req.params['key'] = ENV['FANTASY_DATA_KEY']
-        end
-        teams_json = JSON.parse(teams_resp.body)
-        teams_json.each do |team|
-            TeamDst.all.each do |dst|
-                if dst.fd_id == team["TeamID"]
-                    dst.update(city: team["City"], nickname: team["Name"], nfl_abbrev: team["Key"], bye_week: team["ByeWeek"], 
-                        logo: team["WikipediaLogoUrl"], word_mark: team["WikipediaWordMarkUrl"], fd_player_id: team["PlayerID"])
-                end
-            end
-        end
-    end
-
-    def update_tlfl_team_data
-        # If there's a new/relocated team, check abbreviation compared to what cbs and pfb uses
-        teams_resp = Faraday.get 'https://api.fantasydata.net/api/nfl/fantasy/json/Teams' do |req|
-            req.params['key'] = ENV['FANTASY_DATA_KEY']
-        end
-        teams_json = JSON.parse(teams_resp.body)
-        teams_json.each do |team|
-            TlflTeam.all.each do |tlfl_team|
-                if tlfl_team.fd_id == team["TeamID"]
-                    tlfl_team.update(city: team["City"], nickname: team["Name"], abbreviation: team["Key"], conference: team["Conference"], division: team["Division"], 
-                        bye_week: team["ByeWeek"], logo: team["WikipediaLogoUrl"], word_mark: team["WikipediaWordMarkUrl"], primary_color: team["PrimaryColor"], 
-                        secondary_color: team["SecondaryColor"], tertiary_color: team["TertiaryColor"], quaternary_color: team["QuaternaryColor"])
-                end
-            end
-        end
-    end
 
     # -- INITIAL CREATE METHODS --
-
-    def create_tlfl_teams
-        teams_resp = Faraday.get 'https://api.fantasydata.net/api/nfl/fantasy/json/Teams' do |req|
-            req.params['key'] = ENV['FANTASY_DATA_KEY']
-        end
-        teams_json = JSON.parse(teams_resp.body)
-        teams_json.each do |team|
-            TlflTeam.find_or_create_by(fd_id: team["TeamID"]) do |new_team|
-                new_team.city = team["City"]
-                new_team.nickname = team["Name"]
-                new_team.abbreviation = team["Key"]
-                new_team.conference = team["Conference"]
-                new_team.division = team["Division"]
-                new_team.bye_week = team["ByeWeek"]
-                new_team.logo = team["WikipediaLogoUrl"]
-                new_team.word_mark = team["WikipediaWordMarkUrl"]
-                new_team.primary_color = team["PrimaryColor"]
-                new_team.secondary_color = team["SecondaryColor"]
-                new_team.tertiary_color = team["TertiaryColor"]
-                new_team.quaternary_color = team["QuaternaryColor"]
-            end
-        end
-    end
-
-    def create_team_dsts
-        teams_resp = Faraday.get 'https://api.fantasydata.net/api/nfl/fantasy/json/Teams' do |req|
-            req.params['key'] = ENV['FANTASY_DATA_KEY']
-        end
-        teams_json = JSON.parse(teams_resp.body)
-        teams_json.each do |team|
-            TeamDst.find_or_create_by(fd_id: team["TeamID"]) do |new_team|
-                new_team.city = team["City"]
-                new_team.nickname = team["Name"]
-                new_team.nfl_abbrev = team["Key"]
-                new_team.bye_week = team["ByeWeek"]
-                new_team.logo = team["WikipediaLogoUrl"]
-                new_team.word_mark = team["WikipediaWordMarkUrl"]
-                new_team.fd_player_id = team["PlayerID"]
-            end
-        end
-    end
 
 end
