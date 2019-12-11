@@ -22,8 +22,13 @@ class Player < ApplicationRecord
 
     def replacement_name
         if self.ir_id
-            player = Player.find_by(id: self.ir_id)
-            player.full_name
+            Player.find_by(id: self.ir_id).full_name
+        end
+    end
+
+    def replacement_fd_id
+        if self.ir_id
+            Player.find_by(id: self.ir_id).fd_id
         end
     end
 

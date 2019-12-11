@@ -30,14 +30,19 @@ class FdService
                 req.params['key'] = ENV['FANTASY_DATA_KEY']
             end
             stats_json = JSON.parse(stats_resp.body)
-            # offensive_players = stats_json.select { |player| %w(QB RB FB WR TE K).include? player["Position"] }
 
             tlfl_players = Player.where(available: false)
-            # tlfl_players = Player.where(tlfl_team_id: 1)
+            # Run the injury and inactive hashes here
             tlfl_players.each do |tlfl_player|
-                # if player_stats = stats_json.find {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}
-                    if player_stats = stats_json.select {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}.first
-                    if game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, week: @current_week)
+
+                if tlfl_player.ir_id != nil
+                    player_stats = stats_json.find {|fd_player| fd_player["PlayerID"] == tlfl_player.replacement_fd_id}
+                else
+                    player_stats = stats_json.find {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}
+                end
+
+                if player_stats
+                    if game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
                         game.update(
                             season: @current_season,
                             season_type: @current_season_type,
@@ -131,10 +136,11 @@ class FdService
 
 
 # -- INACTIVE/INJURY NOTES --
+    # account for searching for replacement if on IR
     # injury hash ID: injury
     # inactive hash ID: inactive
     # replacement: if ID is in injury hash && inactive hash
-    # if in inactive hash && not in injury then 0
+    # if in inactive hash && not in injury then 0 -- don't have to, will be 0s when he doesn't show up on stats API
 
     # Creates and Deletes players to show only active NFL players
     def update_available_players
