@@ -32,10 +32,11 @@ class FdService
             stats_json = JSON.parse(stats_resp.body)
             # offensive_players = stats_json.select { |player| %w(QB RB FB WR TE K).include? player["Position"] }
 
-            # tlfl_players = Player.where(available: false)
-            tlfl_players = Player.where(tlfl_team_id: 22)
+            tlfl_players = Player.where(available: false)
+            # tlfl_players = Player.where(tlfl_team_id: 1)
             tlfl_players.each do |tlfl_player|
-                if player_stats = stats_json.select {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}.first # try find_by
+                # if player_stats = stats_json.find {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}
+                    if player_stats = stats_json.select {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}.first
                     if game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, week: @current_week)
                         game.update(
                             season: @current_season,
@@ -128,16 +129,6 @@ class FdService
         # end
     end
 
-    # All 0's if doesn't find ID?
-
-# -- TEST --
-def test_stats
-    stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/PlayerGameStatsByWeek/2018REG/3" do |req|
-        req.params['key'] = ENV['FANTASY_DATA_KEY']
-    end
-    stats_json = JSON.parse(stats_resp.body)
-    offensive_players = stats_json.select { |player| %w(QB RB FB WR TE K).include? player["Position"] }
-end
 
 # -- INACTIVE/INJURY NOTES --
     # injury hash ID: injury
