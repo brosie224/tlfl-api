@@ -24,26 +24,78 @@ class FdService
             @current_season = 2018 # delete once timeframe running
             @current_api_season = "2018REG" # delete once timeframe running
             @current_week = 3 # delete once timeframe running
+
             stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/PlayerGameStatsByWeek/#{@current_api_season}/#{@current_week}" do |req|
                 req.params['key'] = ENV['FANTASY_DATA_KEY']
             end
             stats_json = JSON.parse(stats_resp.body)
-            offensive_players = stats_json.select { |player| %w(QB RB FB WR TE K).include? player["Position"] }
+            # offensive_players = stats_json.select { |player| %w(QB RB FB WR TE K).include? player["Position"] }
 
             tlfl_players = Player.where(available: false)
             tlfl_players.each do |tlfl_player|
-                off_player = offensive_players.select {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}.first
-                
+                player_stats = stats_json.select {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}.first
                 if game = PlayerGame.where.(player_id: tlfl_player.id, season: @current_season, week: @current_week)
-                    game.update(season: off_player["Season"],)
+                    game.update(
+                        season: player_stats["Season"],
+                        season_type: player_stats["SeasonType"],
+                        week: player_stats["Week"],
+                        nfl_team: player_stats["Team"],
+                        pass_comp: player_stats["PassingCompletions"],
+                        pass_att: player_stats["PassingAttempts"],
+                        pass_yards: player_stats["PassingYards"],
+                        pass_td: player_stats["PassingTouchdowns"],
+                        pass_int: player_stats["PassingInterceptions"],
+                        rushes: player_stats["RushingAttempts"],
+                        rush_yards: player_stats["RushingYards"],
+                        rush_td: player_stats["RushingTouchdowns"],
+                        receptions: player_stats["Receptions"],
+                        rec_yards: player_stats["ReceivingYards"],
+                        rec_td: player_stats["ReceivingTouchdowns"],
+                        punt_ret_td: player_stats["PuntReturnTouchdowns"],
+                        kick_ret_td: player_stats["KickReturnTouchdowns"],
+                        two_pt_pass: player_stats["TwoPointConversionPasses"],
+                        two_pt_rush: player_stats["TwoPointConversionRuns"],
+                        two_pt_rec: player_stats["TwoPointConversionReceptions"],
+                        fgm: player_stats["FieldGoalsMade"],
+                        fga: player_stats["FieldGoalsAttempted"],
+                        pat: player_stats["ExtraPointsMade"]
+                    )
                 else
-                    PlayerGame.create(season: off_player["Season"],)
-                end
-                
+                    PlayerGame.create(
+                        player_id: tlfl_player.id,
+                        player_name: tlfl_player.full_name,
+                        position: tlfl_player.position,
+                        tlfl_team: tlfl_player.tlfl_team_id,
+                        season: player_stats["Season"],
+                        season_type: player_stats["SeasonType"],
+                        week: player_stats["Week"],
+                        nfl_team: player_stats["Team"],
+                        pass_comp: player_stats["PassingCompletions"],
+                        pass_att: player_stats["PassingAttempts"],
+                        pass_yards: player_stats["PassingYards"],
+                        pass_td: player_stats["PassingTouchdowns"],
+                        pass_int: player_stats["PassingInterceptions"],
+                        rushes: player_stats["RushingAttempts"],
+                        rush_yards: player_stats["RushingYards"],
+                        rush_td: player_stats["RushingTouchdowns"],
+                        receptions: player_stats["Receptions"],
+                        rec_yards: player_stats["ReceivingYards"],
+                        rec_td: player_stats["ReceivingTouchdowns"],
+                        punt_ret_td: player_stats["PuntReturnTouchdowns"],
+                        kick_ret_td: player_stats["KickReturnTouchdowns"],
+                        two_pt_pass: player_stats["TwoPointConversionPasses"],
+                        two_pt_rush: player_stats["TwoPointConversionRuns"],
+                        two_pt_rec: player_stats["TwoPointConversionReceptions"],
+                        fgm: player_stats["FieldGoalsMade"],
+                        fga: player_stats["FieldGoalsAttempted"],
+                        pat: player_stats["ExtraPointsMade"]
+                    )
+                end  
             end
-
         # end
     end
+
+    # All 0's if doesn't find ID?
 
 # -- TEST --
 def test_stats
@@ -53,6 +105,12 @@ def test_stats
     stats_json = JSON.parse(stats_resp.body)
     offensive_players = stats_json.select { |player| %w(QB RB FB WR TE K).include? player["Position"] }
 end
+
+# -- INACTIVE/INJURY NOTES --
+    # injury hash ID: injury
+    # inactive hash ID: inactive
+    # replacement: if ID is in injury hash && inactive hash
+    # if in inactive hash && not in injury then 0
 
     # Creates and Deletes players to show only active NFL players
     def update_available_players
