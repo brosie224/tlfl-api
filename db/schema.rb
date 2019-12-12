@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_11_053532) do
+ActiveRecord::Schema.define(version: 2019_12_12_060502) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,25 +46,25 @@ ActiveRecord::Schema.define(version: 2019_12_11_053532) do
     t.string "injury_status"
     t.boolean "active", default: true
     t.boolean "needs_replacement", default: false
-    t.integer "pass_comp"
-    t.integer "pass_att"
-    t.integer "pass_yards"
-    t.integer "pass_td"
-    t.integer "pass_int"
-    t.integer "rushes"
-    t.integer "rush_yards"
-    t.integer "rush_td"
-    t.integer "receptions"
-    t.integer "rec_yards"
-    t.integer "rec_td"
-    t.integer "punt_ret_td"
-    t.integer "kick_ret_td"
-    t.integer "two_pt_pass"
-    t.integer "two_pt_rush"
-    t.integer "two_pt_rec"
-    t.integer "fgm"
-    t.integer "fga"
-    t.integer "pat"
+    t.integer "pass_comp", default: 0
+    t.integer "pass_att", default: 0
+    t.integer "pass_yards", default: 0
+    t.integer "pass_td", default: 0
+    t.integer "pass_int", default: 0
+    t.integer "rushes", default: 0
+    t.integer "rush_yards", default: 0
+    t.integer "rush_td", default: 0
+    t.integer "receptions", default: 0
+    t.integer "rec_yards", default: 0
+    t.integer "rec_td", default: 0
+    t.integer "punt_ret_td", default: 0
+    t.integer "kick_ret_td", default: 0
+    t.integer "two_pt_pass", default: 0
+    t.integer "two_pt_rush", default: 0
+    t.integer "two_pt_rec", default: 0
+    t.integer "fgm", default: 0
+    t.integer "fga", default: 0
+    t.integer "pat", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "player_id"

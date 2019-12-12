@@ -61,10 +61,7 @@ class FdPlayer
     def create_skill_player_games
         # current_timeframe
         # if @current_season_type == 1
-            @current_season = 2018 # delete once timeframe running
-            @current_api_season = "2018REG" # delete once timeframe running
-            @current_week = 3 # delete once timeframe running
-            @current_season_type = 1 # delete once timeframe running
+            @current_season = 2018, @current_api_season = "2018REG", @current_week = 3, @current_season_type = 1 # delete once timeframe running
 
             stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/PlayerGameStatsByWeek/#{@current_api_season}/#{@current_week}" do |req|
                 req.params['key'] = ENV['FANTASY_DATA_KEY']
@@ -138,6 +135,7 @@ class FdPlayer
                         )
                     end
                 else
+                    # If player doesn't appear on FD's API (stats default to 0)
                     PlayerGame.create(
                         player_id: tlfl_player.id,
                         player_name: tlfl_player.full_name,
@@ -146,26 +144,7 @@ class FdPlayer
                         season: @current_season,
                         season_type: @current_season_type,
                         week: @current_week,
-                        nfl_team: tlfl_player.nfl_abbrev,
-                        pass_comp: 0,
-                        pass_att: 0,
-                        pass_yards: 0,
-                        pass_td: 0,
-                        pass_int: 0,
-                        rushes: 0,
-                        rush_yards: 0,
-                        rush_td: 0,
-                        receptions: 0,
-                        rec_yards: 0,
-                        rec_td: 0,
-                        punt_ret_td: 0,
-                        kick_ret_td: 0,
-                        two_pt_pass: 0,
-                        two_pt_rush: 0,
-                        two_pt_rec: 0,
-                        fgm: 0,
-                        fga: 0,
-                        pat: 0
+                        nfl_team: tlfl_player.nfl_abbrev
                     )
                 end
             end
