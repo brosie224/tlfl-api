@@ -20,34 +20,12 @@ class FdPlayer
 
     def week_active_status
 
-        # Make sure inactive week isn't the one from 2018 prior to games being played.. like on Tuesday, what does it look like - blank or wrong data?
-        # Only run for RB/WR/TE
-        # Do Inactives first - if active, don't check injury ... if inactive, run injury
 
-        # If appears on both, create PlayerGame with ID, season, season type, week and flip needs_replacement
-        # Then an if needs_replacement == true...
-        # Can delete injury_status and active columns (use injury status for projections)
+        # Can delete active column
         # account for searching for replacement if on IR (if ir_id, then search that guy)
-        # injury hash ID: injury
-        # inactive hash ID: inactive
-        # replacement: if ID is in injury hash && inactive hash
-        # if in inactive hash && not in injury then 0 -- don't have to, will be 0s when he doesn't show up on stats API
-
-        # NFL Injury Page:
-        # doc = Nokogiri::HTML(open("http://www.nfl.com/injuries?week=#{@current_week}"))
-        doc = Nokogiri::HTML(open("http://www.nfl.com/injuries?week=3"))
-        text = doc.css("script").text
-        report = text.scan(/gameStatus: "(\S*)".+?esbId: "(\S*)"/)
-        injury_status_hash = {}
-        report.each do |status, esb|
-            if status != "--"
-                injury_status_hash[esb] = status
-            end
-        end
 
         # NFL Inactives Page:
-        # doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{@current_week}"))
-        doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=3"))
+        doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{@current_week}"))
         text = doc.css("script").text
         report = text.scan(/status: "(\S*)".+?esbId: ?"(\S*)"/)
         inactive_hash = {}
@@ -56,22 +34,33 @@ class FdPlayer
                 inactive_hash[esb] = status
             end
         end
-    
-        # PlayerGame.where(week: @current_week).each do |playergm|
-        #   report.each do |status, id|
-        #     if status != "--" && playergm.player.esb_id == id
-        #         player.update(injury_status: status)
-        #     end
-        #   end
-        # end
 
-        # NFL Inactives:
-        # doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{@current_week}")) 
-        # {player: "Derby A.J. ",   position: "TE", status: "Inactive", comments: "", lastName: "Derby", firstName: "A.J.", esbId: "DER139014"  },
+        # NFL Injury Page:
+        doc = Nokogiri::HTML(open("http://www.nfl.com/injuries?week=#{@current_week}"))
+        text = doc.css("script").text
+        report = text.scan(/gameStatus: "(\S*)".+?esbId: ?"(\S*)"/)
+        injury_status_hash = {}
+        report.each do |status, esb|
+            if status != "--"
+                injury_status_hash[esb] = status
+            end
+        end
 
-        # if injured save player.player_week.status to questionable/doubtful/out
-        # if inactive flip playerweek.active to false
-        # if playerweek with same id has status != "healthy" and active false, flip replacement_needed to true 
+
+
+        # If player esb appears in Inactive && Injury hashes, create playergame with basics and flip needs_replacement = true:
+        # PlayerGame.create(
+        #     player_id: tlfl_player.id,
+        #     player_name: tlfl_player.full_name,
+        #     position: tlfl_player.position,
+        #     tlfl_team: tlfl_player.tlfl_team_id,
+        #     season: @current_season,
+        #     season_type: @current_season_type,
+        #     week: @current_week,
+        #     nfl_team: tlfl_player.nfl_abbrev
+        #     needs_replacement: true
+        # )
+
     end
 
     def create_qb_k_games
@@ -81,6 +70,9 @@ class FdPlayer
         # current_timeframe
         # if @current_season_type == 1
             @current_season = 2018, @current_api_season = "2018REG", @current_week = 3, @current_season_type = 1 # delete once timeframe running
+
+            week_active_status
+            byebug
 
             stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/PlayerGameStatsByWeek/#{@current_api_season}/#{@current_week}" do |req|
                 req.params['key'] = ENV['FANTASY_DATA_KEY']
@@ -99,9 +91,6 @@ class FdPlayer
                 if player_stats
                     if game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
                         game.update(
-                            season: @current_season,
-                            season_type: @current_season_type,
-                            week: @current_week,
                             nfl_team: player_stats["Team"],
                             pass_comp: player_stats["PassingCompletions"],
                             pass_att: player_stats["PassingAttempts"],
