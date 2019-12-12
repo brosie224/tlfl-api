@@ -16,7 +16,49 @@ class FdPlayer
         # find out when current week flips and run PlayerGame and Projections accordingly
     end
 
-    def create_player_games
+
+
+    def week_active_status
+
+        # Make sure inactive week isn't the one from 2018 prior to games being played.. like on Tuesday, what does it look like - blank or wrong data?
+        # Only run for RB/WR/TE
+        # Do Inactives first - if active, don't check injury ... if inactive, run injury
+
+        # If appears on both, create PlayerGame with ID, season, season type, week and flip needs_replacement
+        # Then an if needs_replacement == true...
+        # Can delete injury_status and active columns (use injury status for projections)
+        # account for searching for replacement if on IR (if ir_id, then search that guy)
+        # injury hash ID: injury
+        # inactive hash ID: inactive
+        # replacement: if ID is in injury hash && inactive hash
+        # if in inactive hash && not in injury then 0 -- don't have to, will be 0s when he doesn't show up on stats API
+
+        # NFL Injury Page:
+        doc = Nokogiri::HTML(open("http://www.nfl.com/injuries?week=#{current_week}")) 
+        text = doc.css("script").text
+        report = text.scan(/gameStatus: "(\S*)".+?esbId: "(\S*)"/)
+    
+        PlayerGame.where(week: @current_week).each do |playergm|
+          report.each do |status, id|
+            if status != "--" && playergm.player.esb_id == id
+                player.update(injury_status: status)
+            end
+          end
+        end
+
+        # NFL Inactives:
+        doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{current_week}")) 
+        # {player: "Derby A.J. ",   position: "TE", status: "Inactive", comments: "", lastName: "Derby", firstName: "A.J.", esbId: "DER139014"  },
+
+        # if injured save player.player_week.status to questionable/doubtful/out
+        # if inactive flip playerweek.active to false
+        # if playerweek with same id has status != "healthy" and active false, flip replacement_needed to true 
+    end
+
+    def create_qb_k_games
+    end
+
+    def create_skill_player_games
         # current_timeframe
         # if @current_season_type == 1
             @current_season = 2018 # delete once timeframe running
@@ -30,18 +72,13 @@ class FdPlayer
             stats_json = JSON.parse(stats_resp.body)
 
             tlfl_players = Player.where(available: false)
-            # Run the injury and inactive hashes here
-            # If appears on both, create PlayerGame with ID, season, season type, week and flip needs_replacement
-            # Then an if needs_replacement == true...
-            # Can delete injury_status and active columns (use injury status for projections)
-            tlfl_players.each do |tlfl_player|
-
-                if tlfl_player.ir_id != nil
+            tlfl_skill_players = tlfl_players.where(position: "RB").or(tlfl_players.where(position: "WR")).or(tlfl_players.where(position: "TE"))
+            tlfl_skill_players.each do |tlfl_player|
+                if tlfl_player.ir_id
                     player_stats = stats_json.find {|fd_player| fd_player["PlayerID"] == tlfl_player.replacement_fd_id}
                 else
                     player_stats = stats_json.find {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}
-                end
-                
+                end             
                 if player_stats
                     if game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
                         game.update(
@@ -134,14 +171,6 @@ class FdPlayer
             end
         # end
     end
-
-
-# -- INACTIVE/INJURY NOTES --
-    # account for searching for replacement if on IR
-    # injury hash ID: injury
-    # inactive hash ID: inactive
-    # replacement: if ID is in injury hash && inactive hash
-    # if in inactive hash && not in injury then 0 -- don't have to, will be 0s when he doesn't show up on stats API
 
     # Creates and Deletes players to show only active NFL players
     def update_available_players
