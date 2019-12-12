@@ -34,7 +34,7 @@ class FdPlayer
         # if in inactive hash && not in injury then 0 -- don't have to, will be 0s when he doesn't show up on stats API
 
         # NFL Injury Page:
-        doc = Nokogiri::HTML(open("http://www.nfl.com/injuries?week=#{current_week}")) 
+        doc = Nokogiri::HTML(open("http://www.nfl.com/injuries?week=#{@current_week}")) 
         text = doc.css("script").text
         report = text.scan(/gameStatus: "(\S*)".+?esbId: "(\S*)"/)
     
@@ -47,7 +47,7 @@ class FdPlayer
         end
 
         # NFL Inactives:
-        doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{current_week}")) 
+        doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{@current_week}")) 
         # {player: "Derby A.J. ",   position: "TE", status: "Inactive", comments: "", lastName: "Derby", firstName: "A.J.", esbId: "DER139014"  },
 
         # if injured save player.player_week.status to questionable/doubtful/out
@@ -72,7 +72,8 @@ class FdPlayer
             tlfl_skill_players = tlfl_players.where(position: "RB").or(tlfl_players.where(position: "WR")).or(tlfl_players.where(position: "TE"))
             tlfl_skill_players.each do |tlfl_player|
                 if tlfl_player.ir_id
-                    player_stats = stats_json.find {|fd_player| fd_player["PlayerID"] == tlfl_player.replacement_fd_id}
+                    replacement_fd_id = Player.find_by(id: tlfl_player.ir_id).fd_id
+                    player_stats = stats_json.find {|fd_player| fd_player["PlayerID"] == replacement_fd_id}
                 else
                     player_stats = stats_json.find {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id}
                 end             
