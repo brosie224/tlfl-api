@@ -34,20 +34,39 @@ class FdPlayer
         # if in inactive hash && not in injury then 0 -- don't have to, will be 0s when he doesn't show up on stats API
 
         # NFL Injury Page:
-        doc = Nokogiri::HTML(open("http://www.nfl.com/injuries?week=#{@current_week}")) 
+        # doc = Nokogiri::HTML(open("http://www.nfl.com/injuries?week=#{@current_week}"))
+        doc = Nokogiri::HTML(open("http://www.nfl.com/injuries?week=3"))
         text = doc.css("script").text
         report = text.scan(/gameStatus: "(\S*)".+?esbId: "(\S*)"/)
-    
-        PlayerGame.where(week: @current_week).each do |playergm|
-          report.each do |status, id|
-            if status != "--" && playergm.player.esb_id == id
-                player.update(injury_status: status)
+        injury_status_hash = {}
+        report.each do |status, esb|
+            if status != "--"
+                injury_status_hash[esb] = status
             end
-          end
         end
 
+        # NFL Inactives Page:
+        # doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{@current_week}"))
+        doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=3"))
+        text = doc.css("script").text
+        report = text.scan(/status: "(\S*)".+?esbId: ?"(\S*)"/)
+        inactive_hash = {}
+        report.each do |status, esb|
+            if status == "Inactive"
+                inactive_hash[esb] = status
+            end
+        end
+    
+        # PlayerGame.where(week: @current_week).each do |playergm|
+        #   report.each do |status, id|
+        #     if status != "--" && playergm.player.esb_id == id
+        #         player.update(injury_status: status)
+        #     end
+        #   end
+        # end
+
         # NFL Inactives:
-        doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{@current_week}")) 
+        # doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{@current_week}")) 
         # {player: "Derby A.J. ",   position: "TE", status: "Inactive", comments: "", lastName: "Derby", firstName: "A.J.", esbId: "DER139014"  },
 
         # if injured save player.player_week.status to questionable/doubtful/out
