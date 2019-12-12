@@ -16,11 +16,7 @@ class FdPlayer
         # find out when current week flips and run PlayerGame and Projections accordingly
     end
 
-
-
     def week_active_status
-
-
         # Can delete active column
         # account for searching for replacement if on IR (if ir_id, then search that guy)
 
@@ -46,21 +42,26 @@ class FdPlayer
             end
         end
 
-
-
-        # If player esb appears in Inactive && Injury hashes, create playergame with basics and flip needs_replacement = true:
-        # PlayerGame.create(
-        #     player_id: tlfl_player.id,
-        #     player_name: tlfl_player.full_name,
-        #     position: tlfl_player.position,
-        #     tlfl_team: tlfl_player.tlfl_team_id,
-        #     season: @current_season,
-        #     season_type: @current_season_type,
-        #     week: @current_week,
-        #     nfl_team: tlfl_player.nfl_abbrev
-        #     needs_replacement: true
-        # )
-
+        tlfl_players = Player.where(available: false)
+        @tlfl_skill_players = tlfl_players.where(position: "RB").or(tlfl_players.where(position: "WR")).or(tlfl_players.where(position: "TE"))
+        @both = []
+        @tlfl_skill_players.each do |tlfl_player|
+            if inactive_hash[tlfl_player.esb_id] && injury_status_hash[tlfl_player.esb_id]
+                # @both << player.full_name
+                PlayerGame.create(
+                    player_id: tlfl_player.id,
+                    player_name: tlfl_player.full_name,
+                    position: tlfl_player.position,
+                    tlfl_team: tlfl_player.tlfl_team_id,
+                    season: @current_season,
+                    season_type: @current_season_type,
+                    week: @current_week,
+                    nfl_team: tlfl_player.nfl_abbrev,
+                    needs_replacement: true
+                )
+            end
+        end
+        # @both
     end
 
     def create_qb_k_games
@@ -68,20 +69,21 @@ class FdPlayer
 
     def create_skill_player_games
         # current_timeframe
+        @current_api_season = "2018REG" # delete once timeframe running
+        @current_season = 2018 # delete once timeframe running
+        @current_week = 3 # delete once timeframe running
+        @current_season_type = 1 # delete once timeframe running
+        
         # if @current_season_type == 1
-            @current_season = 2018, @current_api_season = "2018REG", @current_week = 3, @current_season_type = 1 # delete once timeframe running
 
             week_active_status
-            byebug
 
             stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/PlayerGameStatsByWeek/#{@current_api_season}/#{@current_week}" do |req|
                 req.params['key'] = ENV['FANTASY_DATA_KEY']
             end
             stats_json = JSON.parse(stats_resp.body)
 
-            tlfl_players = Player.where(available: false)
-            tlfl_skill_players = tlfl_players.where(position: "RB").or(tlfl_players.where(position: "WR")).or(tlfl_players.where(position: "TE"))
-            tlfl_skill_players.each do |tlfl_player|
+            @tlfl_skill_players.each do |tlfl_player|
                 if tlfl_player.ir_id
                     replacement_fd_id = Player.find_by(id: tlfl_player.ir_id).fd_id
                     player_stats = stats_json.find {|fd_player| fd_player["PlayerID"] == replacement_fd_id}
@@ -168,8 +170,9 @@ class FdPlayer
             fd_status_hash[fd_player["PlayerID"]] = fd_player["Status"]
         end
         # Deletes players who aren't listed as "active" in database and aren't on TLFL team
-        Player.all.each do |tlfl_player|
-            if tlfl_player.available == true && fd_status_hash[tlfl_player.fd_id] != "Active"
+        available_players = Player.where(available: true)
+        available_players.each do |tlfl_player|
+            if fd_status_hash[tlfl_player.fd_id] != "Active"
                 tlfl_player.destroy
             end
         end
