@@ -16,48 +16,6 @@ class FdPlayer
         # find out when current week flips and run PlayerGame and Projections accordingly
     end
 
-    def week_injury_status 
-        # Inactives
-        doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{@current_week}"))
-        text = doc.css("script").text
-        matches = text.scan(/status: "(\S*)".+?esbId: ?"(\S*)"/)
-        inactive_hash = {}
-        matches.each do |status, esb|
-            if status == "Inactive"
-                inactive_hash[esb] = status
-            end
-        end
-        # Injuries
-        doc = Nokogiri::HTML(open("http://www.nfl.com/injuries?week=#{@current_week}"))
-        text = doc.css("script").text
-        matches = text.scan(/gameStatus: "(\S*)".+?esbId: ?"(\S*)"/)
-        injury_status_hash = {}
-        matches.each do |status, esb|
-            if status != "--"
-                injury_status_hash[esb] = status
-            end
-        end
-        # Create PlayerGame if TLFL player is inactive and injured
-        tlfl_players = Player.where.not(available: true, tlfl_team_id: nil)
-        @tlfl_skill_players = tlfl_players.where(position: "RB").or(tlfl_players.where(position: "WR")).or(tlfl_players.where(position: "TE"))
-        @tlfl_skill_players.each do |tlfl_player|
-            tlfl_player.ir_id ? esb = Player.find_by(id: tlfl_player.ir_id).esb_id : esb = tlfl_player.esb_id
-            if inactive_hash[esb] && injury_status_hash[esb]
-                PlayerGame.create(
-                    player_id: tlfl_player.id,
-                    player_name: tlfl_player.full_name,
-                    position: tlfl_player.position,
-                    tlfl_team: tlfl_player.tlfl_team_id,
-                    season: @current_season,
-                    season_type: @current_season_type,
-                    week: @current_week,
-                    nfl_team: tlfl_player.nfl_abbrev,
-                    needs_replacement: true
-                )
-            end
-        end
-    end
-
     def create_qb_k_games
         tlfl_players = Player.where.not(available: true, tlfl_team_id: nil)
         @tlfl_qb_k = tlfl_players.where(position: "QB").or(tlfl_players.where(position: "K"))
@@ -73,8 +31,6 @@ class FdPlayer
         # -----------------------------------------------------------------
         # if @current_season_type == 1
             week_injury_status
-            # tlfl_players = Player.where.not(available: true, tlfl_team_id: nil)
-            # @tlfl_skill_players = tlfl_players.where(position: "RB").or(tlfl_players.where(position: "WR")).or(tlfl_players.where(position: "TE"))
 
             stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/PlayerGameStatsByWeek/#{@current_api_season}/#{@current_week}" do |req|
                 req.params['key'] = ENV['FANTASY_DATA_KEY']
@@ -82,7 +38,8 @@ class FdPlayer
             stats_json = JSON.parse(stats_resp.body)
 
             @tlfl_skill_players.each do |tlfl_player|
-                tlfl_player.ir_id ? fd_id = Player.find_by(id: tlfl_player.ir_id).fd_id : fd_id = tlfl_player.fd_id
+                # tlfl_player.ir_id ? fd_id = Player.find_by(id: tlfl_player.ir_id).fd_id : fd_id = tlfl_player.fd_id
+                tlfl_player.ir_id == nil ? fd_id = tlfl_player.fd_id : fd_id = Player.find_by(id: tlfl_player.ir_id).fd_id
                 player_stats = stats_json.find {|fd_player| fd_player["PlayerID"] == fd_id}           
                 if player_stats
                     if game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
@@ -112,7 +69,7 @@ class FdPlayer
                             player_id: tlfl_player.id,
                             player_name: tlfl_player.full_name,
                             position: tlfl_player.position,
-                            tlfl_team: tlfl_player.tlfl_team_id,
+                            tlfl_team_id: tlfl_player.tlfl_team_id,
                             season: @current_season,
                             season_type: @current_season_type,
                             week: @current_week,
@@ -144,7 +101,7 @@ class FdPlayer
                         player_id: tlfl_player.id,
                         player_name: tlfl_player.full_name,
                         position: tlfl_player.position,
-                        tlfl_team: tlfl_player.tlfl_team_id,
+                        tlfl_team_id: tlfl_player.tlfl_team_id,
                         season: @current_season,
                         season_type: @current_season_type,
                         week: @current_week,
@@ -153,6 +110,49 @@ class FdPlayer
                 end
             end
         # end
+    end
+
+    def week_injury_status 
+        # Inactives
+        doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{@current_week}"))
+        text = doc.css("script").text
+        matches = text.scan(/status: "(\S*)".+?esbId: ?"(\S*)"/)
+        inactive_hash = {}
+        matches.each do |status, esb|
+            if status == "Inactive"
+                inactive_hash[esb] = status
+            end
+        end
+        # Injuries
+        doc = Nokogiri::HTML(open("http://www.nfl.com/injuries?week=#{@current_week}"))
+        text = doc.css("script").text
+        matches = text.scan(/gameStatus: "(\S*)".+?esbId: ?"(\S*)"/)
+        injury_status_hash = {}
+        matches.each do |status, esb|
+            if status != "--"
+                injury_status_hash[esb] = status
+            end
+        end
+        # Create PlayerGame if TLFL player is inactive and injured
+        tlfl_players = Player.where.not(available: true, tlfl_team_id: nil)
+        @tlfl_skill_players = tlfl_players.where(position: "RB").or(tlfl_players.where(position: "WR")).or(tlfl_players.where(position: "TE"))
+        @tlfl_skill_players.each do |tlfl_player|
+            # tlfl_player.ir_id ? esb = Player.find_by(id: tlfl_player.ir_id).esb_id : esb = tlfl_player.esb_id
+            tlfl_player.ir_id == nil ? esb = tlfl_player.esb_id : esb = Player.find_by(id: tlfl_player.ir_id).esb_id
+            if inactive_hash[esb] && injury_status_hash[esb]
+                PlayerGame.create(
+                    player_id: tlfl_player.id,
+                    player_name: tlfl_player.full_name,
+                    position: tlfl_player.position,
+                    tlfl_team_id: tlfl_player.tlfl_team_id,
+                    season: @current_season,
+                    season_type: @current_season_type,
+                    week: @current_week,
+                    nfl_team: tlfl_player.nfl_abbrev,
+                    needs_replacement: true
+                )
+            end
+        end
     end
 
     # Creates and Deletes players to show only active NFL players
