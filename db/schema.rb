@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_12_202951) do
+ActiveRecord::Schema.define(version: 2019_12_13_065935) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 2019_12_12_202951) do
     t.integer "week"
     t.string "player_name"
     t.string "nfl_team"
-    t.string "tlfl_team"
+    t.string "tlfl_team_id"
     t.string "position"
     t.boolean "needs_replacement", default: false
     t.integer "pass_comp", default: 0

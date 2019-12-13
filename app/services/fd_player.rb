@@ -20,9 +20,9 @@ class FdPlayer
         # Inactives
         doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{@current_week}"))
         text = doc.css("script").text
-        report = text.scan(/status: "(\S*)".+?esbId: ?"(\S*)"/)
+        matches = text.scan(/status: "(\S*)".+?esbId: ?"(\S*)"/)
         inactive_hash = {}
-        report.each do |status, esb|
+        matches.each do |status, esb|
             if status == "Inactive"
                 inactive_hash[esb] = status
             end
@@ -30,9 +30,9 @@ class FdPlayer
         # Injuries
         doc = Nokogiri::HTML(open("http://www.nfl.com/injuries?week=#{@current_week}"))
         text = doc.css("script").text
-        report = text.scan(/gameStatus: "(\S*)".+?esbId: ?"(\S*)"/)
+        matches = text.scan(/gameStatus: "(\S*)".+?esbId: ?"(\S*)"/)
         injury_status_hash = {}
-        report.each do |status, esb|
+        matches.each do |status, esb|
             if status != "--"
                 injury_status_hash[esb] = status
             end
@@ -59,19 +59,23 @@ class FdPlayer
     end
 
     def create_qb_k_games
+        tlfl_players = Player.where.not(available: true, tlfl_team_id: nil)
+        @tlfl_qb_k = tlfl_players.where(position: "QB").or(tlfl_players.where(position: "K"))
     end
 
     def create_skill_player_games
         # current_timeframe
         # -----------------------------------------------------------------
         @current_api_season = "2018REG" # delete once timeframe running
-        @current_season = 2019 # delete once timeframe running
+        @current_season = 2018 # delete once timeframe running
         @current_week = 3 # delete once timeframe running
         @current_season_type = 1 # delete once timeframe running
         # -----------------------------------------------------------------
         # if @current_season_type == 1
             week_injury_status
-        byebug
+            # tlfl_players = Player.where.not(available: true, tlfl_team_id: nil)
+            # @tlfl_skill_players = tlfl_players.where(position: "RB").or(tlfl_players.where(position: "WR")).or(tlfl_players.where(position: "TE"))
+
             stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/PlayerGameStatsByWeek/#{@current_api_season}/#{@current_week}" do |req|
                 req.params['key'] = ENV['FANTASY_DATA_KEY']
             end
@@ -83,7 +87,6 @@ class FdPlayer
                 if player_stats
                     if game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
                         game.update(
-                            nfl_team: player_stats["Team"],
                             pass_comp: player_stats["PassingCompletions"],
                             pass_att: player_stats["PassingAttempts"],
                             pass_yards: player_stats["PassingYards"],
@@ -113,7 +116,7 @@ class FdPlayer
                             season: @current_season,
                             season_type: @current_season_type,
                             week: @current_week,
-                            nfl_team: player_stats["Team"],
+                            nfl_team: tlfl_player.nfl_abbrev,
                             pass_comp: player_stats["PassingCompletions"],
                             pass_att: player_stats["PassingAttempts"],
                             pass_yards: player_stats["PassingYards"],
