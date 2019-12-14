@@ -33,8 +33,7 @@ class FdPlayer
         tlfl_players = Player.where.not(tlfl_team_id: nil, bye_week: @current_week)
         tlfl_qb_k = tlfl_players.where(position: "QB").or(tlfl_players.where(position: "K"))
         tlfl_qb_k.each do |tlfl_player|
-            player_stats = @stats_json.select {|fd_player| fd_player["Team"] == tlfl_player.nfl_abbrev && fd_player["Position"] == tlfl_player.position && fd_player["Played"] == 1}
-            if player_stats
+            if player_stats = @stats_json.select {|fd_player| fd_player["Team"] == tlfl_player.nfl_abbrev && fd_player["Position"] == tlfl_player.position && fd_player["Played"] == 1}
                 pass_comp = player_stats.inject(0) {|sum, hash| sum + hash["PassingCompletions"]}.round
                 pass_att = player_stats.inject(0) {|sum, hash| sum + hash["PassingAttempts"]}.round
                 pass_yards = player_stats.inject(0) {|sum, hash| sum + hash["PassingYards"]}.round
@@ -124,14 +123,13 @@ class FdPlayer
     end
 
     def create_rb_wr_te_games
-current_timeframe
-get_player_games
+        # current_timeframe
+        # get_player_games
         week_injury_status
         @tlfl_skill_players.each do |tlfl_player|
             tlfl_player.ir_id ? fd_id = Player.find_by(id: tlfl_player.ir_id).fd_id : fd_id = tlfl_player.fd_id
-            player_stats = @stats_json.find {|fd_player| fd_player["PlayerID"] == fd_id}
             player_game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
-            if player_stats
+            if player_stats = @stats_json.find {|fd_player| fd_player["PlayerID"] == fd_id}
                 if player_game
                     player_game.update(
                         pass_comp: player_stats["PassingCompletions"],
@@ -294,14 +292,17 @@ get_player_games
     # Updates player NFL teams (or if NFL team city/name changes)
     def update_player_nfl_data
         get_player_data
-        @players_json.each do |fd_player| 
-            Player.all.each do |tlfl_player|
-                # Doesn't change a current TLFL player's team if he isn't on an NFL team anymore
-                if (tlfl_player.available == false && fd_player["Team"]) || tlfl_player.available == true
-                    if tlfl_player.fd_id == fd_player["PlayerID"] && tlfl_player.nfl_abbrev != fd_player["Team"]
-                        tlfl_player.update(nfl_abbrev: fd_player["Team"], bye_week: fd_player["ByeWeek"], jersey: fd_player["Number"])
-                    end
-                end
+        free_agents = Player.where(tlfl_team_id: nil)
+        players_on_team = Player.where.not(tlfl_team_id: nil)
+        players_on_team.each do |tlfl_player|
+            # Doesn't change a current TLFL player's team if he isn't on an NFL team anymore
+            if fd_player = @players_json.find {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id && fd_player["Team"] != tlfl_player.nfl_abbrev && fd_player["Team"]} 
+                tlfl_player.update(nfl_abbrev: fd_player["Team"], bye_week: fd_player["ByeWeek"], jersey: fd_player["Number"])
+            end
+        end
+        free_agents.each do |tlfl_player|
+            if fd_player = @players_json.find {|fd_player| fd_player["PlayerID"] == tlfl_player.fd_id && fd_player["Team"] != tlfl_player.nfl_abbrev} 
+                tlfl_player.update(nfl_abbrev: fd_player["Team"], bye_week: fd_player["ByeWeek"], jersey: fd_player["Number"])
             end
         end
     end
