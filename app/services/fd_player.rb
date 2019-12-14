@@ -16,7 +16,7 @@ class FdPlayer
 
         @current_api_season = "2018REG" # delete once timeframe running
         @current_season = 2018 # delete once timeframe running
-        @current_week = 3 # delete once timeframe running
+        @current_week = 2 # delete once timeframe running
         @current_season_type = 1 # delete once timeframe running
     end
 
@@ -28,12 +28,13 @@ class FdPlayer
     end
 
     def create_qb_k_games
-        # current_timeframe
-        # get_player_games
+        current_timeframe
+        get_player_games
         tlfl_players = Player.where.not(tlfl_team_id: nil, bye_week: @current_week)
         tlfl_qb_k = tlfl_players.where(position: "QB").or(tlfl_players.where(position: "K"))
         tlfl_qb_k.each do |tlfl_player|
             if player_stats = @stats_json.select {|fd_player| fd_player["Team"] == tlfl_player.nfl_abbrev && fd_player["Position"] == tlfl_player.position && fd_player["Played"] == 1}
+                byebug
                 pass_comp = player_stats.inject(0) {|sum, hash| sum + hash["PassingCompletions"]}.round
                 pass_att = player_stats.inject(0) {|sum, hash| sum + hash["PassingAttempts"]}.round
                 pass_yards = player_stats.inject(0) {|sum, hash| sum + hash["PassingYards"]}.round

@@ -1,6 +1,25 @@
 class PlayerGame < ApplicationRecord
     belongs_to :player
 
+
+    def self.tlfl_team_pts(tlfl_team_id, season, season_type, week)
+        player_games = PlayerGame.where(tlfl_team_id: tlfl_team_id, season: season, season_type: season_type, week: week).sort_position
+        all_player_pts = []
+        player_games.each do |player_game|
+            puts "#{player_game.position} #{player_game.player_name}: #{player_game.tlfl_pts}"
+            player_pts ={}
+            player_pts[:tlfl_pts] = player_game.tlfl_pts
+            all_player_pts << player_pts
+        end
+        total = all_player_pts.inject(0) {|sum, hash| sum + hash[:tlfl_pts] if hash[:tlfl_pts]}
+        puts "Total: #{total}"
+    end
+
+    def self.sort_position
+        preferred_order = ["QB", "RB", "WR", "TE", "K"]
+        self.all.sort_by { |a| preferred_order.index(a[:position]) }
+    end
+
     def tlfl_pts
         pass_pts + rush_pts + rec_pts + return_pts + kick_pts
     end
