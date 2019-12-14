@@ -31,7 +31,7 @@ class FdPlayer
         current_timeframe
         if @current_season_type == 1
             get_player_games
-            tlfl_players = Player.where.not(tlfl_team_id: nil)
+            tlfl_players = Player.where.not(tlfl_team_id: nil, bye_week: @current_week)
             tlfl_qb_k = tlfl_players.where(position: "QB").or(tlfl_players.where(position: "K"))
             tlfl_qb_k.each do |tlfl_player|
                 player_stats = @stats_json.select {|fd_player| fd_player["Team"] == tlfl_player.nfl_abbrev && fd_player["Position"] == tlfl_player.position && fd_player["Played"] == 1}
@@ -55,6 +55,71 @@ class FdPlayer
                     fgm = player_stats.inject(0) {|sum, hash| sum + hash["FieldGoalsMade"]}.round
                     fga = player_stats.inject(0) {|sum, hash| sum + hash["FieldGoalsAttempted"]}.round
                     pat = player_stats.inject(0) {|sum, hash| sum + hash["ExtraPointsMade"]}.round
+                    if game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
+                        game.update(
+                            pass_comp: pass_comp,
+                            pass_att: pass_att,
+                            pass_yards: pass_yards,
+                            pass_td: pass_td,
+                            pass_int: pass_int,
+                            rushes: rushes,
+                            rush_yards: rush_yards,
+                            rush_td: rush_td,
+                            receptions: receptions,
+                            rec_yards: rec_yards,
+                            rec_td: rec_td,
+                            punt_ret_td: punt_ret_td,
+                            kick_ret_td: kick_ret_td,
+                            two_pt_pass: two_pt_pass,
+                            two_pt_rush: two_pt_rush,
+                            two_pt_rec: two_pt_rec,
+                            fgm: fgm,
+                            fga: fga,
+                            pat: pat
+                        )
+                    else
+                        PlayerGame.create(
+                            player_id: tlfl_player.id,
+                            player_name: tlfl_player.full_name,
+                            position: tlfl_player.position,
+                            tlfl_team_id: tlfl_player.tlfl_team_id,
+                            season: @current_season,
+                            season_type: @current_season_type,
+                            week: @current_week,
+                            nfl_team: tlfl_player.nfl_abbrev,
+                            pass_comp: pass_comp,
+                            pass_att: pass_att,
+                            pass_yards: pass_yards,
+                            pass_td: pass_td,
+                            pass_int: pass_int,
+                            rushes: rushes,
+                            rush_yards: rush_yards,
+                            rush_td: rush_td,
+                            receptions: receptions,
+                            rec_yards: rec_yards,
+                            rec_td: rec_td,
+                            punt_ret_td: punt_ret_td,
+                            kick_ret_td: kick_ret_td,
+                            two_pt_pass: two_pt_pass,
+                            two_pt_rush: two_pt_rush,
+                            two_pt_rec: two_pt_rec,
+                            fgm: fgm,
+                            fga: fga,
+                            pat: pat
+                        )
+                    end
+                else
+                    # If player doesn't appear on FD's API (stats default to 0)
+                    PlayerGame.create(
+                        player_id: tlfl_player.id,
+                        player_name: tlfl_player.full_name,
+                        position: tlfl_player.position,
+                        tlfl_team_id: tlfl_player.tlfl_team_id,
+                        season: @current_season,
+                        season_type: @current_season_type,
+                        week: @current_week,
+                        nfl_team: tlfl_player.nfl_abbrev
+                    )
                 end
             end
         end
@@ -161,7 +226,7 @@ class FdPlayer
             end
         end
         # Create PlayerGame if TLFL player is inactive and injured
-        tlfl_players = Player.where.not(tlfl_team_id: nil)
+        tlfl_players = Player.where.not(tlfl_team_id: nil, bye_week: @current_week)
         @tlfl_skill_players = tlfl_players.where(position: "RB").or(tlfl_players.where(position: "WR")).or(tlfl_players.where(position: "TE"))
         @tlfl_skill_players.each do |tlfl_player|
             tlfl_player.ir_id ? esb = Player.find_by(id: tlfl_player.ir_id).esb_id : esb = tlfl_player.esb_id
