@@ -28,22 +28,41 @@ class FdPlayer
     end
 
     def create_qb_k_games
-        FdService.new.current_timeframe
+        current_timeframe
         if @current_season_type == 1
             get_player_games
             tlfl_players = Player.where.not(tlfl_team_id: nil)
             tlfl_qb_k = tlfl_players.where(position: "QB").or(tlfl_players.where(position: "K"))
             tlfl_qb_k.each do |tlfl_player|
-                player_stats = @stats_json.select {|fd_player| fd_player["Team"] == tlfl_player.nfl_abbrev}
+                player_stats = @stats_json.select {|fd_player| fd_player["Team"] == tlfl_player.nfl_abbrev && fd_player["Position"] == tlfl_player.position && fd_player["Played"] == 1}
+                if player_stats
+                    pass_comp = player_stats.inject(0) {|sum, hash| sum + hash["PassingCompletions"]}.round
+                    pass_att = player_stats.inject(0) {|sum, hash| sum + hash["PassingAttempts"]}.round
+                    pass_yards = player_stats.inject(0) {|sum, hash| sum + hash["PassingYards"]}.round
+                    pass_td = player_stats.inject(0) {|sum, hash| sum + hash["PassingTouchdowns"]}.round
+                    pass_int = player_stats.inject(0) {|sum, hash| sum + hash["PassingInterceptions"]}.round
+                    rushes = player_stats.inject(0) {|sum, hash| sum + hash["RushingAttempts"]}.round
+                    rush_yards = player_stats.inject(0) {|sum, hash| sum + hash["RushingYards"]}.round
+                    rush_td = player_stats.inject(0) {|sum, hash| sum + hash["RushingTouchdowns"]}.round
+                    receptions = player_stats.inject(0) {|sum, hash| sum + hash["Receptions"]}.round
+                    rec_yards = player_stats.inject(0) {|sum, hash| sum + hash["ReceivingYards"]}.round
+                    rec_td = player_stats.inject(0) {|sum, hash| sum + hash["ReceivingTouchdowns"]}.round
+                    punt_ret_td = player_stats.inject(0) {|sum, hash| sum + hash["PuntReturnTouchdowns"]}.round
+                    kick_ret_td = player_stats.inject(0) {|sum, hash| sum + hash["KickReturnTouchdowns"]}.round
+                    two_pt_pass = player_stats.inject(0) {|sum, hash| sum + hash["TwoPointConversionPasses"]}.round
+                    two_pt_rush = player_stats.inject(0) {|sum, hash| sum + hash["TwoPointConversionRuns"]}.round
+                    two_pt_rec = player_stats.inject(0) {|sum, hash| sum + hash["TwoPointConversionReceptions"]}.round
+                    fgm = player_stats.inject(0) {|sum, hash| sum + hash["FieldGoalsMade"]}.round
+                    fga = player_stats.inject(0) {|sum, hash| sum + hash["FieldGoalsAttempted"]}.round
+                    pat = player_stats.inject(0) {|sum, hash| sum + hash["ExtraPointsMade"]}.round
+                end
             end
         end
     end
 
     def create_skill_player_games
-        # FdService.new.current_timeframe
         current_timeframe
-        byebug
-        # if @current_season_type == 1
+        if @current_season_type == 1
             week_injury_status
             get_player_games
             @tlfl_skill_players.each do |tlfl_player|
@@ -117,7 +136,7 @@ class FdPlayer
                     )
                 end
             end
-        # end
+        end
     end
 
     def week_injury_status 
