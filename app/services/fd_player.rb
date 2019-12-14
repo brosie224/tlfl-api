@@ -3,6 +3,23 @@ class FdPlayer
 
 # -- WEEKLY STATS -- 
 
+    def current_timeframe
+        # time_resp = Faraday.get 'https://api.fantasydata.net/api/nfl/fantasy/json/Timeframes/current' do |req|
+        #     req.params['key'] = ENV['FANTASY_DATA_KEY']
+        # end
+        # time_json = JSON.parse(time_resp.body)
+        # @current_season = time_json["Season"] # eg 2019
+        # @current_week = time_json["Week"]
+        # @current_api_season = time_json["ApiSeason"] # eg 2019REG
+        # @current_season_type = time_json["SeasonType"] # (1=Regular Season, 2=Preseason, 3=Postseason, 4=Offseason)
+        # # find out when current week flips and run PlayerGame and Projections accordingly
+
+        @current_api_season = "2018REG" # delete once timeframe running
+        @current_season = 2018 # delete once timeframe running
+        @current_week = 3 # delete once timeframe running
+        @current_season_type = 1 # delete once timeframe running
+    end
+
     def get_player_games
         stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/PlayerGameStatsByWeek/#{@current_api_season}/#{@current_week}" do |req|
             req.params['key'] = ENV['FANTASY_DATA_KEY']
@@ -11,13 +28,22 @@ class FdPlayer
     end
 
     def create_qb_k_games
-        tlfl_players = Player.where.not(available: true, tlfl_team_id: nil)
-        @tlfl_qb_k = tlfl_players.where(position: "QB").or(tlfl_players.where(position: "K"))
+        FdService.new.current_timeframe
+        if @current_season_type == 1
+            get_player_games
+            tlfl_players = Player.where.not(tlfl_team_id: nil)
+            tlfl_qb_k = tlfl_players.where(position: "QB").or(tlfl_players.where(position: "K"))
+            tlfl_qb_k.each do |tlfl_player|
+                player_stats = @stats_json.select {|fd_player| fd_player["Team"] == tlfl_player.nfl_abbrev}
+            end
+        end
     end
 
     def create_skill_player_games
-        FdService.new.current_timeframe
-        if @current_season_type == 1
+        # FdService.new.current_timeframe
+        current_timeframe
+        byebug
+        # if @current_season_type == 1
             week_injury_status
             get_player_games
             @tlfl_skill_players.each do |tlfl_player|
@@ -91,7 +117,7 @@ class FdPlayer
                     )
                 end
             end
-        end
+        # end
     end
 
     def week_injury_status 
@@ -116,7 +142,7 @@ class FdPlayer
             end
         end
         # Create PlayerGame if TLFL player is inactive and injured
-        tlfl_players = Player.where.not(available: true, tlfl_team_id: nil)
+        tlfl_players = Player.where.not(tlfl_team_id: nil)
         @tlfl_skill_players = tlfl_players.where(position: "RB").or(tlfl_players.where(position: "WR")).or(tlfl_players.where(position: "TE"))
         @tlfl_skill_players.each do |tlfl_player|
             tlfl_player.ir_id ? esb = Player.find_by(id: tlfl_player.ir_id).esb_id : esb = tlfl_player.esb_id
