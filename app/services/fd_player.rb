@@ -16,7 +16,7 @@ class FdPlayer
 
         @current_api_season = "2018REG" # delete once timeframe running
         @current_season = 2018 # delete once timeframe running
-        @current_week = 1 # delete once timeframe running
+        @current_week = 3 # delete once timeframe running
         @current_season_type = 1 # delete once timeframe running
     end
 
@@ -124,15 +124,16 @@ class FdPlayer
     end
 
     def create_rb_wr_te_games
-        # current_timeframe
-        # get_player_games
+current_timeframe
+get_player_games
         week_injury_status
         @tlfl_skill_players.each do |tlfl_player|
             tlfl_player.ir_id ? fd_id = Player.find_by(id: tlfl_player.ir_id).fd_id : fd_id = tlfl_player.fd_id
-            player_stats = @stats_json.find {|fd_player| fd_player["PlayerID"] == fd_id}           
+            player_stats = @stats_json.find {|fd_player| fd_player["PlayerID"] == fd_id}
+            player_game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
             if player_stats
-                if game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
-                    game.update(
+                if player_game
+                    player_game.update(
                         pass_comp: player_stats["PassingCompletions"],
                         pass_att: player_stats["PassingAttempts"],
                         pass_yards: player_stats["PassingYards"],
@@ -184,8 +185,8 @@ class FdPlayer
                         pat: player_stats["ExtraPointsMade"]
                     )
                 end
-            else
-                # If player doesn't appear on FD's API (stats default to 0)
+            elsif !player_game
+                # If player doesn't appear on FD's API and game wasn't previously created due to inactive (stats default to 0)
                 PlayerGame.create(
                     player_id: tlfl_player.id,
                     player_name: tlfl_player.full_name,
@@ -209,7 +210,8 @@ class FdPlayer
         end
     end
 
-    def week_injury_status 
+    def week_injury_status
+        # current_timeframe
         # Inactives
         doc = Nokogiri::HTML(open("http://www.nfl.com/inactives?week=#{@current_week}"))
         text = doc.css("script").text
@@ -292,25 +294,6 @@ class FdPlayer
     # Updates player NFL teams (or if NFL team city/name changes)
     def update_player_nfl_data
         get_player_data
-        @players_json.each do |fd_player| 
-            Player.all.each do |tlfl_player|
-                # Doesn't change a current TLFL player's team if he isn't on an NFL team anymore
-                if (tlfl_player.available == false && fd_player["Team"]) || tlfl_player.available == true
-                    if tlfl_player.fd_id == fd_player["PlayerID"] && tlfl_player.nfl_abbrev != fd_player["Team"]
-                        tlfl_player.update(nfl_abbrev: fd_player["Team"], bye_week: fd_player["ByeWeek"], jersey: fd_player["Number"])
-                    end
-                end
-            end
-        end
-    end
-
-
-    def update_player_nfl_data
-        get_player_data
-
-        player = @stats_json.find {|fd_player| fd_player["PlayerID"] == fd_id}  
-
-
         @players_json.each do |fd_player| 
             Player.all.each do |tlfl_player|
                 # Doesn't change a current TLFL player's team if he isn't on an NFL team anymore
