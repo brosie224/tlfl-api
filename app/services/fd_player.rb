@@ -3,20 +3,6 @@ class FdPlayer < TimeFrame
 
 # -- WEEKLY STATS -- 
 
-def test_one
-    current_timeframe
-end
-
-def test_two
-    @season
-end
-
-def test_three
-    TimeFrame.new.current_timeframe
-end
-
-
-
     def get_player_games
         stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/PlayerGameStatsByWeek/#{@current_api_season}/#{@current_week}" do |req|
             req.params['key'] = ENV['FANTASY_DATA_KEY']
