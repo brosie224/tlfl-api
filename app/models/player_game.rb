@@ -12,7 +12,7 @@ class PlayerGame < ApplicationRecord
 
     def pass_pts
         case pass_yards
-        when 0..99 then points = 0
+        when -99..99 then points = 0
         when 100..149 then points = 1
         when 150..199 then points = 2
         when 200..249 then points = 3
@@ -30,7 +30,7 @@ class PlayerGame < ApplicationRecord
 
     def rush_pts
         case rush_yards
-        when 0..24 then points = 0
+        when -24..24 then points = 0
         when 25..49 then points = 1
         when 50..74 then points = 3
         when 75..99 then points = 4
@@ -53,7 +53,7 @@ class PlayerGame < ApplicationRecord
 
     def rec_pts
         case rec_yards
-        when 0..24 then points = 0
+        when -24..24 then points = 0
         when 25..49 then points = 1
         when 50..74 then points = 3
         when 75..99 then points = 4
