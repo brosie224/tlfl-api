@@ -1,4 +1,4 @@
-class FdTeam
+class FdTeam < TimeFrame
 
     # -- OFFSEASON METHODS --
     
