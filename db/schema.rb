@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_17_022935) do
+ActiveRecord::Schema.define(version: 2019_12_17_062817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,13 +121,13 @@ ActiveRecord::Schema.define(version: 2019_12_17_022935) do
     t.integer "season_type"
     t.integer "week"
     t.string "nfl_abbrev"
-    t.integer "points_allowed"
-    t.integer "touchdowns"
-    t.integer "sacks"
-    t.integer "fumbles_recovered"
-    t.integer "interceptions"
-    t.integer "safeties"
-    t.integer "two_pt_ret"
+    t.integer "points_allowed", default: 99
+    t.integer "touchdowns", default: 0
+    t.integer "sacks", default: 0
+    t.integer "fumbles_recovered", default: 0
+    t.integer "interceptions", default: 0
+    t.integer "safeties", default: 0
+    t.integer "two_pt_ret", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
