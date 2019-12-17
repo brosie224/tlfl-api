@@ -5,4 +5,12 @@ class ScheduleGame < ApplicationRecord
         "#{season}#{key_week}#{home_team}"
     end
 
+    def home_id
+        TlflTeam.find_by(abbreviation: home_team).id
+    end
+
+    def away_id
+        TlflTeam.find_by(abbreviation: away_team).id
+    end
+
 end
