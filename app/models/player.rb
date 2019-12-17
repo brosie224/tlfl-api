@@ -6,6 +6,9 @@ class Player < ApplicationRecord
     # def week_pts(season, season_type = 1, week)
     # end
 
+    # def season_pts(season, season_type = 1)
+    # end
+
     def full_name
         self.first_name + " " + self.last_name
     end
@@ -24,15 +27,11 @@ class Player < ApplicationRecord
     end
 
     def replacement_name
-        if self.ir_id
-            Player.find_by(id: self.ir_id).full_name
-        end
+        Player.find_by(id: self.ir_id).full_name if self.ir_id
     end
 
     def replacement_fd_id
-        if self.ir_id
-            Player.find_by(id: self.ir_id).fd_id
-        end
+        Player.find_by(id: self.ir_id).fd_id if self.ir_id
     end
 
     def self.missing_esb_data

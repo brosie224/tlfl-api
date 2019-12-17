@@ -9,10 +9,12 @@ class FdPlayer < TimeFrame
             get_player_games
             create_qb_k_games
             create_rb_wr_te_games
+            FdTeam.new.create_dst_games
         end
     end
 
     def get_player_games
+        # current_timeframe
         stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/PlayerGameStatsByWeek/#{@current_api_season}/#{@current_week}" do |req|
             req.params['key'] = ENV['FANTASY_DATA_KEY']
         end
@@ -20,7 +22,6 @@ class FdPlayer < TimeFrame
     end
 
     def create_qb_k_games
-        # current_timeframe
         # get_player_games
         tlfl_players = Player.where.not(tlfl_team_id: nil, bye_week: @current_week)
         tlfl_qb_k = tlfl_players.where(position: "QB").or(tlfl_players.where(position: "K"))
@@ -115,7 +116,6 @@ class FdPlayer < TimeFrame
     end
 
     def create_rb_wr_te_games
-        # current_timeframe
         # get_player_games
         week_injury_status
         @tlfl_skill_players.each do |tlfl_player|

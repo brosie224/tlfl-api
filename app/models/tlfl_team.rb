@@ -13,7 +13,9 @@ class TlflTeam < ApplicationRecord
             player_pts[:tlfl_pts] = player_game.tlfl_pts
             all_player_pts << player_pts
         end
-        total = all_player_pts.inject(0) {|sum, hash| sum + hash[:tlfl_pts]}
+        dst_game = TeamDstGame.find_by(tlfl_team_id: self.id, season: season, season_type: season_type, week: week)
+        puts "#{dst_game.team_name}: #{dst_game.tlfl_pts}"
+        total = all_player_pts.inject(0) {|sum, hash| sum + hash[:tlfl_pts]} + dst_game.tlfl_pts
         puts "Total: #{total}"
     end
 
