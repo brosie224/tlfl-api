@@ -8,10 +8,16 @@ class NewSeason
             # DraftPick.all.each do, new.each do00
                 # if pick.team == new.team && pick.round == new.round then pick.overall = new.overall
 
-        # Reset IR
-            # Change all player ir_id, ir_week to nil
+        # Reset players who were on IR
+        def reset_ir
+            ir_players = Player.where.not(ir_id: nil).or(Player.where.not(ir_week: nil))
+            ir_players.all.each do |player|
+                player.update(ir_id: nil, ir_week: nil)
+            end
+        end
 
         def set_keepers # put in players controller?
+            # if player not checked, then tlfl_team_id = nil
         end
 
         # After keepers set, reset non-keeper's seniority (if no team, seniority = 1)
@@ -39,15 +45,12 @@ class NewSeason
         # Reset all TLFL team protections back to 3
 
     # After Rosters are entered 
-
         def reset_player_available
             Player.all.each do |player|
                 if player.tlfl_team_id == nil
-                    player.available = true
-                    player.save
+                    player.update(available: true)
                 else
-                    player.available = false
-                    player.save
+                    player.update(available: false)
                 end
             end
         end
