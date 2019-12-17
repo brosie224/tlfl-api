@@ -7,7 +7,7 @@ class PlayerGame < ApplicationRecord
     end
 
     def tlfl_pts
-        pass_pts + rush_pts + rec_pts + return_pts + kick_pts
+        manual_pts ? manual_pts : pass_pts + rush_pts + rec_pts + return_pts + kick_pts
     end
 
     def pass_pts
