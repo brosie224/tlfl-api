@@ -13,4 +13,12 @@ class ScheduleGame < ApplicationRecord
         TlflTeam.find_by(abbreviation: away_team).id
     end
 
+    def home_players
+        TlflTeam.find_by(abbreviation: home_team).players
+    end
+
+    def away_players
+        TlflTeam.find_by(abbreviation: away_team).players
+    end
+
 end
