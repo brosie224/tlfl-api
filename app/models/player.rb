@@ -3,6 +3,9 @@ class Player < ApplicationRecord
     has_many :player_games
     validates_uniqueness_of :fd_id
 
+    # def week_pts(season, season_type = 1, week)
+    # end
+
     def full_name
         self.first_name + " " + self.last_name
     end

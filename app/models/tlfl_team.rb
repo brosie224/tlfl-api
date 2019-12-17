@@ -4,14 +4,6 @@ class TlflTeam < ApplicationRecord
     has_one :team_dst
     has_many :draft_picks
 
-    def full_name
-        self.city + " " + self.nickname
-    end
-
-    def full_division
-        self.conference + " " + self.division
-    end
-
     def week_pts(season, season_type = 1, week)
         player_games = PlayerGame.where(tlfl_team_id: self.id, season: season, season_type: season_type, week: week).sort_position
         all_player_pts = []
@@ -23,6 +15,17 @@ class TlflTeam < ApplicationRecord
         end
         total = all_player_pts.inject(0) {|sum, hash| sum + hash[:tlfl_pts]}
         puts "Total: #{total}"
+    end
+
+    # def season_pts(season, season_type = 1)
+    # end
+    
+    def full_name
+        self.city + " " + self.nickname
+    end
+
+    def full_division
+        self.conference + " " + self.division
     end
 
 end
