@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_16_234807) do
+ActiveRecord::Schema.define(version: 2019_12_17_022935) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,6 +109,25 @@ ActiveRecord::Schema.define(version: 2019_12_16_234807) do
     t.integer "month"
     t.integer "day"
     t.string "season_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "team_dst_games", force: :cascade do |t|
+    t.integer "team_dst_id"
+    t.string "team_name"
+    t.integer "tlfl_team_id"
+    t.integer "season"
+    t.integer "season_type"
+    t.integer "week"
+    t.string "nfl_abbrev"
+    t.integer "points_allowed"
+    t.integer "touchdowns"
+    t.integer "sacks"
+    t.integer "fumbles_recovered"
+    t.integer "interceptions"
+    t.integer "safeties"
+    t.integer "two_pt_ret"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

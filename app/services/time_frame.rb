@@ -9,7 +9,7 @@ class TimeFrame
         # @current_week = time_json["Week"]
         # @current_api_season = time_json["ApiSeason"] # eg 2019REG
         # @current_season_type = time_json["SeasonType"] # (1=Regular Season, 2=Preseason, 3=Postseason, 4=Offseason)
-        # # find out when current week flips and run PlayerGame and Projections accordingly
+        # # find out when current week flips and run PlayerGame and Projections accordingly (does it matter - can just run daily?)
 
         @current_api_season = "2018REG" # delete once timeframe running
         @current_season = 2018 # delete once timeframe running
