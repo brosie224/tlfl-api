@@ -13,7 +13,7 @@ class TimeFrame
 
         @current_api_season = "2018REG" # delete once timeframe running
         @current_season = 2018 # delete once timeframe running
-        @current_week = 1 # delete once timeframe running
+        @current_week = 2 # delete once timeframe running
         @current_season_type = 1 # delete once timeframe running
     end
 
