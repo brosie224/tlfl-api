@@ -24,5 +24,8 @@ class ScheduleGame < ApplicationRecord
     def away_players
         TlflTeam.find_by(abbreviation: away_team).players
     end
-
+    
+    def opp_team(team)
+        away_team == team ? home_team : away_team
+    end
 end
