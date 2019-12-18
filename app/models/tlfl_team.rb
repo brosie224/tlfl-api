@@ -4,6 +4,10 @@ class TlflTeam < ApplicationRecord
     has_one :team_dst
     has_many :draft_picks
 
+    def schedule(season)
+        ScheduleGame.where(away_team: abbreviation, season: season).or(ScheduleGame.where(home_team: abbreviation, season: season))
+    end
+
     def week_pts(season, season_type = 1, week)
         player_games = PlayerGame.where(tlfl_team_id: self.id, season: season, season_type: season_type, week: week)
         dst_game = TeamDstGame.find_by(tlfl_team_id: self.id, season: season, season_type: season_type, week: week)
