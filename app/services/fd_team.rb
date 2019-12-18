@@ -12,7 +12,8 @@ class FdTeam < TimeFrame
 
     def create_dst_games
         get_dst_games
-        tlfl_dsts = TeamDst.where.not(bye_week: @current_week)
+        # tlfl_dsts = TeamDst.where.not(bye_week: @current_week)
+        tlfl_dsts = TeamDst.joins(:tlfl_team).where.not(bye_week: @current_week, tlfl_teams: {bye_week: @current_week})
         tlfl_dsts.each do |tlfl_dst|
             dst_game = TeamDstGame.find_by(team_dst_id: tlfl_dst.id, season: @current_season, season_type: @current_season_type, week: @current_week)
             if dst_stats = @stats_json.find {|fd_dst| fd_dst["PlayerID"] == tlfl_dst.fd_player_id}
