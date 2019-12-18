@@ -23,11 +23,14 @@ class TlflTeam < ApplicationRecord
     end
 
     def opp_week_pts(season, season_type = 1, week)
-        game = ScheduleGame.where(season: season, week: week, away_team: abbreviation).or(ScheduleGame.where(season: season, week: week, home_team: abbreviation)).take
-        if game.home_team == abbreviation
-            TlflTeam.find_by(abbreviation: game.away_team).week_pts(season, week)
+        if game = ScheduleGame.where(season: season, week: week, away_team: abbreviation).or(ScheduleGame.where(season: season, week: week, home_team: abbreviation)).take
+            if game.home_team == abbreviation
+                TlflTeam.find_by(abbreviation: game.away_team).week_pts(season, week)
+            else
+                TlflTeam.find_by(abbreviation: game.home_team).week_pts(season, week)
+            end
         else
-            TlflTeam.find_by(abbreviation: game.home_team).week_pts(season, week)
+            0
         end
     end
 
@@ -80,6 +83,90 @@ class TlflTeam < ApplicationRecord
             opp_game_pts = TlflTeam.find_by(abbreviation: opp_team).week_pts(season, game.week)
             # if team_game_pts != 0 && opp_game_pts != 0 
             ties += 1 if team_game_pts == opp_game_pts && (team_game_pts != 0 || opp_game_pts != 0)
+        end
+        ties
+    end
+
+    def division_wins(season, season_type = 1)
+        team_games = ScheduleGame.where(season: season, home_team: abbreviation).or(ScheduleGame.where(season: season, away_team: abbreviation))
+        wins = 0
+        team_games.each do |game|
+            game.away_team == abbreviation ? opp_team = game.home_team : opp_team = game.away_team
+            if TlflTeam.find_by(abbreviation: opp_team).full_division == self.full_division
+                team_game_pts = TlflTeam.find_by(abbreviation: abbreviation).week_pts(season, game.week)
+                opp_game_pts = TlflTeam.find_by(abbreviation: opp_team).week_pts(season, game.week)
+                wins += 1 if team_game_pts > opp_game_pts
+            end
+        end
+        wins
+    end
+
+    def division_losses(season, season_type = 1)
+        team_games = ScheduleGame.where(season: season, home_team: abbreviation).or(ScheduleGame.where(season: season, away_team: abbreviation))
+        losses = 0
+        team_games.each do |game|
+            game.away_team == abbreviation ? opp_team = game.home_team : opp_team = game.away_team
+            if TlflTeam.find_by(abbreviation: opp_team).full_division == self.full_division
+                team_game_pts = TlflTeam.find_by(abbreviation: abbreviation).week_pts(season, game.week)
+                opp_game_pts = TlflTeam.find_by(abbreviation: opp_team).week_pts(season, game.week)
+                losses += 1 if team_game_pts < opp_game_pts
+            end
+        end
+        losses
+    end
+
+    def division_ties(season, season_type = 1)
+        team_games = ScheduleGame.where(season: season, home_team: abbreviation).or(ScheduleGame.where(season: season, away_team: abbreviation))
+        ties = 0
+        team_games.each do |game|
+            game.away_team == abbreviation ? opp_team = game.home_team : opp_team = game.away_team
+            if TlflTeam.find_by(abbreviation: opp_team).full_division == self.full_division
+                team_game_pts = TlflTeam.find_by(abbreviation: abbreviation).week_pts(season, game.week)
+                opp_game_pts = TlflTeam.find_by(abbreviation: opp_team).week_pts(season, game.week)
+                ties += 1 if team_game_pts == opp_game_pts && (team_game_pts != 0 || opp_game_pts != 0)
+            end
+        end
+        ties
+    end
+
+    def conference_wins(season, season_type = 1)
+        team_games = ScheduleGame.where(season: season, home_team: abbreviation).or(ScheduleGame.where(season: season, away_team: abbreviation))
+        wins = 0
+        team_games.each do |game|
+            game.away_team == abbreviation ? opp_team = game.home_team : opp_team = game.away_team
+            if TlflTeam.find_by(abbreviation: opp_team).conference == self.conference
+                team_game_pts = TlflTeam.find_by(abbreviation: abbreviation).week_pts(season, game.week)
+                opp_game_pts = TlflTeam.find_by(abbreviation: opp_team).week_pts(season, game.week)
+                wins += 1 if team_game_pts > opp_game_pts
+            end
+        end
+        wins
+    end
+
+    def conference_losses(season, season_type = 1)
+        team_games = ScheduleGame.where(season: season, home_team: abbreviation).or(ScheduleGame.where(season: season, away_team: abbreviation))
+        losses = 0
+        team_games.each do |game|
+            game.away_team == abbreviation ? opp_team = game.home_team : opp_team = game.away_team
+            if TlflTeam.find_by(abbreviation: opp_team).conference == self.conference
+                team_game_pts = TlflTeam.find_by(abbreviation: abbreviation).week_pts(season, game.week)
+                opp_game_pts = TlflTeam.find_by(abbreviation: opp_team).week_pts(season, game.week)
+                losses += 1 if team_game_pts < opp_game_pts
+            end
+        end
+        losses
+    end
+
+    def conference_ties(season, season_type = 1)
+        team_games = ScheduleGame.where(season: season, home_team: abbreviation).or(ScheduleGame.where(season: season, away_team: abbreviation))
+        ties = 0
+        team_games.each do |game|
+            game.away_team == abbreviation ? opp_team = game.home_team : opp_team = game.away_team
+            if TlflTeam.find_by(abbreviation: opp_team).conference == self.conference
+                team_game_pts = TlflTeam.find_by(abbreviation: abbreviation).week_pts(season, game.week)
+                opp_game_pts = TlflTeam.find_by(abbreviation: opp_team).week_pts(season, game.week)
+                ties += 1 if team_game_pts == opp_game_pts && (team_game_pts != 0 || opp_game_pts != 0)
+            end
         end
         ties
     end
