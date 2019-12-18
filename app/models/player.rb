@@ -8,14 +8,7 @@ class Player < ApplicationRecord
     end
 
     def season_pts(season, season_type = 1)
-        all_game_pts = []
-        player_games = PlayerGame.where(player_id: id, season: season, season_type: season_type)
-        player_games.each do |player_game|
-            game_pts = {}
-            game_pts[:tlfl_pts] = player_game.tlfl_pts
-            all_game_pts << game_pts
-        end
-        all_game_pts.inject(0) {|sum, hash| sum + hash[:tlfl_pts]}
+        PlayerGame.where(player_id: id, season: season, season_type: season_type).sum(&:tlfl_pts)
     end
 
     def full_name
