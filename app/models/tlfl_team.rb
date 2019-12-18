@@ -47,11 +47,41 @@ class TlflTeam < ApplicationRecord
         opp_points
     end
 
-    def season_wins(season)
-
+    def season_wins(season, season_type = 1)
+        team_games = ScheduleGame.where(season: season, home_team: abbreviation).or(ScheduleGame.where(season: season, away_team: abbreviation))
+        wins = 0
+        team_games.each do |game|
+            game.away_team == abbreviation ? opp_team = game.home_team : opp_team = game.away_team
+            team_game_pts = TlflTeam.find_by(abbreviation: abbreviation).week_pts(season, game.week)
+            opp_game_pts = TlflTeam.find_by(abbreviation: opp_team).week_pts(season, game.week)
+            wins += 1 if team_game_pts > opp_game_pts 
+        end
+        wins
     end
 
-    def losses
+    def season_losses(season, season_type = 1)
+        team_games = ScheduleGame.where(season: season, home_team: abbreviation).or(ScheduleGame.where(season: season, away_team: abbreviation))
+        losses = 0
+        team_games.each do |game|
+            game.away_team == abbreviation ? opp_team = game.home_team : opp_team = game.away_team
+            team_game_pts = TlflTeam.find_by(abbreviation: abbreviation).week_pts(season, game.week)
+            opp_game_pts = TlflTeam.find_by(abbreviation: opp_team).week_pts(season, game.week)
+            losses += 1 if team_game_pts < opp_game_pts 
+        end
+        losses
+    end
+
+    def season_ties(season, season_type = 1)
+        team_games = ScheduleGame.where(season: season, home_team: abbreviation).or(ScheduleGame.where(season: season, away_team: abbreviation))
+        ties = 0
+        team_games.each do |game|
+            game.away_team == abbreviation ? opp_team = game.home_team : opp_team = game.away_team
+            team_game_pts = TlflTeam.find_by(abbreviation: abbreviation).week_pts(season, game.week)
+            opp_game_pts = TlflTeam.find_by(abbreviation: opp_team).week_pts(season, game.week)
+            # if team_game_pts != 0 && opp_game_pts != 0 
+            ties += 1 if team_game_pts == opp_game_pts && (team_game_pts != 0 || opp_game_pts != 0)
+        end
+        ties
     end
     
     def full_name
