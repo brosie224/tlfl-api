@@ -3,8 +3,9 @@ class Player < ApplicationRecord
     has_many :player_games
     validates_uniqueness_of :fd_id
 
-    # def week_pts(season, season_type = 1, week)
-    # end
+    def week_pts(season, season_type = 1, week)
+        PlayerGame.find_by(player_id: id, season: season, season_type: season_type, week: week).tlfl_pts
+    end
 
     # def season_pts(season, season_type = 1)
     # end
