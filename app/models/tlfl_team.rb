@@ -38,19 +38,17 @@ class TlflTeam < ApplicationRecord
     end
 
     def opp_season_pts(season, season_type = 1)
-        away_games = ScheduleGame.where(season: season, away_team: abbreviation)
-        home_games = ScheduleGame.where(season: season, home_team: abbreviation)
-        opp_game_pts = []
-        away_games.each do |game|
-            opp_game_pts << TlflTeam.find_by(abbreviation: game.home_team).week_pts(season, game.week)
+        team_games = ScheduleGame.where(season: season, home_team: abbreviation).or(ScheduleGame.where(season: season, away_team: abbreviation))
+        opp_points = 0
+        team_games.each do |game|
+            game.away_team == abbreviation ? opp_team = game.home_team : opp_team = game.away_team
+            opp_points += TlflTeam.find_by(abbreviation: opp_team).week_pts(season, game.week)
         end
-        home_games.each do |game|
-            opp_game_pts << TlflTeam.find_by(abbreviation: game.away_team).week_pts(season, game.week)
-        end
-        opp_game_pts.inject(0){|sum, pts| sum + pts}
+        opp_points
     end
 
-    def wins
+    def season_wins(season)
+
     end
 
     def losses
