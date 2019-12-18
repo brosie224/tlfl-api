@@ -14,10 +14,22 @@ class TlflTeam < ApplicationRecord
         player_games.sum(&:tlfl_pts) + dst_game.tlfl_pts
     end
 
+    def opp_week_pts(season, season_type = 1, week)
+        game = ScheduleGame.where(season: season, week: week, away_team: abbreviation).or(ScheduleGame.where(season: season, week: week, home_team: abbreviation)).take
+        if game.home_team == abbreviation
+            TlflTeam.find_by(abbreviation: game.away_team).week_pts(season, week)
+        else
+            TlflTeam.find_by(abbreviation: game.home_team).week_pts(season, week)
+        end
+    end
+
     def season_pts(season, season_type = 1)
         player_games = PlayerGame.where(tlfl_team_id: self.id, season: season, season_type: season_type)
         dst_games = TeamDstGame.where(tlfl_team_id: self.id, season: season, season_type: season_type)
         player_games.sum(&:tlfl_pts) + dst_games.sum(&:tlfl_pts)
+    end
+
+    def opp_season_pts(season, season_type = 1)
     end
     
     def full_name
