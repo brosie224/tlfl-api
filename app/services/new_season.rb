@@ -56,5 +56,7 @@ class NewSeason
         end
     
     # Check all TLFL players have correct esb_id
+
+    # Create ScheduleGames and TlflTeamGames for new season
         
 end

@@ -19,8 +19,23 @@ class TlflTeam < ApplicationRecord
         puts "Total: #{total}"
     end
 
-    # def season_pts(season, season_type = 1)
-    # end
+    def season_pts(season, season_type = 1)
+        player_games = PlayerGame.where(tlfl_team_id: self.id, season: season, season_type: season_type)
+        all_player_pts = []
+        player_games.each do |player_game|
+            player_pts = {}
+            player_pts[:tlfl_pts] = player_game.tlfl_pts
+            all_player_pts << player_pts
+        end
+        dst_games = TeamDstGame.where(tlfl_team_id: self.id, season: season, season_type: season_type)
+        all_dst_pts = []
+        dst_games.each do |dst_game|
+            dst_pts = {}
+            dst_pts[:tlfl_pts] = dst_game.tlfl_pts
+            all_dst_pts << dst_pts
+        end
+        all_player_pts.inject(0) {|sum, hash| sum + hash[:tlfl_pts]} + all_dst_pts.inject(0) {|sum, hash| sum + hash[:tlfl_pts]}
+    end
     
     def full_name
         self.city + " " + self.nickname
