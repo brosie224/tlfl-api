@@ -48,6 +48,10 @@ class FdPlayer < TimeFrame
                 pat = player_stats.inject(0) {|sum, hash| sum + hash["ExtraPointsMade"]}.round
                 if game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
                     game.update(
+                        player_name: tlfl_player.full_name,
+                        position: tlfl_player.position,
+                        tlfl_team_id: tlfl_player.tlfl_team_id,
+                        nfl_team: tlfl_player.nfl_abbrev,
                         pass_comp: pass_comp,
                         pass_att: pass_att,
                         pass_yards: pass_yards,
@@ -124,6 +128,10 @@ class FdPlayer < TimeFrame
             if player_stats = @stats_json.find {|fd_player| fd_player["PlayerID"] == fd_id}
                 if player_game
                     player_game.update(
+                        player_name: tlfl_player.full_name,
+                        position: tlfl_player.position,
+                        tlfl_team_id: tlfl_player.tlfl_team_id,
+                        nfl_team: tlfl_player.nfl_abbrev,
                         pass_comp: player_stats["PassingCompletions"],
                         pass_att: player_stats["PassingAttempts"],
                         pass_yards: player_stats["PassingYards"],

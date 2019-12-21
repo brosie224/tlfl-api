@@ -46,6 +46,10 @@ class FdProjection < TimeFrame
                 pat = player_stats.inject(0) {|sum, hash| sum + hash["ExtraPointsMade"]}.round
                 if game = ProjectedPlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
                     game.update(
+                        player_name: tlfl_player.full_name,
+                        position: tlfl_player.position,
+                        tlfl_team_id: tlfl_player.tlfl_team_id,
+                        nfl_team: tlfl_player.nfl_abbrev,
                         pass_comp: pass_comp,
                         pass_att: pass_att,
                         pass_yards: pass_yards,
@@ -118,10 +122,14 @@ class FdProjection < TimeFrame
         week_injury_status
         @tlfl_skill_players.each do |tlfl_player|
             tlfl_player.ir_id ? fd_id = Player.find_by(id: tlfl_player.ir_id).fd_id : fd_id = tlfl_player.fd_id
-            player_game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
+            player_game = ProjectedPlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
             if player_stats = @stats_json.find {|fd_player| fd_player["PlayerID"] == fd_id}
                 if player_game
                     player_game.update(
+                        player_name: tlfl_player.full_name,
+                        position: tlfl_player.position,
+                        tlfl_team_id: tlfl_player.tlfl_team_id,
+                        nfl_team: tlfl_player.nfl_abbrev,
                         pass_comp: player_stats["PassingCompletions"],
                         pass_att: player_stats["PassingAttempts"],
                         pass_yards: player_stats["PassingYards"],
@@ -143,7 +151,7 @@ class FdProjection < TimeFrame
                         pat: player_stats["ExtraPointsMade"]
                     )
                 else
-                    PlayerGame.create(
+                    ProjectedPlayerGame.create(
                         player_id: tlfl_player.id,
                         player_name: tlfl_player.full_name,
                         position: tlfl_player.position,
@@ -174,8 +182,8 @@ class FdProjection < TimeFrame
                     )
                 end
             elsif !player_game
-                # If player doesn't appear on FD's API and game wasn't previously created due to inactive (stats default to 0)
-                PlayerGame.create(
+                # If player doesn't appear on FD's API and game wasn't previously created due to injury (stats default to 0)
+                ProjectedPlayerGame.create(
                     player_id: tlfl_player.id,
                     player_name: tlfl_player.full_name,
                     position: tlfl_player.position,
@@ -199,23 +207,23 @@ class FdProjection < TimeFrame
         matches.each do |status, esb|
             injury_status_hash[esb] = status if status != "--"
         end
-        # Create PlayerGame if TLFL player is inactive and injured
+        # Create PlayerGame if TLFL player is injured
         tlfl_players = Player.joins(:tlfl_team).where.not(tlfl_team_id: nil, bye_week: @current_week, tlfl_teams: {bye_week: @current_week})
         @tlfl_skill_players = tlfl_players.where(position: "RB").or(tlfl_players.where(position: "WR")).or(tlfl_players.where(position: "TE"))
         @tlfl_skill_players.each do |tlfl_player|
-            player_game = PlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
+            player_game = ProjectedPlayerGame.find_by(player_id: tlfl_player.id, season: @current_season, season_type: @current_season_type, week: @current_week)
             tlfl_player.ir_id ? esb = Player.find_by(id: tlfl_player.ir_id).esb_id : esb = tlfl_player.esb_id
-            if inactive_hash[esb] && injury_status_hash[esb]
+            if injury_status_hash[esb]
                 if player_game
                     player_game.update(
                         player_name: tlfl_player.full_name,
                         position: tlfl_player.position,
                         tlfl_team_id: tlfl_player.tlfl_team_id,
                         nfl_team: tlfl_player.nfl_abbrev,
-                        needs_replacement: true
+                        injury_status: injury_status_hash[esb]
                     )
                 else
-                    PlayerGame.create(
+                    ProjectedPlayerGame.create(
                         player_id: tlfl_player.id,
                         player_name: tlfl_player.full_name,
                         position: tlfl_player.position,
@@ -224,7 +232,7 @@ class FdProjection < TimeFrame
                         season_type: @current_season_type,
                         week: @current_week,
                         nfl_team: tlfl_player.nfl_abbrev,
-                        needs_replacement: true
+                        injury_status: injury_status_hash[esb]
                     )
                 end
             end
