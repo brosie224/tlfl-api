@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_17_164633) do
+ActiveRecord::Schema.define(version: 2019_12_21_193911) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 2019_12_17_164633) do
     t.integer "week"
     t.string "player_name"
     t.string "nfl_team"
-    t.string "tlfl_team_id"
+    t.integer "tlfl_team_id"
     t.string "position"
     t.boolean "needs_replacement", default: false
     t.integer "pass_comp", default: 0
@@ -88,6 +88,39 @@ ActiveRecord::Schema.define(version: 2019_12_17_164633) do
     t.integer "jersey"
     t.integer "ir_week"
     t.boolean "available", default: true
+  end
+
+  create_table "projected_player_games", force: :cascade do |t|
+    t.integer "season"
+    t.integer "season_type"
+    t.integer "week"
+    t.string "player_name"
+    t.string "nfl_team"
+    t.integer "tlfl_team_id"
+    t.string "position"
+    t.string "injury_status"
+    t.integer "pass_comp"
+    t.integer "pass_att"
+    t.integer "pass_yards"
+    t.integer "pass_td"
+    t.integer "pass_int"
+    t.integer "rushes"
+    t.integer "rush_yards"
+    t.integer "rush_td"
+    t.integer "receptions"
+    t.integer "rec_yards"
+    t.integer "rec_td"
+    t.integer "punt_ret_td"
+    t.integer "kick_ret_td"
+    t.integer "two_pt_pass"
+    t.integer "two_pt_rush"
+    t.integer "two_pt_rec"
+    t.integer "fgm"
+    t.integer "fga"
+    t.integer "pat"
+    t.integer "player_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "reserves", force: :cascade do |t|
