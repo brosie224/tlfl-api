@@ -1,3 +1,0 @@
-class SeasonMaint
-
-end
