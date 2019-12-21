@@ -1,5 +1,16 @@
 module PlayerPts
     
+    def self.included(klass)
+        klass.extend(ClassMethods)
+    end
+    
+    module ClassMethods
+        def sort_position
+            preferred_order = ["QB", "RB", "WR", "TE", "K"]
+            self.all.sort_by { |a| preferred_order.index(a[:position]) }
+        end
+    end
+
     def pass_pts
         case pass_yards
         when -99..99 then points = 0
