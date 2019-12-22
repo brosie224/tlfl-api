@@ -23,6 +23,17 @@ class TlflTeam < ApplicationRecord
     end
 
     def projected_week_pts(season, season_type = 1, week)
+        player_games = ProjectedPlayerGame.where(tlfl_team_id: self.id, season: season, season_type: season_type, week: week)
+        dst_game = ProjectedTeamDstGame.find_by(tlfl_team_id: self.id, season: season, season_type: season_type, week: week)
+        if player_games && dst_game
+            player_games.sum(&:tlfl_pts) + dst_game.tlfl_pts
+        elsif player_games
+            player_games.sum(&:tlfl_pts)
+        elsif dst_game
+            dst_game.tlfl_pts
+        else
+            0
+        end
     end
 
     def opp_week_pts(season, season_type = 1, week)
