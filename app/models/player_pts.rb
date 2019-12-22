@@ -11,6 +11,10 @@ module PlayerPts
         end
     end
 
+    def tlfl_pts
+        manual_pts ? manual_pts : (pass_pts + rush_pts + rec_pts + return_pts + kick_pts).round
+    end
+
     def pass_pts
         case pass_yards
         when -99..99 then points = 0
