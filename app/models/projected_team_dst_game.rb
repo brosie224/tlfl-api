@@ -1,0 +1,2 @@
+class ProjectedTeamDstGame < ApplicationRecord
+end

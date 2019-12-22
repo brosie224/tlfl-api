@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_21_194826) do
+ActiveRecord::Schema.define(version: 2019_12_22_004844) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,26 +99,45 @@ ActiveRecord::Schema.define(version: 2019_12_21_194826) do
     t.integer "tlfl_team_id"
     t.string "position"
     t.string "injury_status"
-    t.integer "pass_comp", default: 0
-    t.integer "pass_att", default: 0
-    t.integer "pass_yards", default: 0
-    t.integer "pass_td", default: 0
-    t.integer "pass_int", default: 0
-    t.integer "rushes", default: 0
-    t.integer "rush_yards", default: 0
-    t.integer "rush_td", default: 0
-    t.integer "receptions", default: 0
-    t.integer "rec_yards", default: 0
-    t.integer "rec_td", default: 0
-    t.integer "punt_ret_td", default: 0
-    t.integer "kick_ret_td", default: 0
-    t.integer "two_pt_pass", default: 0
-    t.integer "two_pt_rush", default: 0
-    t.integer "two_pt_rec", default: 0
-    t.integer "fgm", default: 0
-    t.integer "fga", default: 0
-    t.integer "pat", default: 0
+    t.float "pass_comp", default: 0.0
+    t.float "pass_att", default: 0.0
+    t.float "pass_yards", default: 0.0
+    t.float "pass_td", default: 0.0
+    t.float "pass_int", default: 0.0
+    t.float "rushes", default: 0.0
+    t.float "rush_yards", default: 0.0
+    t.float "rush_td", default: 0.0
+    t.float "receptions", default: 0.0
+    t.float "rec_yards", default: 0.0
+    t.float "rec_td", default: 0.0
+    t.float "punt_ret_td", default: 0.0
+    t.float "kick_ret_td", default: 0.0
+    t.float "two_pt_pass", default: 0.0
+    t.float "two_pt_rush", default: 0.0
+    t.float "two_pt_rec", default: 0.0
+    t.float "fgm", default: 0.0
+    t.float "fga", default: 0.0
+    t.float "pat", default: 0.0
     t.integer "player_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "projected_team_dst_games", force: :cascade do |t|
+    t.integer "team_dst_id"
+    t.string "team_name"
+    t.integer "tlfl_team_id"
+    t.integer "season"
+    t.integer "season_type"
+    t.integer "week"
+    t.string "nfl_abbrev"
+    t.float "points_allowed", default: 99.0
+    t.float "touchdowns", default: 0.0
+    t.float "sacks", default: 0.0
+    t.float "fumbles_recovered", default: 0.0
+    t.float "interceptions", default: 0.0
+    t.float "safeties", default: 0.0
+    t.float "two_pt_ret", default: 0.0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
