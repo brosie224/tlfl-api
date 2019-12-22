@@ -7,9 +7,12 @@ class FdProjection < TimeFrame
             get_player_games
             create_qb_k_games
             create_rb_wr_te_games
-            # FdTeam.new.create_dst_games
+            get_dst_games
+            create_dst_games
         end
     end
+
+# PLAYER GAMES
 
     def get_player_games
         # current_timeframe
@@ -235,6 +238,73 @@ class FdProjection < TimeFrame
                         injury_status: injury_status_hash[esb]
                     )
                 end
+            end
+        end
+    end
+
+# DST GAMES
+
+    def get_dst_games
+        # current_timeframe
+        stats_resp = Faraday.get "https://api.fantasydata.net/api/nfl/fantasy/json/FantasyDefenseProjectionsByGame/#{@current_api_season}/#{@current_week}" do |req|
+            req.params['key'] = ENV['FANTASY_DATA_KEY']
+        end
+        @stats_json = JSON.parse(stats_resp.body)
+    end
+
+    def create_dst_games
+        # get_dst_games
+        tlfl_dsts = TeamDst.joins(:tlfl_team).where.not(bye_week: @current_week, tlfl_teams: {bye_week: @current_week})
+        tlfl_dsts.each do |tlfl_dst|
+            dst_game = ProjectedTeamDstGame.find_by(team_dst_id: tlfl_dst.id, season: @current_season, season_type: @current_season_type, week: @current_week)
+            if dst_stats = @stats_json.find {|fd_dst| fd_dst["PlayerID"] == tlfl_dst.fd_player_id}
+                if dst_game
+                    dst_game.update(
+                        team_name: tlfl_dst.full_name,
+                        tlfl_team_id: tlfl_dst.tlfl_team_id,
+                        nfl_abbrev: tlfl_dst.nfl_abbrev,
+                        points_allowed: dst_stats["PointsAllowed"],
+                        touchdowns: dst_stats["TouchdownsScored"],
+                        sacks: dst_stats["Sacks"],
+                        fumbles_recovered: dst_stats["FumblesRecovered"],
+                        interceptions: dst_stats["Interceptions"],
+                        safeties: dst_stats["Safeties"],
+                        two_pt_ret: dst_stats["TwoPointConversionReturns"]
+                    )
+                    tlfl_players = ProjectedPlayerGame.where(week: @current_week, nfl_team: tlfl_dst.nfl_abbrev)
+                    tlfl_returns = tlfl_players.inject(0) {|sum, hash| sum + hash[:punt_ret_td]} + tlfl_players.inject(0) {|sum, hash| sum + hash[:kick_ret_td]}
+                    dst_game.update(touchdowns: dst_game.touchdowns - tlfl_returns)
+                else
+                    dst_game = ProjectedTeamDstGame.create(
+                        team_dst_id: tlfl_dst.id,
+                        team_name: tlfl_dst.full_name,
+                        tlfl_team_id: tlfl_dst.tlfl_team_id,
+                        season: @current_season,
+                        season_type: @current_season_type,
+                        week: @current_week,
+                        nfl_abbrev: tlfl_dst.nfl_abbrev,
+                        points_allowed: dst_stats["PointsAllowed"],
+                        touchdowns: dst_stats["TouchdownsScored"],
+                        sacks: dst_stats["Sacks"],
+                        fumbles_recovered: dst_stats["FumblesRecovered"],
+                        interceptions: dst_stats["Interceptions"],
+                        safeties: dst_stats["Safeties"],
+                        two_pt_ret: dst_stats["TwoPointConversionReturns"]
+                    )
+                    tlfl_players = PlayerGame.where(week: @current_week, nfl_team: tlfl_dst.nfl_abbrev)
+                    tlfl_returns = tlfl_players.inject(0) {|sum, hash| sum + hash[:punt_ret_td]} + tlfl_players.inject(0) {|sum, hash| sum + hash[:kick_ret_td]}
+                    dst_game.update(touchdowns: dst_game.touchdowns - tlfl_returns)
+                end
+            else
+                ProjectedTeamDstGame.create(
+                    team_dst_id: tlfl_dst.id,
+                    team_name: tlfl_dst.full_name,
+                    tlfl_team_id: tlfl_dst.tlfl_team_id,
+                    season: @current_season,
+                    season_type: @current_season_type,
+                    week: @current_week,
+                    nfl_abbrev: tlfl_dst.nfl_abbrev
+                )
             end
         end
     end

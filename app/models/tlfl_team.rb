@@ -22,6 +22,9 @@ class TlflTeam < ApplicationRecord
         end
     end
 
+    def projected_week_pts(season, season_type = 1, week)
+    end
+
     def opp_week_pts(season, season_type = 1, week)
         if game = ScheduleGame.where(season: season, week: week, away_team: abbreviation).or(ScheduleGame.where(season: season, week: week, home_team: abbreviation)).take
             if game.home_team == abbreviation
