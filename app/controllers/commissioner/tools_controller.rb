@@ -9,11 +9,8 @@ module Commissioner
 
     # Creates new players, deletes inactive players and players not in league, updates player if new team, adds cbs data
     def update_available_players
-      task = FdPlayer.new
-      task.update_available_players
-      task.update_player_nfl_data
-      task.add_cbs_data_to_players
-      flash[:notice] = "Available players updated."
+      FdPlayer.new.update_all_player_info
+      flash[:notice] = "Players updated."
       redirect_to commissioner_path
     end
 

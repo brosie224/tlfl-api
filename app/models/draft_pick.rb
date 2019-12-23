@@ -2,10 +2,10 @@ class DraftPick < ApplicationRecord
     belongs_to :tlfl_team
 
     def full
-        if self.overall == nil
-            "#{self.year} #{self.round.ordinalize}-round pick (#{self.team})"
-        else
+        if overall
             "#{self.year} #{self.round.ordinalize}-round pick (##{self.overall})"
+        else
+            "#{self.year} #{self.round.ordinalize}-round pick (#{self.team})"
         end
     end
     

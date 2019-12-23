@@ -10,7 +10,7 @@ class ScheduleGame < ApplicationRecord
     end
 
     def display_game(season, week)
-        
+        ScheduleGame.where(season: season, week: week)
     end
 
     def home_id

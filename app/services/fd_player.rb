@@ -251,6 +251,13 @@ class FdPlayer < TimeFrame
 
     # -- IN-SEASON METHODS --
 
+    def update_all_player_info
+        get_player_data
+        update_available_players
+        update_player_nfl_data
+        add_player_cbs_data
+    end
+
     def get_player_data
         players_resp = Faraday.get 'https://api.fantasydata.net/api/nfl/fantasy/json/Players' do |req|
             req.params['key'] = ENV['FANTASY_DATA_KEY']
@@ -261,7 +268,7 @@ class FdPlayer < TimeFrame
     end
 
     def create_new_players
-        get_player_data
+        # get_player_data
         @active_players = @active_players.sort_by { |player| player["LastName"] }
         @active_players.each do |fd_player|
             Player.find_or_create_by(fd_id: fd_player["PlayerID"]) do |new_player|
@@ -289,7 +296,7 @@ class FdPlayer < TimeFrame
 
     # Updates player NFL teams (or if NFL team city/name changes)
     def update_player_nfl_data
-        get_player_data
+        # get_player_data
         free_agents = Player.where(tlfl_team_id: nil)
         players_on_team = Player.where.not(tlfl_team_id: nil)
         players_on_team.each do |tlfl_player|
@@ -305,19 +312,14 @@ class FdPlayer < TimeFrame
         end
     end
 
-    def add_cbs_data_to_players
-        # Double check link works
-        cbs_resp = Faraday.get "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json"
-        cbs_json = JSON.parse(cbs_resp.body)
-        players = Player.all
-        cbs_json["body"]["players"].each do |cbs_player|
-            players.each do |player|
-                if player.cbs_id == nil && player.nfl_abbrev == "JAX" && cbs_player["pro_team"] == "JAC" && player.position == cbs_player["position"] && player.jersey == cbs_player["jersey"].to_i
-                    player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"])
-                end
-                if player.cbs_id == nil && player.nfl_abbrev == cbs_player["pro_team"] && player.position == cbs_player["position"] && player.jersey == cbs_player["jersey"].to_i
-                    player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"])
-                end
+    def add_player_cbs_data # Adds esb_id
+        cbs_resp = Faraday.get "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json" # Double check link works
+        cbs_json = JSON.parse(cbs_resp.body)["body"]["players"]
+        tlfl_players = Player.where(cbs_id: nil)
+        tlfl_players.all.each do |tlfl_player|
+            if cbs_player = cbs_json.find {|cbs_player| cbs_player["pro_team"] == tlfl_player.nfl_abbrev && cbs_player["position"] == tlfl_player.position && cbs_player["jersey"].to_i == tlfl_player.jersey} || 
+                cbs_player = cbs_json.find {|cbs_player| cbs_player["pro_team"] == "JAC" && tlfl_player.nfl_abbrev == "JAX" && cbs_player["position"] == tlfl_player.position && cbs_player["jersey"].to_i == tlfl_player.jersey}
+                tlfl_player.update(cbs_id: cbs_player["id"].to_i, esb_id: cbs_player["elias_id"])
             end
         end
     end

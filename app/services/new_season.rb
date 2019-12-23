@@ -2,12 +2,13 @@ class NewSeason
 
     # Do global search for last year (ie 2019) and change to current year
 
+    # Organize everything by order of when run; Group together based on order
+
     # Offseason
         # Assign overall to each DraftPick
             # create new array of picks (eg [{team: Saints, round: 1, overall, 32}, {team: Saints, round: 2, overall, 64}] ) 
-            # DraftPick.all.each do, new.each do00
-                # if pick.team == new.team && pick.round == new.round then pick.overall = new.overall
-
+            # then assign .overall based on new array
+l
         # Reset players who were on IR
         def reset_ir
             ir_players = Player.where.not(ir_id: nil).or(Player.where.not(ir_week: nil))
@@ -61,6 +62,6 @@ class NewSeason
     
     # Check all TLFL players have correct esb_id
 
-    # Create ScheduleGames and TlflTeamGames for new season
+    # Create ScheduleGames for new season
         
 end
