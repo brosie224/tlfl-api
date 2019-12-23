@@ -9,6 +9,10 @@ class ScheduleGame < ApplicationRecord
         ScheduleGame.where(away_team: team_abbrev, season: season).or(ScheduleGame.where(home_team: team_abbrev, season: season))
     end
 
+    def display_game(season, week)
+        
+    end
+
     def home_id
         TlflTeam.find_by(abbreviation: home_team).id
     end

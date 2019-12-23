@@ -1,6 +1,6 @@
 class NewSeason
 
-    # Global search for last year (ie 2019) and change to current year
+    # Do global search for last year (ie 2019) and change to current year
 
     # Offseason
         # Assign overall to each DraftPick
@@ -22,11 +22,11 @@ class NewSeason
 
         # After keepers set, reset non-keeper's seniority (if no team, seniority = 1)
 
-        # FdService methods to run:
-            # create_new_players (to add rookies/new players)
-            # update_tlfl_team_data
-            # update_player_data
-            # update_teams_dst_data
+        # To-Do List w/ corresponding methods:
+            # Add rookies/new players
+            # Update TLFL team data
+            # Update Player data
+            # Update TeamDst data 
 
     # After Draft
 
@@ -42,7 +42,11 @@ class NewSeason
             end
         end
 
-        # Reset all TLFL team protections back to 3
+        def reset_protections
+            TlflTeam.all.each do |team|
+                team.update(protections: 3)
+            end
+        end
 
     # After Rosters are entered 
         def reset_player_available
