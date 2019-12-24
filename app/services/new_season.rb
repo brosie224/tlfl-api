@@ -31,14 +31,12 @@ l
 
     # After Draft
 
-        def generate_draft_picks()
-            DraftPick.all.each do |pick|
-                pick.tlfl_team_id = nil
-            end
-            TlflTeam.all.each do |tm|
+        def generate_draft_picks
+            DraftPick.destroy_all
+            TlflTeam.all.each do |tlfl_team|
                 for rd in 1..6 do
-                    tm.draft_picks.build(team: tm.full_name, year: Date.today.year + 1, round: rd)
-                    tm.save
+                    tlfl_team.draft_picks.build(team: tlfl_team.full_name, year: Date.today.year + 1, round: rd)
+                    tlfl_team.save
                 end
             end
         end
