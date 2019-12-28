@@ -5,6 +5,9 @@ class NewSeason
     # Organize everything by order of when run; Group together based on order
 
     # Offseason
+
+    # Before TLFL Draft
+    
         # Assign overall to each DraftPick
             # create new array of picks (eg [{team: Saints, round: 1, overall, 32}, {team: Saints, round: 2, overall, 64}] ) 
             # then assign .overall based on new array
@@ -21,15 +24,14 @@ l
             # if player not checked, then tlfl_team_id = nil
         end
 
-        # After keepers set, reset non-keeper's seniority (if no team, seniority = 1)
-
         # To-Do List w/ corresponding methods:
             # Add rookies/new players
             # Update TLFL team data
             # Update Player data
             # Update TeamDst data 
+            # New Schedule
 
-    # After Draft
+    # After TLFL Draft
 
         def generate_draft_picks
             DraftPick.destroy_all
@@ -50,11 +52,7 @@ l
     # After Rosters are entered 
         def reset_player_available
             Player.all.each do |player|
-                if player.tlfl_team_id == nil
-                    player.update(available: true)
-                else
-                    player.update(available: false)
-                end
+                player.tlfl_team_id == nil ? player.update(available: true) : player.update(available: false)
             end
         end
     
