@@ -63,13 +63,14 @@ module Commissioner
         # ADMIN
 
         def edit
-            @player = Player.find_by(id: params[:id]) # expand view
+            @player = Player.find_by(id: params[:id])
         end
 
         def update
             @player = Player.find_by(id: params[:id])
-            @player.update(params.require(:player).permit(:cbs_id, :esb_id)) # expand params
-            redirect_to commissioner_check_cbs_path
+            @player.update(params.require(:player).permit(:first_name, :last_name, :nfl_abbrev, :tlfl_team_id))
+            flash[:notice] = "Changes saved."
+            redirect_to edit_commissioner_player_path
         end
 
     end

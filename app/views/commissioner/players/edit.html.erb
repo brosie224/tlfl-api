@@ -1,6 +1,12 @@
 <%= form_for @player, url: commissioner_player_path(@player), html: { method: :patch} do |f| %>
-  <%= @player.full_name %><br>
-  <%= f.number_field :cbs_id, placeholder: "CBS ID" %><br>
-  <%= f.text_field :esb_id, placeholder: "ESB ID" %><br>
+  <%= f.label :first_name, 'First Name:' %>
+  <%= f.text_field :first_name %><br>
+  <%= f.label :last_name, 'Last Name:' %>
+  <%= f.text_field :last_name %><br>
+  <%= f.label :nfl_abbrev, 'NFL Team:' %>
+  <%= f.select :nfl_abbrev, Player.order(:nfl_abbrev).distinct.pluck(:nfl_abbrev) %><br>
+  <%= f.label :tlfl_team_id, 'TLFL Team:' %>
+  <%= f.collection_select :tlfl_team_id, TlflTeam.order(:city, :nickname), :id, :full_name %><br>
+  <br>
   <%= f.submit %>
 <% end %>
